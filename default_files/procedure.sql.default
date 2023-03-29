@@ -30,7 +30,7 @@ CREATE TEMPORARY TABLE blissey.areas AS (
 
 -- process fences
 BEGIN
-  SET @max = (select max(id) from rdmstats.areas);
+  SET @max = (select max(id) from blissey.areas);
   SET @current = 1;
 
   WHILE @current <= @max DO
@@ -58,6 +58,64 @@ BEGIN
 END;
 
 DROP TEMPORARY TABLE blissey.spawnarea;
+DROP TEMPORARY TABLE blissey.areas;
+
+END
+//
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS blissey.rpl15questarea;
+DELIMITER //
+CREATE PROCEDURE blissey.rpl15questarea()
+BEGIN
+
+-- set vars
+  SET @period = (select unix_timestamp(concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900))) );
+  SET @stop = (select unix_timestamp(concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 0 minute)) DIV 900) * 900))) );
+  SET @perioddate = (select unix_timestamp(date(from_unixtime(@period))));
+
+-- get data
+DROP TEMPORARY TABLE IF EXISTS blissey.questarea;
+CREATE TEMPORARY TABLE blissey.questarea AS (
+  SELECT id, point(lat,lon) as 'location', cast(quest_timestamp AS SIGNED) as 'arTime', cast(alternative_quest_timestamp AS SIGNED) as 'nonarTime'
+  FROM golbat.pokestop
+  );
+
+-- get areas
+SET @row_number = 0;
+DROP TEMPORARY TABLE IF EXISTS blissey.areas;
+CREATE TEMPORARY TABLE blissey.areas AS (
+  SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st
+  FROM blissey.geofences
+  WHERE st is not NULL and type = 'quest');
+
+-- process fences
+BEGIN
+  SET @max = (select max(id) from blissey.areas);
+  SET @current = 1;
+
+  WHILE @current <= @max DO
+    INSERT IGNORE INTO blissey.stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum)
+    SELECT
+    from_unixtime(@period) as 'period',
+    15 as 'rpl',
+    area,
+    fence,
+    count(a.id) as 'stops',
+    ifnull(sum(case when arTime >= @period and arTime < @stop then 1 end),0) as 'AR',
+    ifnull(sum(case when nonarTime >= @period and nonarTime < @stop then 1 end),0) as 'nonAR',
+    ifnull(sum(case when arTime >= @perioddate and arTime < @stop then 1 end),0) as 'ARcum',
+    ifnull(sum(case when nonarTime >= @perioddate and nonarTime < @stop then 1 end),0) as 'nonARcum'
+    FROM blissey.questarea a, blissey.areas b
+    WHERE b.id = @current and ST_CONTAINS(st, location)
+    GROUP BY area,fence;
+
+    SET @current = @current + 1;
+  END WHILE;
+END;
+
+DROP TEMPORARY TABLE blissey.questarea;
 DROP TEMPORARY TABLE blissey.areas;
 
 END

@@ -76,6 +76,20 @@ CREATE TABLE IF NOT EXISTS `stats_spawnpoint` (
   PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `stats_quest_area` (
+  `datetime` datetime NOT NULL,
+  `rpl` smallint(6) NOT NULL,
+  `area` varchar(40) NOT NULL,
+  `fence` varchar(40) DEFAULT NULL,
+  `stops` int(11) DEFAULT NULL,
+  `AR` int(11) DEFAULT NULL,
+  `nonAR` int(11) DEFAULT NULL,
+  `ARcum` int(11) DEFAULT NULL,
+  `nonARcum` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 -- update db version
 INSERT IGNORE INTO version values ('blissey',1);
 UPDATE version set version = 1 where version.key = 'blissey';
