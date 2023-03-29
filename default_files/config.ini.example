@@ -16,11 +16,11 @@ spawnpointareastats=true				# make sure to add mon geofences to blissey table ge
 questareastats=true					# make sure to add quest geofences to blissey table geofences. First and last coordinate of column coords must be the same.
 workerstats=true                                        # requires controller config worker_stats=true
 
-## Table cleanup, remove anything older the x days
-blissey_rpl15=90					# cleanup blissey table for 15m data
-blissey_rpl60=180					# cleanup blissey table for 60m data
-blissey_rpl1440=365					# cleanup blissey table for daily data
-blissey_rpl10080=999999					# cleanup blissey table for weekly data
+## Table cleanup, remove anything older then x days
+blissey_rpl15=90					# cleanup blissey tables for 15m data
+blissey_rpl60=180					# cleanup blissey tables for 60m data
+blissey_rpl1440=365					# cleanup blissey tables for daily data
+blissey_rpl10080=999999					# cleanup blissey tables for weekly data
 worker_raw=1						# cleanup controller raw worker data
 area_raw=1						# cleanup scanner raw area data
 

@@ -71,3 +71,27 @@ then
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] daily golbat backup cleanup" >> $folder/logs/log_$(date '+%Y%m').log
 fi
+
+
+## Cleanup stats tables
+if [[ ! -z $blissey_rpl15 ]] ;then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker where rpl = 15 and datetime < now() - interval $blissey_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker where rpl = 60 and datetime < now() - interval $blissey_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker where rpl = 1440 and datetime < now() - interval $blissey_rpl1440 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker where rpl = 10080 and datetime < now() - interval $blissey_rpl10080 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_mon_area where rpl = 15 and datetime < now() - interval $blissey_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_mon_area where rpl = 60 and datetime < now() - interval $blissey_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_mon_area where rpl = 1440 and datetime < now() - interval $blissey_rpl1440 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_mon_area where rpl = 10080 and datetime < now() - interval $blissey_rpl10080 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_quest_area where rpl = 15 and datetime < now() - interval $blissey_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_quest_area where rpl = 60 and datetime < now() - interval $blissey_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_quest_area where rpl = 1440 and datetime < now() - interval $blissey_rpl1440 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_quest_area where rpl = 10080 and datetime < now() - interval $blissey_rpl10080 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_spawnpoint where rpl = 15 and datetime < now() - interval $blissey_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_spawnpoint where rpl = 60 and datetime < now() - interval $blissey_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_spawnpoint where rpl = 1440 and datetime < now() - interval $blissey_rpl1440 day;"
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] cleanup stats tables" >> $folder/logs/log_$(date '+%Y%m').log
+fi
