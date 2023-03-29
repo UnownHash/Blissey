@@ -16,8 +16,8 @@ echo ""
 # Create procedures
 echo "Creating required procedures"
 cp $folder/default_files/procedure.sql.default $folder/procedure.sql
-sed -i "s/blissey/$blisseydb/g" $folder/procedures.sql
-sed -i "s/golbat/$scannerdb/g" $folder/procedures.sql
+sed -i "s/blissey/$blisseydb/g" $folder/procedure.sql
+sed -i "s/golbat/$scannerdb/g" $folder/procedure.sql
 MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/procedure.sql
 echo ""
 
@@ -33,7 +33,7 @@ sed -i "s/golbat/$scannerdb/g" $folder/cron_files/15_*.sql
 # Create crontab file
 echo "Creating crontab.txt in $folder"
 cp $folder/default_files/crontab.txt.default $folder/crontab.txt
-sed -i "s/blisseypath/$folder/g" crontab.txt
+sed -i "s,blisseypath,$folder,g" $folder/crontab.txt
 echo ""
 
 
@@ -176,3 +176,6 @@ fi
 # echo $area, $fence, $type, $coord, $offset
 counter=$((counter+1))
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where utcoffset is NULL" | sed 's/\t/|/g')
+
+echo ""
+echo "All done!"

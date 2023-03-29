@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `stats_worker` (
   `loc_count` int(11) DEFAULT NULL,
   `loc_success` int(11) DEFAULT NULL,
   `mons_seen` int(11) DEFAULT NULL,
-  `mons_enc` int(11) DEFAULT NULL
+  `mons_enc` int(11) DEFAULT NULL,
   PRIMARY KEY (`datetime`,`RPL`,`controller_worker`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

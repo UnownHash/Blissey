@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 folder="$(cd ../ && pwd)"
@@ -42,7 +41,7 @@ then
 fi
 
 # rpl 15 spawnpoint area stats
-if "$spawnpointareastats"
+if [[ "$spawnpointareastats" == "true" && ( "$idiot" == "" || "$idiot" == "false" ) ]]
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; call rpl15spawnarea();"
@@ -50,3 +49,18 @@ then
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl15 spawnpoint area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
+
+# rpl 15 spawnpoint area stats (with column location)
+if [[ "$spawnpointareastats" == "true" && "$idiot" == "true" ]]
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; call rpl15spawnarea_dkmur();"
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl15 spawnpoint area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
+
+
+
+
