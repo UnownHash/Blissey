@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `stats_worker` (
   `datetime` datetime NOT NULL,
   `RPL` smallint(6) NOT NULL,
   `controller_worker` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `device_name` varchar(255) DEFAULT NULL,
+  `device_worker` varchar(255) DEFAULT NULL,
   `numRep` int(11) DEFAULT NULL,
   `loc_time` float DEFAULT NULL,
   `loc_count` int(11) DEFAULT NULL,

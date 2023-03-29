@@ -4,12 +4,12 @@ select @stop :=  concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_T
 select @rpl  := 60;
 
 -- process data
-insert ignore into stats_worker (datetime,rpl,controller_worker,device_name,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc)
+insert ignore into stats_worker (datetime,rpl,controller_worker,device_worker,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc)
 select
 @period,
 @rpl,
 controller_worker,
-max(device_name),
+max(device_worker),
 sum(numRep),
 sum(loc_time),
 sum(loc_count),

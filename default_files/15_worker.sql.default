@@ -4,12 +4,12 @@ select @stop := concat(date(now() - interval 0 minute),' ', (SEC_TO_TIME((TIME_T
 select @rpl  := 15;
 
 -- process data
-insert ignore into blissey.stats_worker (datetime,rpl,controller_worker,device_name,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc)
+insert ignore into blissey.stats_worker (datetime,rpl,controller_worker,device_worker,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc)
 select
 @period,
 @rpl,
 controller_worker,
-GROUP_CONCAT(distinct(device_name) SEPARATOR ','),
+GROUP_CONCAT(distinct(device_worker) SEPARATOR ','),
 count(controller_worker),
 sum(loc_avg*loc_success),
 sum(loc_count),
@@ -17,7 +17,7 @@ sum(loc_success),
 sum(mons_seen),
 sum(mons_enc)
 
-from stats_workers
+from flygon.blissey_worker_stats
 
 where
 CONVERT_TZ(datetime, '+00:00', @@global.time_zone) >= @period and
