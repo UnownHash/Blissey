@@ -10,7 +10,15 @@ echo "[`date '+%Y%m%d %H:%M:%S'`] Setting.run executed" >> $folder/logs/log_$(da
 
 # Create tables
 echo "Creating required tables"
-MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/tables.sql
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/table.sql
+echo ""
+
+# Create procedures
+echo "Creating required procedures"
+cp $folder/default_files/procedure.sql.default $folder/procedure.sql
+sed -i "s/blissey/$blisseydb/g" $folder/procedures.sql
+sed -i "s/golbat/$scannerdb/g" $folder/procedures.sql
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/procedure.sql
 echo ""
 
 # copy sql to cron_files

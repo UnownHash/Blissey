@@ -60,7 +60,21 @@ CREATE TABLE IF NOT EXISTS `stats_mon_area` (
   PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
+CREATE TABLE IF NOT EXISTS `stats_spawnpoint` (
+  `datetime` datetime NOT NULL,
+  `rpl` smallint(6) NOT NULL,
+  `area` varchar(40) NOT NULL,
+  `fence` varchar(40) DEFAULT NULL,
+  `spawnpoints` int(11) DEFAULT NULL,
+  `verified` int(11) DEFAULT NULL,
+  `seen` int(11) DEFAULT NULL,
+  `1d` int(11) DEFAULT NULL,
+  `3d` int(11) DEFAULT NULL,
+  `5d` int(11) DEFAULT NULL,
+  `7d` int(11) DEFAULT NULL,
+  `14d` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- update db version
 INSERT IGNORE INTO version values ('blissey',1);

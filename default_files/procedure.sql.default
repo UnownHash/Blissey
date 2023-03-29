@@ -1,0 +1,65 @@
+DROP PROCEDURE IF EXISTS blissey.rpl15spawnarea;
+DELIMITER //
+CREATE PROCEDURE blissey.rpl15spawnarea()
+BEGIN
+
+-- set vars
+  SET @period = (select unix_timestamp(concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900))) );
+  SET @stop = (select unix_timestamp(concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 0 minute)) DIV 900) * 900))) );
+
+-- get data
+DROP TEMPORARY TABLE IF EXISTS blissey.spawnarea;
+CREATE TEMPORARY TABLE blissey.spawnarea
+  (`location` point NOT NULL,
+   `id` bigint(20) unsigned,
+   `despawn_sec` smallint(5) unsigned,
+   `last_seen` int(10) unsigned
+--   SPATIAL INDEX(`location`)
+  )
+  AS (
+  SELECT point(lat,lon) as 'location', id, despawn_sec, last_seen
+  FROM golbat.spawnpoint);
+
+-- get areas
+SET @row_number = 0;
+DROP TEMPORARY TABLE IF EXISTS blissey.areas;
+CREATE TEMPORARY TABLE blissey.areas AS (
+  SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st
+  FROM blissey.geofences
+  WHERE st is not NULL and type = 'mon');
+
+-- process fences
+BEGIN
+  SET @max = (select max(id) from rdmstats.areas);
+  SET @current = 1;
+
+  WHILE @current <= @max DO
+    INSERT IGNORE INTO blissey.stats_spawnpoint (datetime,rpl,area,fence,spawnpoints,verified,seen,1d,3d,5d,7d,14d)
+    SELECT
+    from_unixtime(@period) as 'period',
+    15 as 'rpl',
+    area,
+    fence,
+    count(a.id) as 'spawnpoints',
+    sum(case when despawn_sec is not NULL then 1 end) as 'verified',
+    sum(case when date(from_unixtime(last_seen)) = date(from_unixtime(@period)) then 1 end) as 'seen',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 1 day) then 1 end),0) as '1d',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 3 day) then 1 end),0) as '3d',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 5 day) then 1 end),0) as '5d',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 7 day) then 1 end),0) as '7d',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 14 day) then 1 end),0) as '14d'
+
+    FROM blissey.spawnarea a, blissey.areas b
+    WHERE b.id = @current and ST_CONTAINS(st, location)
+    GROUP BY area,fence;
+
+    SET @current = @current + 1;
+  END WHILE;
+END;
+
+DROP TEMPORARY TABLE blissey.spawnarea;
+DROP TEMPORARY TABLE blissey.areas;
+
+END
+//
+DELIMITER ;
