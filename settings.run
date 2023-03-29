@@ -1,0 +1,168 @@
+#!/bin/bash
+
+source config.ini
+folder="$(pwd)"
+
+# Logging
+mkdir -p $folder/logs
+touch $folder/logs/log_$(date '+%Y%m').log
+echo "[`date '+%Y%m%d %H:%M:%S'`] Setting.run executed" >> $folder/logs/log_$(date '+%Y%m').log
+
+# Create tables
+echo "Creating required tables"
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/tables.sql
+echo ""
+
+# copy sql to cron_files
+echo "Creating sql files"
+echo ""
+rm -f $folder/cron_files/*.sql
+cp $folder/default_files/15_worker.sql.default $folder/cron_files/15_worker.sql
+sed -i "s/blissey/$blisseydb/g" $folder/cron_files/15_*.sql
+
+# Create crontab file
+echo "Creating crontab.txt in $folder"
+cp $folder/default_files/crontab.txt.default $folder/crontab.txt
+sed -i "s/blisseypath/$folder/g" crontab.txt
+echo ""
+
+
+
+# Add/update st data to table geofences
+echo "Update geometry data for mon fences"
+echo ""
+while read -r line ;do
+area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
+fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
+coords=$(echo $line | awk 'BEGIN { FS = "|" } ; {$1=$2=""}1')
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'mon' ;"
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,coords from geofences where type = 'mon';" | sed 's/\t/|/g')
+echo "Update geometry data for quest fences"
+echo ""
+while read -r line ;do
+area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
+fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
+coords=$(echo $line | awk 'BEGIN { FS = "|" } ; {$1=$2=""}1')
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'quest' ;"
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,coords from geofences where type = 'quest';" | sed 's/\t/|/g')
+echo "Update geometry data for both fences"
+echo ""
+while read -r line ;do
+area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
+fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
+coords=$(echo $line | awk 'BEGIN { FS = "|" } ; {$1=$2=""}1')
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'both' ;"
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,coords from geofences where type = 'both';" | sed 's/\t/|/g')
+
+# Append/update km2
+echo "Update km2 on table geofences"
+echo ""
+if [[ $(dpkg -s geographiclib-tools | grep 'Status: install ok installed' | wc -l) == 1 ]] ;then
+  mkdir -p $folder/tmp/
+
+  while read -r line ;do
+    area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
+    fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
+    type=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $3}')
+    polygon=$(echo $line |awk 'BEGIN { FS = "|" } ; $1=$2=$3=""; {print $0}' | xargs)
+
+    echo $polygon | sed 's/, /,/g' | tr ',' '\n' > $folder/tmp/coord.txt
+
+    km2=$(Planimeter --input-file $folder/tmp/coord.txt | awk '{ print $3/1000000 }' | sed 's/-//g')
+
+#    echo "Updating $area, $fence, $type to $km2 km2"
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "update geofences set km2='$km2' where area='$area' and fence='$fence' and type ='$type'"
+  done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,coords from geofences;" | sed 's/\t/|/g')
+else
+  echo "make sure to install geographiclib-tools to add km2 to geofences table"
+  echo ""
+fi
+
+# Append/update utcoffset
+echo "Update utcoffset on table geofences"
+echo ""
+get_tz(){
+  curl -s -k -L --fail --show-error https://api.wheretheiss.at/v1/coordinates/$1
+}
+
+# get tz data based of quest fences first to limit the api calls
+counter=0
+while read -r line ;do
+area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
+fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
+type=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $3}')
+coord=$(echo $line | awk 'BEGIN { FS = "|" } ; $1=$2=$3=""; {print $0}' | awk '{ sub(/^[ \t]+/, ""); print }' | sed 's/ /,/g')
+
+if (( $counter >= 300 )) ;then
+  echo ""
+  echo "We called the api 300 times, sleeping 60s"
+  sleep 60s
+  counter=0
+fi
+
+# call api for tz data
+result=$(get_tz $coord)
+
+# get offset
+if [[ -z $result ]] ;then
+  echo "whoops, no result returned, exiting script"
+  exit 1
+else
+  offset=$(echo $result | grep -oP '(?<=offset":).*(?=,"country)')
+fi
+
+# add offset to db
+if [[ -z $offset ]] ;then
+  echo "No offset found, exit script"
+  exit 1
+else
+  area=$(echo $area | awk -F'_' '{ print $1 }')
+#  echo "Appending utc offset to all fences of $area, $offset hours"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "update geofences set utcoffset = $offset where area like concat('$area','%')"
+fi
+
+# echo $area, $fence, $type, $coord, $offset
+counter=$((counter+1))
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where type = 'quest'" | sed 's/\t/|/g')
+
+echo "Check if we missed any offsets"
+echo ""
+
+# get tz data based of missed fences
+counter=0
+while read -r line ;do
+area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
+fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
+type=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $3}')
+coord=$(echo $line | awk 'BEGIN { FS = "|" } ; $1=$2=$3=""; {print $0}' | awk '{ sub(/^[ \t]+/, ""); print }' | sed 's/ /,/g')
+
+if (( $counter >= 300 )) ;then
+  echo ""
+  echo "We called the api 300 times, sleeping 60s"
+  sleep 60s
+  counter=0
+fi
+
+# call api for tz data
+result=$(get_tz $coord)
+
+# get offset
+if [[ -z $result ]] ;then
+  echo "whoops, no result returned, exiting script"
+  exit 1
+else
+  offset=$(echo $result | grep -oP '(?<=offset":).*(?=,"country)')
+fi
+
+# add offset to db
+if [[ -z $offset ]] ;then
+  echo "No offset found, exit script"
+  exit 1
+else
+#  echo "Appending utc offset for $area, $fence, $type to db, $offset hours"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "update geofences set utcoffset = $offset where area='$area' and fence='$fence' and type='$type'"
+fi
+
+# echo $area, $fence, $type, $coord, $offset
+counter=$((counter+1))
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where utcoffset is NULL" | sed 's/\t/|/g')

@@ -1,0 +1,30 @@
+## Database settings ##
+sqluser=
+sqlpass=
+dbip=127.0.0.1
+dbport=3306
+controllerdb=flygon
+scannerdb=golbat
+blisseydb=stats
+
+## Grafana datasource
+datasource_stats=stats					#grafana datasource name for statsdb
+
+## Stats processing
+monareastats=true					# make sure to add mon geofences to blissey table geofences. First and last coordinate of column coords must be the same. 
+spawnpointareastats=true				# make sure to add mon geofences to blissey table geofences. First and last coordinate of column coords must be the same.
+questareastats=true					# make sure to add quest geofences to blissey table geofences. First and last coordinate of column coords must be the same.
+workerstats=true                                        # requires controller config worker_stats=true
+
+## Table cleanup, remove anything older the x days
+blissey_rpl15=90					# cleanup blissey table for 15m data
+blissey_rpl60=180					# cleanup blissey table for 60m data
+blissey_rpl1440=365					# cleanup blissey table for daily data
+blissey_rpl10080=999999					# cleanup blissey table for weekly data
+worker_raw=1						# cleanup controller raw worker data
+area_raw=1						# cleanup scanner raw area data
+
+## Miscellaneous
+spawn_delete_days=999999				# delete spawnpoints not seen for X days from db
+golbat_backup=true                                      # daily backup golbat structure and tables spawnpoint/gym/stop
+golbat_backup_days=7                                    # days to store golbat db backup

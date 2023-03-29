@@ -1,0 +1,8 @@
+config.ini
+crontab.txt
+/tmp/*
+/logs/*
+/grafana/*
+/cron_files/*.sql
+*.sql
+/golbatbackup/*
