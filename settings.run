@@ -3,6 +3,11 @@
 source config.ini
 folder="$(pwd)"
 
+if [[ ! -f $folder/config.ini ]] ;then
+  echo " $folder/config.ini not found, exiting script"
+  exit
+fi
+
 # Logging
 mkdir -p $folder/logs
 touch $folder/logs/log_$(date '+%Y%m').log
@@ -37,7 +42,18 @@ cp $folder/default_files/crontab.txt.default $folder/crontab.txt
 sed -i "s,blisseypath,$folder,g" $folder/crontab.txt
 echo ""
 
-
+# Create grafana templates
+echo "Creating grafana templates in $folder/grafana"
+mkdir -p $folder/grafana
+rm -f $folder/grafana/*
+cp $folder/default_files/*.json.default $folder/grafana
+for i in "$folder"/grafana/*.json.default ;do
+  mv $i ${i%%.default}
+done
+DS_BLISSEY="${datasource_stats^^}"
+cd $folder/grafana/ && sed -i "s/blissey/$datasource_stats/g" *.json
+cd $folder/grafana/ && sed -i "s/BLISSEY/$DS_BLISSEY/g" *.json
+echo ""
 
 # Add/update st data to table geofences
 echo "Update geometry data for mon fences"
@@ -139,8 +155,8 @@ fi
 counter=$((counter+1))
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where type = 'quest'" | sed 's/\t/|/g')
 
-echo "Check if we missed any offsets"
-echo ""
+#echo "Check if we missed any offsets"
+#echo ""
 
 # get tz data based of missed fences
 counter=0
