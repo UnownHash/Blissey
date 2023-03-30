@@ -46,7 +46,8 @@ while read -r line ;do
 area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
 fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
 coords=$(echo $line | awk 'BEGIN { FS = "|" } ; {$1=$2=""}1')
-MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'mon' ;"
+reverse=$(echo $coords | sed 's/,/\n/g' | awk '{ print $2,$1}' | tr '\n' ',' | sed 's/,*$//g')
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st=st_geomfromtext('POLYGON(($coords))'), st_lonlat=st_geomfromtext('POLYGON(($reverse))') where area = '$area' and fence = '$fence' and type = 'mon' ;"
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,coords from geofences where type = 'mon';" | sed 's/\t/|/g')
 echo "Update geometry data for quest fences"
 echo ""
@@ -54,7 +55,8 @@ while read -r line ;do
 area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
 fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
 coords=$(echo $line | awk 'BEGIN { FS = "|" } ; {$1=$2=""}1')
-MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'quest' ;"
+reverse=$(echo $coords | sed 's/,/\n/g' | awk '{ print $2,$1}' | tr '\n' ',' | sed 's/,*$//g')
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st=st_geomfromtext('POLYGON(($coords))'), st_lonlat=st_geomfromtext('POLYGON(($reverse))') where area = '$area' and fence = '$fence' and type = 'quest' ;"
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,coords from geofences where type = 'quest';" | sed 's/\t/|/g')
 echo "Update geometry data for both fences"
 echo ""
@@ -62,7 +64,8 @@ while read -r line ;do
 area=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $1}')
 fence=$(echo $line | awk 'BEGIN { FS = "|" } ; {print $2}')
 coords=$(echo $line | awk 'BEGIN { FS = "|" } ; {$1=$2=""}1')
-MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'both' ;"
+reverse=$(echo $coords | sed 's/,/\n/g' | awk '{ print $2,$1}' | tr '\n' ',' | sed 's/,*$//g')
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "update geofences set st=st_geomfromtext('POLYGON(($coords))'), st_lonlat=st_geomfromtext('POLYGON(($reverse))') where area = '$area' and fence = '$fence' and type = 'both' ;"
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,coords from geofences where type = 'both';" | sed 's/\t/|/g')
 
 # Append/update km2

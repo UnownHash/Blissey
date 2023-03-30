@@ -1,7 +1,7 @@
 ##### Blissey #####
 ## First hour of the day
 0 0 * * * cd blisseypath/cron_files && ./logger.sh && ./15.sh && ./60.sh && ./1440.sh
-10 0 * * 1 cd chanseypath/cron_files && ./10080.sh
+10 0 * * 1 cd blisseypath/cron_files && ./10080.sh
 15 0 * * * cd blisseypath/cron_files && ./15.sh 
 30 0 * * * cd blisseypath/cron_files && ./15.sh
 45 0 * * * cd blisseypath/cron_files && ./15.sh

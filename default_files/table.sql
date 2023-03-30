@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `geofences` (
   `type` enum('mon', 'quest','both'),
   `coords` text NOT NULL,
   `st` polygon,
+  `st_lonlat` polygon,
   `km2` decimal(7,2) DEFAULT 0.00,
   `utcoffset` tinyint(4) DEFAULT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
@@ -90,6 +91,10 @@ CREATE TABLE IF NOT EXISTS `stats_quest_area` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+ALTER TABLE geofences
+ADD COLUMN IF NOT EXISTS `st_lonlat` polygon AFTER `st`
+;
+
 -- update db version
 INSERT IGNORE INTO version values ('blissey',1);
-UPDATE version set version = 1 where version.key = 'blissey';
+UPDATE version set version = 2 where version.key = 'blissey';
