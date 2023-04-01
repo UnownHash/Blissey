@@ -22,6 +22,7 @@ fi
 
 # rpl 1440 mon area stats
 if "$monareastats"
+then
   start=$(date '+%Y%m%d %H:%M:%S')
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/1440_mon_area.sql
   stop=$(date '+%Y%m%d %H:%M:%S')
