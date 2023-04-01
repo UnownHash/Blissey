@@ -32,7 +32,7 @@ insert ignore into geofences (area,type,coords) values
 - after changing or adding fences always execute setting.run to populate column st
 ```
 <BR>
-Nore 1: grafana templates will group before first "_" meaning for instance in the example above when looking at stats for area Newyork without specifying a fence the 2 mon areas will be combined<BR>
+Note 1: grafana templates will group before first "_" meaning for instance in the example above when looking at stats for area Newyork without specifying a fence the 2 mon areas will be combined<BR>
 
 ## 3 Grafana
 - Install Grafana, more details can be found at https://grafana.com/docs/grafana/latest/installation/debian/#install-from-apt-repository or if you prefer to use docker <https://hub.docker.com/r/grafana/grafana>
