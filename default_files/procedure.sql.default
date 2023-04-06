@@ -75,13 +75,6 @@ BEGIN
   SET @stop = (select unix_timestamp(concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 0 minute)) DIV 900) * 900))) );
   SET @perioddate = (select unix_timestamp(date(from_unixtime(@period))));
 
--- get data
-DROP TEMPORARY TABLE IF EXISTS blissey.questarea;
-CREATE TEMPORARY TABLE blissey.questarea AS (
-  SELECT id, point(lat,lon) as 'location', cast(quest_timestamp AS SIGNED) as 'arTime', cast(alternative_quest_timestamp AS SIGNED) as 'nonarTime'
-  FROM golbat.pokestop
-  );
-
 -- get areas
 SET @row_number = 0;
 DROP TEMPORARY TABLE IF EXISTS blissey.areas;
@@ -103,19 +96,18 @@ BEGIN
     area,
     fence,
     count(a.id) as 'stops',
-    ifnull(sum(case when arTime >= @period and arTime < @stop then 1 end),0) as 'AR',
-    ifnull(sum(case when nonarTime >= @period and nonarTime < @stop then 1 end),0) as 'nonAR',
-    ifnull(sum(case when arTime >= @perioddate and arTime < @stop then 1 end),0) as 'ARcum',
-    ifnull(sum(case when nonarTime >= @perioddate and nonarTime < @stop then 1 end),0) as 'nonARcum'
-    FROM blissey.questarea a, blissey.areas b
-    WHERE b.id = @current and ST_CONTAINS(st, location)
+    ifnull(sum(case when cast(quest_timestamp AS SIGNED) >= @period and cast(quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'AR',
+    ifnull(sum(case when cast(alternative_quest_timestamp AS SIGNED) >= @period and cast(alternative_quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'nonAR',
+    ifnull(sum(case when cast(quest_timestamp AS SIGNED) >= @perioddate and cast(quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'ARcum',
+    ifnull(sum(case when cast(alternative_quest_timestamp AS SIGNED) >= @perioddate and cast(alternative_quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'nonARcum'
+    FROM golbat.pokestop a, blissey.areas b
+    WHERE b.id = @current and ST_CONTAINS(b.st, point(a.lat,a.lon))
     GROUP BY area,fence;
 
     SET @current = @current + 1;
   END WHILE;
 END;
 
-DROP TEMPORARY TABLE blissey.questarea;
 DROP TEMPORARY TABLE blissey.areas;
 
 END
