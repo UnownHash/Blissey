@@ -13,7 +13,7 @@ Processing is done on interval 15/60/1440/10080 minutes and can be displayed by 
 ## 2 Setup
 - clone Blissey, `git clone https://github.com/UnownHash/Blissey.git && cd Blissey`
 - create stats db and user (user needs to have access to stats/controller/golbat db)
-- copy and fill out config, `cp default_files/config.ini.default config.ini`
+- copy and fill out config, `cp default_files/config.ini.example config.ini`
 - execute setting.run
 - add content of crontab.txt to your cron
 - add quest and mon area fences to table geofences and execute settings.run once more to populate column `st`
