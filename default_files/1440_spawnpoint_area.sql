@@ -6,7 +6,7 @@ select @rpl := '1440';
 -- Process data
 insert ignore into stats_spawnpoint (datetime,rpl,area,fence,spawnpoints,verified,seen,1d,3d,5d,7d,14d)
 select
-from_unixtime(@period) as 'period',
+@period,
 @rpl,
 area,
 fence,
@@ -19,7 +19,7 @@ min(5d),
 min(7d),
 min(14d)
 
-from stats_spawnpoint 
+from stats_spawnpoint
 where
 datetime >= @period and
 datetime < @stop and

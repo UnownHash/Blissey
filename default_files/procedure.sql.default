@@ -17,16 +17,23 @@ CREATE TEMPORARY TABLE blissey.spawnarea
 --   SPATIAL INDEX(`location`)
   )
   AS (
-  SELECT point(lat,lon) as 'location', id, despawn_sec, last_seen
+  SELECT point(lon,lat) as 'location', id, despawn_sec, last_seen
   FROM golbat.spawnpoint);
 
 -- get areas
 SET @row_number = 0;
 DROP TEMPORARY TABLE IF EXISTS blissey.areas;
-CREATE TEMPORARY TABLE blissey.areas AS (
-  SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st
-  FROM blissey.geofences
-  WHERE st is not NULL and type = 'mon');
+-- nonKoji CREATE TEMPORARY TABLE blissey.areas AS (
+-- nonKoji   SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st_lonlat
+-- nonKoji   FROM blissey.geofences
+-- nonKoji   WHERE st_lonlat is not NULL and (type='mon' or type='both'));
+-- useKoji CREATE TEMPORARY TABLE blissey.areas AS (
+-- useKoji   SELECT (@row_number:=@row_number + 1) as 'id',ifnull(b.name,a.name) as 'area',a.name as 'fence',st_geomfromgeojson(a.geometry) as 'st_lonlat'
+-- useKoji   FROM koji.geofence a
+-- useKoji     left join koji.geofence b on a.parent=b.id
+-- useKoji     inner join koji.geofence_project c on a.id=c.geofence_id
+-- useKoji     inner join koji.project d on c.project_id=d.id
+-- useKoji   WHERE d.name='project_golbat');
 
 -- process fences
 BEGIN
@@ -50,7 +57,7 @@ BEGIN
     ifnull(sum(case when last_seen < unix_timestamp(now() - interval 14 day) then 1 end),0) as '14d'
 
     FROM blissey.spawnarea a, blissey.areas b
-    WHERE b.id = @current and ST_CONTAINS(st, location)
+    WHERE b.id = @current and ST_CONTAINS(st_lonlat, location)
     GROUP BY area,fence;
 
     SET @current = @current + 1;
@@ -78,10 +85,17 @@ BEGIN
 -- get areas
 SET @row_number = 0;
 DROP TEMPORARY TABLE IF EXISTS blissey.areas;
-CREATE TEMPORARY TABLE blissey.areas AS (
-  SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st
-  FROM blissey.geofences
-  WHERE st is not NULL and type = 'quest');
+-- nonKoji CREATE TEMPORARY TABLE blissey.areas AS (
+-- nonKoji   SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st_lonlat
+-- nonKoji   FROM blissey.geofences
+-- nonKoji   WHERE st_lonlat is not NULL and (type='quest' or type='both'));
+-- useKoji CREATE TEMPORARY TABLE blissey.areas AS (
+-- useKoji   SELECT (@row_number:=@row_number + 1) as 'id',ifnull(b.name,a.name) as 'area',a.name as 'fence',st_geomfromgeojson(a.geometry) as 'st_lonlat'
+-- useKoji   FROM koji.geofence a
+-- useKoji     left join koji.geofence b on a.parent=b.id
+-- useKoji     inner join koji.geofence_project c on a.id=c.geofence_id
+-- useKoji     inner join koji.project d on c.project_id=d.id
+-- useKoji   WHERE d.name='project_controller');
 
 -- process fences
 BEGIN
@@ -101,7 +115,7 @@ BEGIN
     ifnull(sum(case when cast(quest_timestamp AS SIGNED) >= @perioddate and cast(quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'ARcum',
     ifnull(sum(case when cast(alternative_quest_timestamp AS SIGNED) >= @perioddate and cast(alternative_quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'nonARcum'
     FROM golbat.pokestop a, blissey.areas b
-    WHERE b.id = @current and ST_CONTAINS(b.st, point(a.lat,a.lon))
+    WHERE b.id = @current and ST_CONTAINS(b.st_lonlat, point(a.lon,a.lat))
     GROUP BY area,fence;
 
     SET @current = @current + 1;
@@ -126,10 +140,17 @@ BEGIN
 -- get areas
 SET @row_number = 0;
 DROP TEMPORARY TABLE IF EXISTS blissey.areas;
-CREATE TEMPORARY TABLE blissey.areas AS (
-  SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st
-  FROM blissey.geofences
-  WHERE st is not NULL and (type = 'mon' or type = 'both') );
+-- nonKoji CREATE TEMPORARY TABLE blissey.areas AS (
+-- nonKoji   SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st_lonlat
+-- nonKoji   FROM blissey.geofences
+-- nonKoji   WHERE st_lonlat is not NULL and (type='mon' or type='both'));
+-- useKoji CREATE TEMPORARY TABLE blissey.areas AS (
+-- useKoji   SELECT (@row_number:=@row_number + 1) as 'id',ifnull(b.name,a.name) as 'area',a.name as 'fence',st_geomfromgeojson(a.geometry) as 'st_lonlat'
+-- useKoji   FROM koji.geofence a
+-- useKoji     left join koji.geofence b on a.parent=b.id
+-- useKoji     inner join koji.geofence_project c on a.id=c.geofence_id
+-- useKoji     inner join koji.project d on c.project_id=d.id
+-- useKoji   WHERE d.name='project_golbat');
 
 -- process fences
 BEGIN
@@ -153,7 +174,7 @@ BEGIN
     ifnull(sum(case when a.last_seen < unix_timestamp(now() - interval 14 day) then 1 end),0) as '14d'
 
     FROM golbat.spawnpoint a, blissey.areas b
-    WHERE b.id = @current and ST_CONTAINS(b.st, a.location)
+    WHERE b.id = @current and ST_CONTAINS(b.st_lonlat, a.location)
     GROUP BY b.area,b.fence;
 
     SET @current = @current + 1;

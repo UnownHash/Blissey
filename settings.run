@@ -23,6 +23,16 @@ echo "Creating required procedures"
 cp $folder/default_files/procedure.sql.default $folder/procedure.sql
 sed -i "s/blissey/$blisseydb/g" $folder/procedure.sql
 sed -i "s/golbat/$scannerdb/g" $folder/procedure.sql
+
+if [[ $use_koji == "true" ]] ;then
+sed -i "s/project_controller/$project_controller/g" $folder/procedure.sql
+sed -i "s/project_golbat/$project_golbat/g" $folder/procedure.sql
+sed -i "s/koji/$kojidb/g" $folder/procedure.sql
+sed -i "s/-- useKoji //g" $folder/procedure.sql
+else
+sed -i "s/-- nonKoji //g" $folder/procedure.sql
+fi
+
 MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/procedure.sql
 echo ""
 
@@ -55,6 +65,7 @@ cd $folder/grafana/ && sed -i "s/blissey/$datasource_stats/g" *.json
 cd $folder/grafana/ && sed -i "s/BLISSEY/$DS_BLISSEY/g" *.json
 echo ""
 
+if [[ -z $use_koji || $use_koji == "false" ]] ;then
 # Add/update st data to table geofences
 echo "Update geometry data for mon fences"
 echo ""
@@ -196,6 +207,8 @@ fi
 # echo $area, $fence, $type, $coord, $offset
 counter=$((counter+1))
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where utcoffset is NULL" | sed 's/\t/|/g')
+
+fi
 
 echo ""
 echo "All done!"
