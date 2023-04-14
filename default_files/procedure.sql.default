@@ -1,77 +1,3 @@
-DROP PROCEDURE IF EXISTS blissey.rpl15spawnarea;
-DELIMITER //
-CREATE PROCEDURE blissey.rpl15spawnarea()
-BEGIN
-
--- set vars
-  SET @period = (select unix_timestamp(concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900))) );
-  SET @stop = (select unix_timestamp(concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 0 minute)) DIV 900) * 900))) );
-
--- get data
-DROP TEMPORARY TABLE IF EXISTS blissey.spawnarea;
-CREATE TEMPORARY TABLE blissey.spawnarea
-  (`location` point NOT NULL,
-   `id` bigint(20) unsigned,
-   `despawn_sec` smallint(5) unsigned,
-   `last_seen` int(10) unsigned
---   SPATIAL INDEX(`location`)
-  )
-  AS (
-  SELECT point(lon,lat) as 'location', id, despawn_sec, last_seen
-  FROM golbat.spawnpoint);
-
--- get areas
-SET @row_number = 0;
-DROP TEMPORARY TABLE IF EXISTS blissey.areas;
--- nonKoji CREATE TEMPORARY TABLE blissey.areas AS (
--- nonKoji   SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st_lonlat
--- nonKoji   FROM blissey.geofences
--- nonKoji   WHERE st_lonlat is not NULL and (type='mon' or type='both'));
--- useKoji CREATE TEMPORARY TABLE blissey.areas AS (
--- useKoji   SELECT (@row_number:=@row_number + 1) as 'id',ifnull(b.name,a.name) as 'area',a.name as 'fence',st_geomfromgeojson(a.geometry) as 'st_lonlat'
--- useKoji   FROM koji.geofence a
--- useKoji     left join koji.geofence b on a.parent=b.id
--- useKoji     inner join koji.geofence_project c on a.id=c.geofence_id
--- useKoji     inner join koji.project d on c.project_id=d.id
--- useKoji   WHERE d.name='project_golbat');
-
--- process fences
-BEGIN
-  SET @max = (select max(id) from blissey.areas);
-  SET @current = 1;
-
-  WHILE @current <= @max DO
-    INSERT IGNORE INTO blissey.stats_spawnpoint (datetime,rpl,area,fence,spawnpoints,verified,seen,1d,3d,5d,7d,14d)
-    SELECT
-    from_unixtime(@period) as 'period',
-    15 as 'rpl',
-    area,
-    fence,
-    count(a.id) as 'spawnpoints',
-    sum(case when despawn_sec is not NULL then 1 end) as 'verified',
-    sum(case when date(from_unixtime(last_seen)) = date(from_unixtime(@period)) then 1 end) as 'seen',
-    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 1 day) then 1 end),0) as '1d',
-    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 3 day) then 1 end),0) as '3d',
-    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 5 day) then 1 end),0) as '5d',
-    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 7 day) then 1 end),0) as '7d',
-    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 14 day) then 1 end),0) as '14d'
-
-    FROM blissey.spawnarea a, blissey.areas b
-    WHERE b.id = @current and ST_CONTAINS(st_lonlat, location)
-    GROUP BY area,fence;
-
-    SET @current = @current + 1;
-  END WHILE;
-END;
-
-DROP TEMPORARY TABLE blissey.spawnarea;
-DROP TEMPORARY TABLE blissey.areas;
-
-END
-//
-DELIMITER ;
-
-
 DROP PROCEDURE IF EXISTS blissey.rpl15questarea;
 DELIMITER //
 CREATE PROCEDURE blissey.rpl15questarea()
@@ -103,6 +29,11 @@ BEGIN
   SET @current = 1;
 
   WHILE @current <= @max DO
+    SET @minX = (select ST_Y(ST_PointN(ST_ExteriorRing(st_envelope(st_lonlat)), 1)) from blissey.areas where id=@current);
+    SET @maxX = (select ST_Y(ST_PointN(ST_ExteriorRing(st_envelope(st_lonlat)), 3)) from blissey.areas where id=@current);
+    SET @minY = (select ST_X(ST_PointN(ST_ExteriorRing(st_envelope(st_lonlat)), 1)) from blissey.areas where id=@current);
+    SET @maxY = (select ST_X(ST_PointN(ST_ExteriorRing(st_envelope(st_lonlat)), 2)) from blissey.areas where id=@current);
+
     INSERT IGNORE INTO blissey.stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum)
     SELECT
     from_unixtime(@period) as 'period',
@@ -115,7 +46,7 @@ BEGIN
     ifnull(sum(case when cast(quest_timestamp AS SIGNED) >= @perioddate and cast(quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'ARcum',
     ifnull(sum(case when cast(alternative_quest_timestamp AS SIGNED) >= @perioddate and cast(alternative_quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'nonARcum'
     FROM golbat.pokestop a, blissey.areas b
-    WHERE b.id = @current and ST_CONTAINS(b.st_lonlat, point(a.lon,a.lat))
+    WHERE b.id = @current and a.lat between @minX and @maxX and a.lon between @minY and @maxY and ST_CONTAINS(b.st_lonlat, point(a.lon,a.lat))
     GROUP BY area,fence;
 
     SET @current = @current + 1;
@@ -128,9 +59,9 @@ END
 //
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS blissey.rpl15spawnarea_dkmur;
+DROP PROCEDURE IF EXISTS blissey.rpl15spawnarea;
 DELIMITER //
-CREATE PROCEDURE blissey.rpl15spawnarea_dkmur()
+CREATE PROCEDURE blissey.rpl15spawnarea()
 BEGIN
 
 -- set vars
@@ -158,6 +89,11 @@ BEGIN
   SET @current = 1;
 
   WHILE @current <= @max DO
+    SET @minX = (select ST_Y(ST_PointN(ST_ExteriorRing(st_envelope(st_lonlat)), 1)) from blissey.areas where id=@current);
+    SET @maxX = (select ST_Y(ST_PointN(ST_ExteriorRing(st_envelope(st_lonlat)), 3)) from blissey.areas where id=@current);
+    SET @minY = (select ST_X(ST_PointN(ST_ExteriorRing(st_envelope(st_lonlat)), 1)) from blissey.areas where id=@current);
+    SET @maxY = (select ST_X(ST_PointN(ST_ExteriorRing(st_envelope(st_lonlat)), 2)) from blissey.areas where id=@current);
+
     INSERT IGNORE INTO blissey.stats_spawnpoint (datetime,rpl,area,fence,spawnpoints,verified,seen,1d,3d,5d,7d,14d)
     SELECT
     from_unixtime(@period) as 'period',
@@ -174,7 +110,7 @@ BEGIN
     ifnull(sum(case when a.last_seen < unix_timestamp(now() - interval 14 day) then 1 end),0) as '14d'
 
     FROM golbat.spawnpoint a, blissey.areas b
-    WHERE b.id = @current and ST_CONTAINS(b.st_lonlat, a.location)
+    WHERE b.id = @current and a.lat between @minX and @maxX and a.lon between @minY and @maxY and ST_CONTAINS(b.st_lonlat, point(a.lon,a.lat))
     GROUP BY b.area,b.fence;
 
     SET @current = @current + 1;
