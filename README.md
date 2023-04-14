@@ -7,7 +7,7 @@ Processing is done on interval 15/60/1440/10080 minutes and can be displayed by 
 
 ## 1 Prerequisites
 - tested on: mariadb 10.5/10.6, mysql server 8.0.31
-- add `geofence.json` to golbat/geojson for raw area stats
+- add Golbat/geojson/geofence.json or setup Koji api, containing your mon scan fences. Golbat will use these fences to write raw area mon stats to db.
 - enable worker stats on 5m interval in controller config
 
 ## 2 Setup
@@ -16,7 +16,18 @@ Processing is done on interval 15/60/1440/10080 minutes and can be displayed by 
 - copy and fill out config, `cp default_files/config.ini.example config.ini`
 - execute setting.run
 - add content of crontab.txt to your cron
-- add quest and mon area fences to table geofences and execute settings.run once more to populate column `st`
+
+### 2.1 Geofences
+Blissey needs quest and mon fences in order to aggregate data. 2 ways of doing this:<BR>
+1 Use Koji<BR>
+- set config.ini accordingly
+- grant sql user access to koji db
+- project_golbat, this project should contain your mon fences. Ideally this is same project as used for 2nd point in prerequisites to ensure alligment. 
+- project_controller, this project should contain your quest fences. Again to assure alligment your controller(Flygon) project would be a logical choice.
+In case all area quest/mon fences are identical both can point to the same Koji project. 
+<BR>
+2 Manually add them to Blissey table geofences<BR>
+add quest and mon area fences to table geofences and execute settings.run once more to populate columns `st` and `st_lonlat`<BR>
 ```
 insert ignore into geofences (area,fence,type,coords) values
 ('Newyork','Newyork_centre','mon','lat1 lon1,lat2 lon2,lat3 lon3,lat1 lon1');
