@@ -28,6 +28,7 @@ In case all area quest/mon fences are identical both can point to the same Koji 
 <BR>
 2 Manually add them to Blissey table geofences<BR>
 add quest and mon area fences to table geofences and execute settings.run once more to populate columns `st` and `st_lonlat`<BR>
+
 ```
 insert ignore into geofences (area,fence,type,coords) values
 ('Newyork','Newyork_centre','mon','lat1 lon1,lat2 lon2,lat3 lon3,lat1 lon1');
