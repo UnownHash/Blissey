@@ -16,10 +16,10 @@ use_koji=false
 project_controller=					# project name containing quest fences only
 project_golbat=						# project name containing mon fences only
 
-## Stats processing
-monareastats=true					# make sure to add mon geofences to blissey table geofences. First and last coordinate of column coords must be the same. 
-spawnpointareastats=true				# make sure to add mon geofences to blissey table geofences. First and last coordinate of column coords must be the same.
-questareastats=true					# make sure to add quest geofences to blissey table geofences. First and last coordinate of column coords must be the same.
+## Stats processing (when use_koji=false, make sure to add mon geofences to blissey table geofences. First and last coordinate of column coords must be the same.)
+monareastats=true
+spawnpointareastats=false
+questareastats=true
 workerstats=true                                        # requires controller config worker_stats=true
 
 ## Table cleanup, remove anything older then x days
