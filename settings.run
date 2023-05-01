@@ -165,7 +165,7 @@ fi
 
 # echo $area, $fence, $type, $coord, $offset, $country
 counter=$((counter+1))
-done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where type = 'quest'" | sed 's/\t/|/g')
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,st_astext(st_centroid(st)) as coord from geofences where type = 'quest'"  | sed 's/POINT(//g' | sed 's/)//g' | sed 's/\t/|/g')
 
 #echo "Check if we missed any offsets"
 #echo ""
@@ -208,7 +208,7 @@ fi
 
 # echo $area, $fence, $type, $coord, $offset, $country
 counter=$((counter+1))
-done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where utcoffset is NULL" | sed 's/\t/|/g')
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,st_astext(st_centroid(st)) as coord from geofences where utcoffset is NULL" | sed 's/POINT(//g' | sed 's/)//g' | sed 's/\t/|/g')
 
 fi
 
