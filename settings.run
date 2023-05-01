@@ -119,8 +119,8 @@ else
   echo ""
 fi
 
-# Append/update utcoffset
-echo "Update utcoffset on table geofences"
+# Append/update utcoffset+country
+echo "Update utcoffset and country on table geofences"
 echo ""
 get_tz(){
   curl -s -k -L --fail --show-error https://api.wheretheiss.at/v1/coordinates/$1
@@ -150,6 +150,7 @@ if [[ -z $result ]] ;then
   exit 1
 else
   offset=$(echo $result | grep -oP '(?<=offset":).*(?=,"country)')
+  country=$(echo $result | grep -oP '(?<=country_code":).*(?=,"map)')
 fi
 
 # add offset to db
@@ -158,11 +159,11 @@ if [[ -z $offset ]] ;then
   exit 1
 else
   area=$(echo $area | awk -F'_' '{ print $1 }')
-#  echo "Appending utc offset to all fences of $area, $offset hours"
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "update geofences set utcoffset = $offset where area like concat('$area','%')"
+#  echo "Appending utc offset and country to all fences of $area, $offset hours, $country"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "update geofences set utcoffset = $offset, country = $country  where area like concat('$area','%')"
 fi
 
-# echo $area, $fence, $type, $coord, $offset
+# echo $area, $fence, $type, $coord, $offset, $country
 counter=$((counter+1))
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where type = 'quest'" | sed 's/\t/|/g')
 
@@ -187,24 +188,25 @@ fi
 # call api for tz data
 result=$(get_tz $coord)
 
-# get offset
+# get offset+country
 if [[ -z $result ]] ;then
   echo "whoops, no result returned, exiting script"
   exit 1
 else
   offset=$(echo $result | grep -oP '(?<=offset":).*(?=,"country)')
+  country=$(echo $result | grep -oP '(?<=country_code":).*(?=,"map)')
 fi
 
-# add offset to db
+# add offset+country to db
 if [[ -z $offset ]] ;then
   echo "No offset found, exit script"
   exit 1
 else
-#  echo "Appending utc offset for $area, $fence, $type to db, $offset hours"
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "update geofences set utcoffset = $offset where area='$area' and fence='$fence' and type='$type'"
+#  echo "Appending utc offset and country for $area, $fence, $type to db, $offset hours, $country"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "update geofences set utcoffset = $offset, country = $country where area='$area' and fence='$fence' and type='$type'"
 fi
 
-# echo $area, $fence, $type, $coord, $offset
+# echo $area, $fence, $type, $coord, $offset, $country
 counter=$((counter+1))
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,substring_index(coords,',',1) as coord from geofences where utcoffset is NULL" | sed 's/\t/|/g')
 

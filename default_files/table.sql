@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `geofences` (
   `st_lonlat` polygon,
   `km2` decimal(7,2) DEFAULT 0.00,
   `utcoffset` tinyint(4) DEFAULT NULL,
+  `country` varchar(4) DEFAULT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`area`,`fence`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -92,9 +93,10 @@ CREATE TABLE IF NOT EXISTS `stats_quest_area` (
 
 
 ALTER TABLE geofences
-ADD COLUMN IF NOT EXISTS `st_lonlat` polygon AFTER `st`
+ADD COLUMN IF NOT EXISTS `st_lonlat` polygon AFTER `st`,
+ADD COLUMN IF NOT EXISTS `country` varchar(4) DEFAULT NULL AFTER `utcoffset`
 ;
 
 -- update db version
 INSERT IGNORE INTO version values ('blissey',1);
-UPDATE version set version = 2 where version.key = 'blissey';
+UPDATE version set version = 3 where version.key = 'blissey';
