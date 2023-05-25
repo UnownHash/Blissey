@@ -34,3 +34,4 @@ area_raw=1						# cleanup scanner raw area data
 spawn_delete_days=999999				# delete spawnpoints not seen for X days from db
 golbat_backup=true                                      # daily backup golbat structure and tables spawnpoint/gym/stop
 golbat_backup_days=7                                    # days to store golbat db backup
+fortwatcher=false					# process fortwatcher stats to rpl 60/1440/10080
