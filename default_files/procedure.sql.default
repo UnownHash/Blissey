@@ -43,8 +43,8 @@ BEGIN
     count(a.id) as 'stops',
     ifnull(sum(case when cast(quest_timestamp AS SIGNED) >= @period and cast(quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'AR',
     ifnull(sum(case when cast(alternative_quest_timestamp AS SIGNED) >= @period and cast(alternative_quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'nonAR',
-    ifnull(sum(case when cast(quest_timestamp AS SIGNED) >= @perioddate and cast(quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'ARcum',
-    ifnull(sum(case when cast(alternative_quest_timestamp AS SIGNED) >= @perioddate and cast(alternative_quest_timestamp AS SIGNED) < @stop then 1 end),0) as 'nonARcum'
+    ifnull(sum(case when unix_timestamp() < quest_expiry then 1 end),0) as 'ARcum',
+    ifnull(sum(case when unix_timestamp() < alternative_quest_expiry then 1 end),0) as 'nonARcum'
     FROM golbat.pokestop a, blissey.areas b
     WHERE b.id = @current and a.lat between @minX and @maxX and a.lon between @minY and @maxY and a.deleted=0 and ST_CONTAINS(b.st_lonlat, point(a.lon,a.lat))
     GROUP BY area,fence;
