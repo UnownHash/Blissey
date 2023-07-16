@@ -61,8 +61,14 @@ for i in "$folder"/grafana/*.json.default ;do
   mv $i ${i%%.default}
 done
 DS_BLISSEY="${datasource_stats^^}"
+DS_GOLBAT="${datasource_golbat^^}"
+DS_CONTROLLER="${datasource_controller^^}"
 cd $folder/grafana/ && sed -i "s/blissey/$datasource_stats/g" *.json
 cd $folder/grafana/ && sed -i "s/BLISSEY/$DS_BLISSEY/g" *.json
+cd $folder/grafana/ && sed -i "s/golbat/$datasource_golbat/g" *.json
+cd $folder/grafana/ && sed -i "s/GOLBAT/$DS_GOLBAT/g" *.json
+cd $folder/grafana/ && sed -i "s/flygon/$datasource_controller/g" *.json
+cd $folder/grafana/ && sed -i "s/FLYGON/$DS_CONTROLLER/g" *.json
 echo ""
 
 if [[ -z $use_koji || $use_koji == "false" ]] ;then
