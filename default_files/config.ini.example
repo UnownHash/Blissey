@@ -20,7 +20,6 @@ project_golbat=						# project name containing mon fences only
 
 ## Stats processing (when use_koji=false, make sure to add mon geofences to blissey table geofences. First and last coordinate of column coords must be the same.)
 monareastats=true
-spawnpointareastats=false
 questareastats=true
 workerstats=true                                        # requires controller config worker_stats=true
 

@@ -40,16 +40,6 @@ then
   echo "[$start] [$stop] [$diff] rpl1440 quest area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
-# rpl 1440 spawnpoint area stats
-if "$spawnpointareastats"
-then
-  start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/1440_spawnpoint_area.sql
-  stop=$(date '+%Y%m%d %H:%M:%S')
-  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
-  echo "[$start] [$stop] [$diff] rpl1440 spawnpoint area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
-fi
-
 # rpl 14400 fortwatcher stats
 if "$fortwatcher"
 then
@@ -97,9 +87,6 @@ if [[ ! -z $blissey_rpl15 ]] ;then
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_quest_area where rpl = 60 and datetime < now() - interval $blissey_rpl60 day;"
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_quest_area where rpl = 1440 and datetime < now() - interval $blissey_rpl1440 day;"
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_quest_area where rpl = 10080 and datetime < now() - interval $blissey_rpl10080 day;"
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_spawnpoint where rpl = 15 and datetime < now() - interval $blissey_rpl15 day;"
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_spawnpoint where rpl = 60 and datetime < now() - interval $blissey_rpl60 day;"
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_spawnpoint where rpl = 1440 and datetime < now() - interval $blissey_rpl1440 day;"
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] cleanup stats tables" >> $folder/logs/log_$(date '+%Y%m').log
