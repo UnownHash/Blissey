@@ -11,7 +11,7 @@ touch $folder/logs/log_$(date '+%Y%m').log
 exec 2>> $folder/logs/log_$(date '+%Y%m').log
 
 
-# table cleanup pokemon_area_stats
+# table cleanup golbat pokemon_area_stats
 if [[ ! -z $area_raw ]] ;then
   start=$(date '+%Y%m%d %H:%M:%S')
   MYSQL_PWD=$sqlpass mysql -h$dbip -P$dbport -u$sqluser $scannerdb -e "delete from pokemon_area_stats where datetime < UNIX_TIMESTAMP(now() - interval $area_raw day);"

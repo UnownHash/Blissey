@@ -58,3 +58,6 @@ DROP TEMPORARY TABLE blissey.areas;
 END
 //
 DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS blissey.rpl15spawnarea;

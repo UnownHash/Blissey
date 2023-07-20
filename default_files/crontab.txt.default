@@ -1,14 +1,28 @@
 ##### Blissey #####
 ## First hour of the day
-0 0 * * * cd blisseypath/cron_files && ./logger.sh && ./15.sh && ./60.sh && ./1440.sh
+0 0 * * * cd blisseypath/cron_files && ./logger.sh && ./5.sh && ./15.sh && ./60.sh && ./1440.sh
+5 0 * * * cd blisseypath/cron_files && ./5.sh
+10 0 * * * cd blisseypath/cron_files && ./5.sh
 10 0 * * 1 cd blisseypath/cron_files && ./10080.sh
-15 0 * * * cd blisseypath/cron_files && ./15.sh 
-30 0 * * * cd blisseypath/cron_files && ./15.sh
-45 0 * * * cd blisseypath/cron_files && ./15.sh
+15 0 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
+20 0 * * * cd blisseypath/cron_files && ./5.sh
+25 0 * * * cd blisseypath/cron_files && ./5.sh
+30 0 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
+35 0 * * * cd blisseypath/cron_files && ./5.sh
+40 0 * * * cd blisseypath/cron_files && ./5.sh
+45 0 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
+50 0 * * * cd blisseypath/cron_files && ./5.sh
+55 0 * * * cd blisseypath/cron_files && ./5.sh
 ## Remaining hours
-0 1-23 * * * cd blisseypath/cron_files && ./15.sh && ./60.sh
-15 1-23 * * * cd blisseypath/cron_files && ./15.sh 
-30 1-23 * * * cd blisseypath/cron_files && ./15.sh
-45 1-23 * * * cd blisseypath/cron_files && ./15.sh
-## raw table cleanup
-2-59/5 * * * * cd blisseypath/cron_files && ./5.sh
+0 1-23 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh && ./60.sh
+5 1-23 * * * cd blisseypath/cron_files && ./5.sh
+10 1-23 * * * cd blisseypath/cron_files && ./5.sh
+15 1-23 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
+20 1-23 * * * cd blisseypath/cron_files && ./5.sh
+25 1-23 * * * cd blisseypath/cron_files && ./5.sh
+30 1-23 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
+35 1-23 * * * cd blisseypath/cron_files && ./5.sh
+40 1-23 * * * cd blisseypath/cron_files && ./5.sh
+45 1-23 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
+50 1-23 * * * cd blisseypath/cron_files && ./5.sh
+55 1-23 * * * cd blisseypath/cron_files && ./5.sh
