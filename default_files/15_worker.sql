@@ -4,24 +4,25 @@ select @stop :=  concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_T
 select @rpl  := 15;
 
 -- process data
-insert ignore into stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum)
+insert ignore into stats_worker (datetime,rpl,controller_worker,device_worker,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc)
 select
 @period,
 @rpl,
-area,
-fence,
-max(stops),
-sum(AR),
-sum(nonAR),
-max(ARcum),
-max(nonARcum)
+controller_worker,
+max(device_worker),
+sum(numRep),
+sum(loc_time),
+sum(loc_count),
+sum(loc_success),
+sum(mons_seen),
+sum(mons_enc)
 
-from stats_quest_area
+from stats_worker
 
 where
 datetime >= @period and
 datetime < @stop and
 rpl = 5
 
-group by area,fence
+group by controller_worker
 ;

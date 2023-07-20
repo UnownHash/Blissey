@@ -40,11 +40,11 @@ echo ""
 echo "Creating sql files"
 echo ""
 rm -f $folder/cron_files/*.sql
-cp $folder/default_files/15_worker.sql.default $folder/cron_files/15_worker.sql
-cp $folder/default_files/15_mon_area.sql.default $folder/cron_files/15_mon_area.sql
-sed -i "s/blissey\./$blisseydb\./g" $folder/cron_files/15_*.sql
-sed -i "s/golbat\./$scannerdb\./g" $folder/cron_files/15_*.sql
-sed -i "s/flygon\./$controllerdb\./g" $folder/cron_files/15_*.sql
+cp $folder/default_files/5_worker.sql.default $folder/cron_files/5_worker.sql
+cp $folder/default_files/5_mon_area.sql.default $folder/cron_files/5_mon_area.sql
+sed -i "s/blissey\./$blisseydb\./g" $folder/cron_files/5_*.sql
+sed -i "s/golbat\./$scannerdb\./g" $folder/cron_files/5_*.sql
+sed -i "s/flygon\./$controllerdb\./g" $folder/cron_files/5_*.sql
 
 # Create crontab file
 echo "Creating crontab.txt in $folder"
