@@ -14,7 +14,7 @@ exec 2>> $folder/logs/log_$(date '+%Y%m').log
 if "$workerstats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $controllerdb < $folder/default_files/15_worker.sql
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/15_worker.sql
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl15 worker stats processing" >> $folder/logs/log_$(date '+%Y%m').log

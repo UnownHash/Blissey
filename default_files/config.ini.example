@@ -22,6 +22,7 @@ questareastats=true
 workerstats=true                                        # requires controller config worker_stats=true
 
 ## Table cleanup, remove anything older then x days
+blissey_rpl5=30						# cleanup blissey tables for 5m data
 blissey_rpl15=90					# cleanup blissey tables for 15m data
 blissey_rpl60=180					# cleanup blissey tables for 60m data
 blissey_rpl1440=365					# cleanup blissey tables for daily data
