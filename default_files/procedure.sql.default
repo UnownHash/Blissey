@@ -1,11 +1,14 @@
 DROP PROCEDURE IF EXISTS blissey.rpl15questarea;
+DROP PROCEDURE IF EXISTS blissey.rpl15spawnarea;
+
+DROP PROCEDURE IF EXISTS blissey.rpl5questarea;
 DELIMITER //
-CREATE PROCEDURE blissey.rpl15questarea()
+CREATE PROCEDURE blissey.rpl5questarea()
 BEGIN
 
 -- set vars
-  SET @period = (select unix_timestamp(concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900))) );
-  SET @stop = (select unix_timestamp(concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 0 minute)) DIV 900) * 900))) );
+  SET @period = (select unix_timestamp(concat(date(now() - interval 5 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 5 minute)) DIV 300) * 300))) );
+  SET @stop = (select unix_timestamp(concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 0 minute)) DIV 300) * 300))) );
   SET @perioddate = (select unix_timestamp(date(from_unixtime(@period))));
 
 -- get areas
@@ -37,7 +40,7 @@ BEGIN
     INSERT IGNORE INTO blissey.stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum)
     SELECT
     from_unixtime(@period) as 'period',
-    15 as 'rpl',
+    5 as 'rpl',
     area,
     fence,
     count(a.id) as 'stops',
@@ -58,6 +61,3 @@ DROP TEMPORARY TABLE blissey.areas;
 END
 //
 DELIMITER ;
-
-
-DROP PROCEDURE IF EXISTS blissey.rpl15spawnarea;
