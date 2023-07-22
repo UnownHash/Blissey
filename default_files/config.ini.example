@@ -10,8 +10,6 @@ kojidb=koji						# optional, needed when making use of koji stored fences
 
 ## Grafana datasource
 datasource_stats=stats					# grafana datasource name for statsdb
-datasource_golbat=golbat                                # grafana datasource name for golbatdb
-datasource_controller=flygon                            # grafana datasource name for controllerdb
 
 ## Koji projects (make use of koji fences instead of table geofences)
 use_koji=false
@@ -20,11 +18,11 @@ project_golbat=						# project name containing mon fences only
 
 ## Stats processing (when use_koji=false, make sure to add mon geofences to blissey table geofences. First and last coordinate of column coords must be the same.)
 monareastats=true
-spawnpointareastats=false
 questareastats=true
 workerstats=true                                        # requires controller config worker_stats=true
 
 ## Table cleanup, remove anything older then x days
+blissey_rpl5=30						# cleanup blissey tables for 5m data
 blissey_rpl15=90					# cleanup blissey tables for 15m data
 blissey_rpl60=180					# cleanup blissey tables for 60m data
 blissey_rpl1440=365					# cleanup blissey tables for daily data
