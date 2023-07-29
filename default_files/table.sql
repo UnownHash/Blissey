@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `version` (
 
 CREATE TABLE IF NOT EXISTS `geofences` (
   `area` varchar(40) NOT NULL,
-  `fence` varchar(40) DEFAULT `Area`,
+  `fence` varchar(40) DEFAULT (`area`),
   `type` enum('mon', 'quest','both'),
   `coords` text NOT NULL,
   `st` polygon,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `stats_mon_area` (
   `datetime` datetime NOT NULL,
   `rpl` smallint(6) NOT NULL,
   `area` varchar(40) NOT NULL,
-  `fence` varchar(40) DEFAULT NULL,
+  `fence` varchar(40) DEFAULT (`area`),
   `totMon` int(11) DEFAULT NULL,
   `ivMon` int(11) DEFAULT NULL,
   `verifiedEnc` int(11) DEFAULT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `stats_quest_area` (
   `datetime` datetime NOT NULL,
   `rpl` smallint(6) NOT NULL,
   `area` varchar(40) NOT NULL,
-  `fence` varchar(40) DEFAULT NULL,
+  `fence` varchar(40) DEFAULT (`area`),
   `stops` int(11) DEFAULT NULL,
   `AR` int(11) DEFAULT NULL,
   `nonAR` int(11) DEFAULT NULL,
@@ -76,11 +76,6 @@ CREATE TABLE IF NOT EXISTS `stats_quest_area` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-ALTER TABLE geofences
-ADD COLUMN IF NOT EXISTS `st_lonlat` polygon AFTER `st`,
-ADD COLUMN IF NOT EXISTS `country` varchar(4) DEFAULT NULL AFTER `utcoffset`
-;
-
 -- update db version
 INSERT IGNORE INTO version values ('blissey',1);
-UPDATE version set version = 4 where version.key = 'blissey';
+UPDATE version set version = 5 where version.key = 'blissey';
