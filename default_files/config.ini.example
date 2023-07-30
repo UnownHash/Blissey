@@ -8,9 +8,6 @@ scannerdb=golbat
 blisseydb=stats
 kojidb=koji						# optional, needed when making use of koji stored fences
 
-## Grafana datasource
-datasource_stats=stats					# grafana datasource name for statsdb
-
 ## Koji projects (make use of koji fences instead of table geofences)
 use_koji=false
 project_controller=					# project name containing quest fences only

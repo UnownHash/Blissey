@@ -52,18 +52,8 @@ cp $folder/default_files/crontab.txt.default $folder/crontab.txt
 sed -i "s,blisseypath,$folder,g" $folder/crontab.txt
 echo ""
 
-# Create grafana templates
-echo "Creating grafana templates in $folder/grafana"
-mkdir -p $folder/grafana
-rm -f $folder/grafana/*
-cp $folder/default_files/*.json.default $folder/grafana
-for i in "$folder"/grafana/*.json.default ;do
-  mv $i ${i%%.default}
-done
-DS_BLISSEY="${datasource_stats^^}"
-cd $folder/grafana/ && sed -i "s/blissey/$datasource_stats/g" *.json
-cd $folder/grafana/ && sed -i "s/BLISSEY/$DS_BLISSEY/g" *.json
-echo ""
+# Remove old grafana folder
+rm -rf $folder/grafana
 
 if [[ -z $use_koji || $use_koji == "false" ]] ;then
 # Add/update st data to table geofences
