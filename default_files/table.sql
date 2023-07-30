@@ -78,4 +78,4 @@ CREATE TABLE IF NOT EXISTS `stats_quest_area` (
 
 -- update db version
 INSERT IGNORE INTO version values ('blissey',1);
-UPDATE version set version = 5 where version.key = 'blissey';
+UPDATE version set version = 5 where version.key = 'blissey' and version=1;

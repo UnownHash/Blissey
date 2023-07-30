@@ -18,6 +18,18 @@ echo "Creating required tables"
 MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/table.sql
 echo ""
 
+# Check for table updates
+echo "Checking for table updates"
+version=$(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select version from version where version.key='blissey'")
+for file in $folder/default_files/sql_updates/* ;do
+  number=$(echo $file | grep -o -P '(?<=sql_updates/).*(?=.sql)')
+  if (( $number > $version )) ;then
+    echo "Apply updates from $file"
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $file
+  fi
+done
+echo ""
+
 # Create procedures
 echo "Creating required procedures"
 cp $folder/default_files/procedure.sql.default $folder/procedure.sql
