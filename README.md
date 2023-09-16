@@ -49,8 +49,7 @@ Note 1: grafana templates will group before first "_" meaning for instance in th
 ## 3 Grafana
 - Install Grafana, more details can be found at https://grafana.com/docs/grafana/latest/installation/debian/#install-from-apt-repository or if you prefer to use docker <https://hub.docker.com/r/grafana/grafana>
 - Create datasource for stats db
-- Add datasource name to config.ini
-- After executing settings.run, import the dashboards from Blissey/grafana by selecting ``+`` and then import
+- Import dashboards from Blissey/default_files/grafana/ by selecting ``+`` and then import
 
 
 ## 4 Updates
