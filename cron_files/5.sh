@@ -50,7 +50,7 @@ if [[ ! -z $area_raw ]] ;then
 fi
 
 # table cleanup controller stats_workers
-if [[ ! -z $worker_raw ]] ;then
+if [[ ! -z $worker_raw ]] && [[ $workerstats == "true" ]] ;then
   start=$(date '+%Y%m%d %H:%M:%S')
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $controllerdb -e "delete from stats_workers where datetime < utc_timestamp() - interval $worker_raw day;"
   stop=$(date '+%Y%m%d %H:%M:%S')
