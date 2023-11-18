@@ -5,4 +5,5 @@ crontab.txt
 /grafana/*
 /cron_files/*.sql
 /*.sql
+/scripts/*.sql
 /golbatbackup/*

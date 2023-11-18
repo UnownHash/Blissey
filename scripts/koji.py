@@ -1,9 +1,15 @@
 import geojson
 import requests
 import json
+from configparser import ConfigParser
 
 def transform(coordinate):
     return str(coordinate[1]) + " " + str(coordinate[0])
+
+def read_config():
+    config = ConfigParser()
+    config.read('config.ini')
+    return config['API']
 
 def read_data_from_url(url, bearer_token):
     headers = {
@@ -18,10 +24,10 @@ def read_data_from_url(url, bearer_token):
         print(f"Error: {response.status_code}")
         return None
 
-# Example usage
-url_mon = 'http://koji-url:port/api/v1/geofence/feature-collection/golbat?ignoremanualparent=true'
-url_quest = 'http://koji-url:port/api/v1/geofence/feature-collection/flygon?ignoremanualparent=true'
-bearer_token = 'your_bearer_token_here'
+config = read_config()
+url_mon = config['mon_url']
+url_quest = config['quest_url']
+bearer_token = config['bearer_token']
 
 output_file_mon = 'mon_geofences.sql'
 output_file_quest = 'quest_geofences.sql'
