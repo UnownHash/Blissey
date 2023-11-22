@@ -1,4 +1,4 @@
 [API]
-url_mon = 'http://koji-url:port/api/v1/geofence/feature-collection/golbat?ignoremanualparent=true&parent=true'
-url_quest = 'http://koji-url:port/api/v1/geofence/feature-collection/dragonite?ignoremanualparent=true&parent=true'
-bearer_token = 'your_bearer_token_here'
+url_mon = http://koji-url:port/api/v1/geofence/featureCollection/golbat?ignoremanualparent=true&parent=true
+url_quest = http://koji-url:port/api/v1/geofence/featureCollection/dragonite?ignoremanualparent=true&parent=true
+bearer_token = your_bearer_token_here
