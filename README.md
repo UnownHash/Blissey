@@ -23,7 +23,7 @@ Blissey needs quest and mon fences in order to aggregate data. 2 ways of doing t
 - set config.ini accordingly
 - grant sql user access to koji db
 - project_golbat, this project should contain your mon fences. Ideally this is same project as used for 2nd point in prerequisites to ensure alligment. 
-- project_controller, this project should contain your quest fences. Again to assure alligment your controller(Flygon) project would be a logical choice.
+- project_controller, this project should contain your quest fences. Again to assure alligment your controller(Dragonite) project would be a logical choice.
 In case all area quest/mon fences are identical both can point to the same Koji project. 
 <BR>
 2 Manually add them to Blissey table geofences<BR>
