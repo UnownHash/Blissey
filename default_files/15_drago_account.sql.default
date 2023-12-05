@@ -1,0 +1,22 @@
+-- settings
+select @period := concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900));
+select @rpl := 15;
+
+-- process data
+insert ignore into chansey.accounts (datetime,rpl,dbaccounts,warn,suspended,banned,inUse,usedIdle,unusedIdle,consecDis1,consecDis2,consecDis3,consecDis4p)
+select 
+@period,@rpl,
+count(username) as dbaccounts,
+ifnull(sum(case when warn=1 then 1 end),0) as warn,
+ifnull(sum(case when suspended=1 then 1 end),0) as suspended,
+ifnull(sum(case when banned=1 then 1 end),0) as banned,
+ifnull(sum(case when last_selected<unix_timestamp() and (last_released<last_selected or last_released is NULL)  then 1 end),0) as inUse,
+ifnull(sum(case when last_released>last_selected and warn=0 and suspended=0 and banned=0 then 1 end),0) as usedIdle,
+ifnull(sum(case when last_selected is null and warn=0 and suspended=0 and banned=0 then 1 end),0) as unusedIdle,
+ifnull(sum(case when consecutive_disable_count<2 then 1 end),0) as consecDis1,
+ifnull(sum(case when consecutive_disable_count=2 then 1 end),0) as consecDis2,
+ifnull(sum(case when consecutive_disable_count=3 then 1 end),0) as consecDis3,
+ifnull(sum(case when consecutive_disable_count>3 then 1 end),0) as consecDis4p
+
+from dragonite.account
+;

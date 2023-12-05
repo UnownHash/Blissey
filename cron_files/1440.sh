@@ -49,6 +49,27 @@ then
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl1440 fortwatcher stats processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
+
+# Daily aggregation Dragonite logs
+if [[ $dragonitelog == "true" ]]
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/1440_dragonite.sql
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl1440 dragonite log processing" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
+# rpl 1440 fort log processing
+if [[ $dragonitelog == "true" ]]
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/1440_fort.sql
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl1440 fort log processing" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
 ## backup golbat db
 if "$golbat_backup"
 then
@@ -69,6 +90,27 @@ then
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] daily golbat backup cleanup" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
+## backup dragonite db
+if [[ $drago_backup == "true" ]]
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  mkdir -p $folder/dragobackup
+  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $dragonitedb > $folder/dragobackup/dragobackup_$(date +%Y-%m-%d).sql
+  cd $folder/dragobackup && tar --remove-files -czvf dragobackup_$(date +%Y-%m-%d).sql.tar.gz dragobackup_$(date +%Y-%m-%d).sql
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] daily dragonite backup" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+## dragonite db backup cleanup
+if [[ $drago_backup == "true" ]]
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  find $folder/dragobackup -type f -mtime +$drago_backup_days -exec rm -f {} \;
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] daily dragonite backup cleanup" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
 
@@ -97,12 +139,20 @@ if [[ ! -z $blissey_rpl15 ]] ;then
   echo "[$start] [$stop] [$diff] cleanup stats tables" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
-
-## Cleaup unseen spawnpoints
-if [[ ! -z spawn_delete_days ]] ;then
+# cleanup accounts
+if [[ ! -z $accounts_rpl15 ]] ;then
   start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $scannerdb -e "delete from spawnpoint where last_seen < (unix_timestamp() - ($spawn_delete_days*86400));"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from accounts where rpl = 15 and datetime < now() - interval $accounts_rpl15 day;"
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
-  echo "[$start] [$stop] [$diff] remove spawnpoints unseen for $spawn_delete_days days" >> $folder/logs/log_$(date '+%Y%m').log
+  echo "[$start] [$stop] [$diff] cleanup table accounts" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
+# cleanup stats_account
+if [[ ! -z $account_stats ]] ;then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_account where datetime < now() - interval $account_stats day;"
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] cleanup table stats_account" >> $folder/logs/log_$(date '+%Y%m').log
 fi
