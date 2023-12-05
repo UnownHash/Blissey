@@ -3,7 +3,7 @@ select @period := concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME
 select @rpl := 15;
 
 -- process data
-insert ignore into chansey.accounts (datetime,rpl,dbaccounts,warn,suspended,banned,inUse,usedIdle,unusedIdle,consecDis1,consecDis2,consecDis3,consecDis4p)
+insert ignore into blissey.accounts (datetime,rpl,dbaccounts,warn,suspended,banned,inUse,usedIdle,unusedIdle,consecDis1,consecDis2,consecDis3,consecDis4p)
 select 
 @period,@rpl,
 count(username) as dbaccounts,

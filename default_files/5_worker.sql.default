@@ -4,7 +4,7 @@ select @stop := concat(date(now() - interval 0 minute),' ', (SEC_TO_TIME((TIME_T
 select @rpl  := 5;
 
 -- process data
-insert ignore into chansey.stats_worker (datetime,rpl,controller_worker,mode,device_worker,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc,distance,
+insert ignore into blissey.stats_worker (datetime,rpl,controller_worker,mode,device_worker,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc,distance,
 	retries,timeElapsed,locationDelay,gmos,gmoInitialSuccess,gmo0fail,gmo1fail,gmo2fail,gmo3fail,gmo4fail,gmo5fail,gmo6fail,gmo7fail,gmo8fail,gmoNoCell,gmoGivingUp,gmoDelay)
 select
 @period,
