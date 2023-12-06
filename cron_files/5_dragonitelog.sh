@@ -117,6 +117,10 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
     MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into dragoLog_fort (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,backoff) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$backoff');"
   fi
 
+else
+  echo "No dragonite logfile found to process ($plog)" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
 echo ""
 # add logline
 stop=$(date '+%Y%m%d %H:%M:%S')
