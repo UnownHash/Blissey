@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.0.1"
+      "version": "10.2.2"
     },
     {
       "type": "datasource",
@@ -70,6 +70,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -83,6 +84,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -198,7 +200,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(totMon) AS \"Mons_all\",\n  sum(ivMon) AS \"MonsIV\",\n  100*sum(ivMon)/sum(totMon) AS '% IV',\n  (sum(encSecLeft)/sum(verifiedEnc))/60 AS \"verified encounters\",\n  sum(resetMon) AS \"#Reset mon stats\",\n  sum(verifiedReEnc) AS \"#Re-encounter\",\n  (sum(re_encSecLeft)/sum(verifiedReEnc))/60 AS \"Despawn Minutes Left (re-encounter)\",\n  sum(verifiedEnc) AS \"#verfified endtime encounters\",\n  sum(unverifiedEnc) AS \"#unverified endtime encounters\",\n  100*sum(verifiedEnc)/(sum(verifiedEnc)+sum(unverifiedEnc)) AS \"%verified\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(totMon) AS \"Mons_all\",\n  sum(ivMon) AS \"MonsIV\",\n  100*sum(ivMon)/sum(totMon) AS '% IV',\n  (sum(encSecLeft)/sum(verifiedEnc))/60 AS \"verified encounters\",\n  sum(resetMon) AS \"#Reset mon stats\",\n  sum(verifiedReEnc) AS \"#Re-encounter\",\n  (sum(re_encSecLeft)/sum(verifiedReEnc))/60 AS \"Despawn Minutes Left (re-encounter)\",\n  sum(verifiedEnc) AS \"#verfified endtime encounters\",\n  sum(unverifiedEnc) AS \"#unverified endtime encounters\",\n  100*sum(verifiedEnc)/(sum(verifiedEnc)+sum(unverifiedEnc)) AS \"%verified\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  substring_index(area,'_',1) in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -300,6 +302,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -313,6 +316,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -435,6 +439,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -448,6 +453,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -490,30 +496,6 @@
               {
                 "id": "custom.axisPlacement",
                 "value": "right"
-              }
-            ]
-          },
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "#Reset mon stats"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
-                }
               }
             ]
           }
@@ -578,6 +560,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -591,6 +574,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -647,11 +631,12 @@
             "type": "mysql",
             "uid": "${DS_BLISSEY}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(Datetime,$__interval),\n  sum(stops) as '#stops',\n  sum(ARcum) as '#AR quest',\n  sum(nonARcum) as '#nonAR quest'\nFROM stats_quest_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  substring_index(area,'_',1) in ($area)\n--  substring_index(fence,'_',1) in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(Datetime,$__interval),\n  sum(stops) as '#stops',\n  sum(ARcum) as '#AR quest',\n  sum(nonARcum) as '#nonAR quest'\nFROM stats_quest_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area)\n--  substring_index(fence,'_',1) in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -662,6 +647,33 @@
                 "type": "column"
               }
             ]
+          ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "dragonite_error",
+          "timeColumn": "datetime",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
           ]
         }
       ],
@@ -679,6 +691,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -692,6 +705,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -849,6 +863,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -862,6 +877,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1019,6 +1035,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1032,6 +1049,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1147,7 +1165,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(datetime,$__interval),\n  count(controller_worker) as \"#workers\",\n  sum(loc_time)/sum(loc_success) AS \"Location handling time\",\n  sum(loc_count) AS \"Locations handled\"\nFROM \nstats_worker\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  substring_index(controller_worker,'_',1) in ($area)\nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(datetime,$__interval),\n  count(controller_worker) as \"#workers\",\n  sum(loc_time)/sum(loc_success) AS \"Location handling time\",\n  sum(loc_count) AS \"Locations handled\"\nFROM \nstats_worker\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  LEFT(controller_worker, LENGTH(controller_worker) - LENGTH(SUBSTRING_INDEX(controller_worker, '_', -1)) - 1) in ($area)\nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -1188,7 +1206,7 @@
           ]
         }
       ],
-      "title": "Workers",
+      "title": "Dragonite workers",
       "transformations": [
         {
           "id": "filterFieldsByName",
@@ -1215,6 +1233,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1228,6 +1247,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1330,7 +1350,6 @@
   "refresh": "",
   "revision": 1,
   "schemaVersion": 38,
-  "style": "dark",
   "tags": [],
   "templating": {
     "list": [
@@ -1363,13 +1382,13 @@
           "type": "mysql",
           "uid": "${DS_BLISSEY}"
         },
-        "definition": "select distinct(area) from stats_mon_area;",
+        "definition": "select distinct(area) from stats_mon_area where rpl=5;",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "area",
         "options": [],
-        "query": "select distinct(area) from stats_mon_area;",
+        "query": "select distinct(area) from stats_mon_area where rpl=5;",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1385,13 +1404,13 @@
           "type": "mysql",
           "uid": "${DS_BLISSEY}"
         },
-        "definition": "select distinct(fence) from stats_mon_area;",
+        "definition": "select distinct(fence) from stats_mon_area where rpl=5;",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "fence",
         "options": [],
-        "query": "select distinct(fence) from stats_mon_area;",
+        "query": "select distinct(fence) from stats_mon_area where rpl=5;",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1404,7 +1423,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -1421,9 +1440,9 @@
       "1d"
     ]
   },
-  "timezone": "",
-  "title": "01 Performance overview",
-  "uid": "KY-d_hOMA",
+  "timezone": "browser",
+  "title": "01. Area performance overview",
+  "uid": "KY-d_hOMi",
   "version": 3,
   "weekStart": ""
 }
