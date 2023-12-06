@@ -16,8 +16,8 @@ startt=$(date '+%Y%m%d %H:%M:%S')
 
 if [[ -f $plog ]] ;then
 
-# set empty vars
-  if [[ -z $fort_area_name ]] ;then fort_area_name="dkmurisanidiot" ;fi
+# exit when no fort area name is set
+  if [[ -z $fort_area_name ]] ;then exit ;fi
 
 # allow for fort area workers array
   if [[ $fort_area_name != "dkmurisanidiot" ]] ;then
