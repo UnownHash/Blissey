@@ -26,6 +26,7 @@ project_golbat=						# project name containing mon fences only
 monareastats=true
 questareastats=true
 workerstats=true                                        # requires drago config stats=true
+dragoaccount=true                                       # process dragonite account details
 
 ## Log processing
 dragonitelog=true                                       # process d2 logs on: errors/warning/performance/accounts
