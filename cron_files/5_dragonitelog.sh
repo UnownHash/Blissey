@@ -82,7 +82,7 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
   swDayLimit=$(zgrep 'Exceeded daily limit. New account needed' $plog | grep -v "${fort_area_name}" |wc -l)
   swRange=$(zgrep 'Got out of range 10 times. Possibly exceeded daily limit. New account needed' $plog | grep -v "${fort_area_name}" |wc -l)
   swTime=$(zgrep 'Maximum connection time exceeded' $plog | grep -v "${fort_area_name}" |wc -l)
-  backoff=$(zgrep 'BACKOFF: Error logging into Pogo' $plog | grep -v "${fort_area_name}" |wc -l)
+  backoff=$(zgrep 'BACKOFF: Error logging into Pogo\|BACKOFF: New account attempt' $plog | grep -v "${fort_area_name}" |wc -l)
   released24h=$(zgrep -c 'which is less than 24 hours ago. This is probably not what you want' $plog)
   released7d=$(zgrep -c 'which is less than 1 week ago. This is probably not what you want' $plog)
 
@@ -111,7 +111,7 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
     swDayLimit=$(zgrep 'Exceeded daily limit. New account needed' $plog | grep "${fort_area_name}" | wc -l)
     swRange=$(zgrep 'Got out of range 10 times. Possibly exceeded daily limit. New account needed' $plog | grep "${fort_area_name}" | wc -l)
     swTime=$(zgrep 'Maximum connection time exceeded' $plog | grep "${fort_area_name}" | wc -l)
-    backoff=$(zgrep 'BACKOFF: Error logging into Pogo' $plog | grep "${fort_area_name}" | wc -l)
+    backoff=$(zgrep 'BACKOFF: Error logging into Pogo\|BACKOFF: New account attempt' $plog | grep "${fort_area_name}" | wc -l)
 
 # insert fort data
     MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into dragoLog_fort (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,backoff) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$backoff');"
