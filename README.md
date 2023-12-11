@@ -1,14 +1,15 @@
 # Blissey
 
-Process controller/golbat data for worker, pokemon, quest and spawnpoint (for defined areas) into seperate stats tables.<BR>
+Process controller/golbat data for workers, pokemon, quest, account, drago log into seperate stats tables.<BR>
 Processing is done on interval 15/60/1440/10080 minutes and can be displayed by pre-defined grafana templates.
 <BR>
 
 
 ## 1 Prerequisites
-- tested on: mariadb 10.5/10.6, mysql server 8.0.31
+- tested on: mariadb 10.6
 - add Golbat/geojson/geofence.json or setup Koji api, containing your mon scan fences. Golbat will use these fences to write raw area mon stats to db.
-- enable worker stats on 5m interval in controller config
+- enable stats in controller config so it writes raw worker stats
+- enable save logs in controller config is you want them processed 
 
 ## 2 Setup
 - clone Blissey, `git clone https://github.com/UnownHash/Blissey.git && cd Blissey`
@@ -53,7 +54,7 @@ Note 1: grafana templates will group before first "_" meaning for instance in th
 
 
 ## 4 Updates
-- depending on changes but to be safe, pull+execute settings.run+update crontab
+- depending on changes but to be safe, pull+execute settings.run+adjust config.ini when needed+update crontab
 - replace changed grafana templates
 <BR>
 <BR>
