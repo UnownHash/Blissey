@@ -4,18 +4,38 @@ select @stop :=  concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_T
 select @rpl  := 60;
 
 -- process data
-insert ignore into stats_worker (datetime,rpl,controller_worker,device_worker,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc)
+insert ignore into stats_worker (datetime,rpl,controller_worker,mode,device_worker,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc,distance,
+	retries,timeElapsed,locationDelay,gmos,gmoInitialSuccess,gmo0fail,gmo1fail,gmo2fail,gmo3fail,gmo4fail,gmo5fail,gmo6fail,gmo7fail,gmo8fail,gmoNoCell,gmoGivingUp,gmoDelay)
 select
 @period,
 @rpl,
 controller_worker,
-max(device_worker),
-sum(numRep),
+case when min(mode) = 'FortMode' then 'FortMode' else 'PokemonMode' end,
+'',
+count(controller_worker),
 sum(loc_time),
 sum(loc_count),
 sum(loc_success),
 sum(mons_seen),
-sum(mons_enc)
+sum(mons_enc),
+sum(distance),
+sum(retries),
+sum(timeElapsed),
+sum(locationDelay),
+sum(gmos),
+sum(gmoInitialSuccess),
+sum(gmo0fail),
+sum(gmo1fail),
+sum(gmo2fail),
+sum(gmo3fail),
+sum(gmo4fail),
+sum(gmo5fail),
+sum(gmo6fail),
+sum(gmo7fail),
+sum(gmo8fail),
+sum(gmoNoCell),
+sum(gmoGivingUp),
+sum(gmoDelay)
 
 from stats_worker
 

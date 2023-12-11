@@ -40,6 +40,24 @@ then
   echo "[$start] [$stop] [$diff] rpl5 quest area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
+# device outage reporting
+if [[ $outage_report == "true" ]] && [[ ! -z $outage_webhook ]]
+then
+  rm -f $folder/tmp/outage.txt
+  curl -s $rotom_api_host:$rotom_api_port/api/status | jq -r '.devices[] | .origin+" "+(.dateLastMessageReceived|tostring)' | awk '{ if($2 <= systime()*1000-180000) print $1" "strftime("%Y%m%d_%H:%M:%S", $2/1000)}' > $folder/tmp/outage.txt
+  cd $folder/default_files && ./discord.sh --username "Containers, no update in 3m" --color "16711680" --avatar "https://www.iconsdb.com/icons/preview/red/exclamation-xxl.png" --webhook-url "$outage_webhook" --description "$(jq -Rs . < "$folder/tmp/outage.txt" | cut -c 2- | rev | cut -c 2- | rev)"
+fi
+
+# rpl 5 dragonite log processing
+if [[ $dragonitelog == "true" ]]
+then
+  cd $folder/cron_files && ./5_dragonitelog.sh
+#  sleep 1s
+  cd $folder/cron_files && ./5_accountstats.sh
+#  sleep 1s
+  cd $folder/cron_files && ./5_forts.sh
+fi
+
 # table cleanup golbat pokemon_area_stats
 if [[ ! -z $area_raw ]] ;then
   start=$(date '+%Y%m%d %H:%M:%S')

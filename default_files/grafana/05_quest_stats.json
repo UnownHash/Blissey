@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.4.3"
+      "version": "10.2.2"
     },
     {
       "type": "datasource",
@@ -76,6 +76,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -89,6 +90,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -327,7 +329,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 95
+                "value": 101
               }
             ]
           },
@@ -375,7 +377,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 49
+                "value": 61
               }
             ]
           },
@@ -423,7 +425,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 67
+                "value": 68
               }
             ]
           },
@@ -435,7 +437,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 68
+                "value": 72
               }
             ]
           },
@@ -447,7 +449,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 60
+                "value": 66
               }
             ]
           }
@@ -461,6 +463,7 @@
       },
       "id": 5,
       "options": {
+        "cellHeight": "sm",
         "footer": {
           "countRows": false,
           "fields": "",
@@ -477,7 +480,7 @@
           }
         ]
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
@@ -544,6 +547,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -557,6 +561,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -711,6 +716,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -724,6 +730,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -884,9 +891,7 @@
     }
   ],
   "refresh": "",
-  "revision": 1,
   "schemaVersion": 38,
-  "style": "dark",
   "tags": [],
   "templating": {
     "list": [
@@ -958,8 +963,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "05 Quest stats",
-  "uid": "Pi-mGhwGD",
-  "version": 3,
+  "title": "05. Quest stats",
+  "uid": "Pi-mGhwGd",
+  "version": 2,
   "weekStart": ""
 }

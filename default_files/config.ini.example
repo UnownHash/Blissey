@@ -8,6 +8,15 @@ scannerdb=golbat
 blisseydb=stats
 kojidb=koji						# optional, needed when making use of koji stored fences
 
+## rotom settings
+rotom_api_host=                                         # for device outage reporting
+rotom_api_port=                                         # for device outage reporting
+
+## dragonite settings
+dragonite_path=/home/dkmur/Dragonite
+dragonite_api_host=127.0.0.1
+dragonite_api_port=7272
+
 ## Koji projects (make use of koji fences instead of table geofences)
 use_koji=false
 project_controller=					# project name containing quest fences only
@@ -16,19 +25,38 @@ project_golbat=						# project name containing mon fences only
 ## Stats processing (when use_koji=false, make sure to add mon geofences to blissey table geofences. First and last coordinate of column coords must be the same.)
 monareastats=true
 questareastats=true
-workerstats=true                                        # requires controller config worker_stats=true
+workerstats=true                                        # requires drago config stats=true
+dragoaccount=true                                       # process dragonite account details
+
+## Log processing
+dragonitelog=true                                       # process d2 logs on: errors/warning/performance/accounts
+fort_area_name=						# fort area name to seperate rpc4/11/12 stats, can be an array i.e. fort_area_name="fortsRoute1 fortsRoute2"
 
 ## Table cleanup, remove anything older then x days
-blissey_rpl5=30						# cleanup blissey tables for 5m data
-blissey_rpl15=90					# cleanup blissey tables for 15m data
-blissey_rpl60=180					# cleanup blissey tables for 60m data
-blissey_rpl1440=365					# cleanup blissey tables for daily data
-blissey_rpl10080=999999					# cleanup blissey tables for weekly data
+# stats db
+blissey_rpl5=30						# cleanup blissey worker/area/quest tables for 5m data
+blissey_rpl15=90					# 15m data
+blissey_rpl60=180					# 60m data
+blissey_rpl1440=365					# daily data
+blissey_rpl10080=999999					# weekly data
+d2log_rpl5=30                                           # cleanup for blissey table dragoLog            
+d2log_rpl15=90
+d2log_rpl60=180
+d2log_rpl1440=365
+d2log_rpl10080=99999
+accounts_rpl15=90					# cleanup blissey table accounts
+account_stats=90					# cleanup blissey table stats_account
+# raw tables
 worker_raw=1						# cleanup controller raw worker data
 area_raw=1						# cleanup scanner raw area data
 
+## Device outage reporting
+outage_report=false					# will enable check every 5m and report workers not responding to ping and did not send data last 10m
+outage_webhook=						# webhook to discord channel for outage reporting
+
 ## Miscellaneous
-spawn_delete_days=999999				# delete spawnpoints not seen for X days from db
 golbat_backup=true                                      # daily backup golbat structure and tables spawnpoint/gym/stop
 golbat_backup_days=7                                    # days to store golbat db backup
+drago_backup=true					# daily backup drago db
+drago_backup_days=7					# days to store drago db backup
 fortwatcher=false					# process fortwatcher stats to rpl 60/1440/10080

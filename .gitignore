@@ -7,3 +7,5 @@ crontab.txt
 /*.sql
 /scripts/*.sql
 /golbatbackup/*
+/dragobackup/*
+/jobexecutor/config.ini
