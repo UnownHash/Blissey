@@ -53,8 +53,12 @@ echo "Creating sql files"
 echo ""
 rm -f $folder/cron_files/*.sql
 cp $folder/default_files/5_worker.sql.default $folder/cron_files/5_worker.sql
-cp $folder/default_files/5_mon_area.sql.default $folder/cron_files/5_mon_area.sql
 cp $folder/default_files/15_drago_account.sql.default $folder/cron_files/15_drago_account.sql
+if [[ -z $golbat_host ]] ;then
+  cp $folder/default_files/5_mon_area.sql.default $folder/cron_files/5_mon_area.sql
+else
+  cp $folder/default_files/5_mon_area_external.sql.default $folder/cron_files/5_mon_area_external.sql
+fi
 sed -i "s/blissey\./$blisseydb\./g" $folder/cron_files/*.sql
 sed -i "s/golbat\./$scannerdb\./g" $folder/cron_files/*.sql
 sed -i "s/dragonite\./$controllerdb\./g" $folder/cron_files/*.sql

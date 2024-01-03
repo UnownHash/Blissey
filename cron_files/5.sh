@@ -24,7 +24,16 @@ fi
 if "$monareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/cron_files/5_mon_area.sql
+  if [[ -z $golbat_host ]] ;then
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $chanseydb < $folder/cron_files/5_mon_area.sql
+  else
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$golbat_host $scannerdb < $folder/cron_files/5_mon_area_external.sql | grep "('2" > $folder/tmp/golbat.sql
+    cp $folder/tmp/golbat.sql $folder/tmp/golbat.sql.org
+    sed -i '$s/.$/;/' $folder/tmp/golbat.sql
+    sed -i "1 i\insert ignore into $chanseydb.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,unverifiedEnc,verifiedReEnc,encSecLeft,encTthMax5,encTth5to10,encTth10to15,encTth15to20,encTth20to25,encTth25to30,encTth30to35,encTth35to40,encTth40to45,encTth45to50,encTth50to55,encTthMin55,resetMon,re_encSecLeft,numWiEnc,secWiEnc) values" $folder/tmp/golbat.sql
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $chanseydb < $folder/tmp/golbat.sql
+    rm $folder/tmp/golbat.sql
+  fi
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl5 mon area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
@@ -61,7 +70,11 @@ fi
 # table cleanup golbat pokemon_area_stats
 if [[ ! -z $area_raw ]] ;then
   start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -h$dbip -P$dbport -u$sqluser $scannerdb -e "delete from pokemon_area_stats where datetime < UNIX_TIMESTAMP(now() - interval $area_raw day);"
+  if [[ -z $golbat_host ]] ;then
+    MYSQL_PWD=$sqlpass mysql -h$dbip -P$dbport -u$sqluser $scannerdb -e "delete from pokemon_area_stats where datetime < UNIX_TIMESTAMP(now() - interval $area_raw day);"
+  else
+    MYSQL_PWD=$sqlpass mysql -h$golbat_host -P$dbport -u$sqluser $scannerdb -e "delete from pokemon_area_stats where datetime < UNIX_TIMESTAMP(now() - interval $area_raw day);"
+  fi
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] cleanup golbat table pokemon_area_stats" >> $folder/logs/log_$(date '+%Y%m').log
