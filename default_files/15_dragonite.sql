@@ -4,7 +4,7 @@ select @stop :=  concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_T
 select @rpl  := 15;
 
 -- aggregation area/generic
-INSERT IGNORE INTO dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitmUnknown,mitmNoGame,mitmLogginIn,mitmTokenRej,mitmNotLogged,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,backoff,released24h,released7d)
+INSERT IGNORE INTO dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitmUnknown,mitmNoGame,mitmLogginIn,mitmTokenRej,mitmNotLogged,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,backoff,noAccount,released24h,released7d)
 SELECT
 @period,
 @rpl,
@@ -42,6 +42,7 @@ sum(swDayLimit),
 sum(swRange),
 sum(swTime),
 sum(backoff),
+sum(noAccount),
 sum(released24h),
 sum(released7d)
 

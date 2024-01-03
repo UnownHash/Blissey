@@ -83,11 +83,12 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
   swRange=$(zgrep 'Got out of range 10 times. Possibly exceeded daily limit. New account needed' $plog | grep -v "${fort_area_name}" |wc -l)
   swTime=$(zgrep 'Maximum connection time exceeded' $plog | grep -v "${fort_area_name}" |wc -l)
   backoff=$(zgrep 'BACKOFF: Error logging into Pogo\|BACKOFF: New account attempt' $plog | grep -v "${fort_area_name}" |wc -l)
+  noAccount=$(zgrep -c 'No accounts available to authenticate' $plog)
   released24h=$(zgrep -c 'which is less than 24 hours ago. This is probably not what you want' $plog)
   released7d=$(zgrep -c 'which is less than 1 week ago. This is probably not what you want' $plog)
 
 # insert area/default data
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitmUnknown,mitmNoGame,mitmLogginIn,mitmTokenRej,mitmNotLogged,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,backoff,released24h,released7d) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$mitmUnknown','$mitmNoGame','$mitmLogginIn','$mitmTokenRej','$mitmNotLogged','$mitmLoginErr','$proxyBan','$wsError','$wsClose','$wsMitmRecon','$authReq','$authed','$login','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$backoff','$released24h','$released7d');"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitmUnknown,mitmNoGame,mitmLogginIn,mitmTokenRej,mitmNotLogged,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,backoff,noAccount,released24h,released7d) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$mitmUnknown','$mitmNoGame','$mitmLogginIn','$mitmTokenRej','$mitmNotLogged','$mitmLoginErr','$proxyBan','$wsError','$wsClose','$wsMitmRecon','$authReq','$authed','$login','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$backoff','$noAccount','$released24h','$released7d');"
 
 # get fort data
   if [[ $fort_area_name != "dkmurisanidiot" ]] ;then
