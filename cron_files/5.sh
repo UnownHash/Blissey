@@ -25,13 +25,13 @@ if "$monareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   if [[ -z $golbat_host ]] ;then
-    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $chanseydb < $folder/cron_files/5_mon_area.sql
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/cron_files/5_mon_area.sql
   else
     MYSQL_PWD=$sqlpass mysql -u$sqluser -h$golbat_host $scannerdb < $folder/cron_files/5_mon_area_external.sql | grep "('2" > $folder/tmp/golbat.sql
     cp $folder/tmp/golbat.sql $folder/tmp/golbat.sql.org
     sed -i '$s/.$/;/' $folder/tmp/golbat.sql
-    sed -i "1 i\insert ignore into $chanseydb.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,unverifiedEnc,verifiedReEnc,encSecLeft,encTthMax5,encTth5to10,encTth10to15,encTth15to20,encTth20to25,encTth25to30,encTth30to35,encTth35to40,encTth40to45,encTth45to50,encTth50to55,encTthMin55,resetMon,re_encSecLeft,numWiEnc,secWiEnc) values" $folder/tmp/golbat.sql
-    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $chanseydb < $folder/tmp/golbat.sql
+    sed -i "1 i\insert ignore into $blisseydb.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,unverifiedEnc,verifiedReEnc,encSecLeft,encTthMax5,encTth5to10,encTth10to15,encTth15to20,encTth20to25,encTth25to30,encTth30to35,encTth35to40,encTth40to45,encTth45to50,encTth50to55,encTthMin55,resetMon,re_encSecLeft,numWiEnc,secWiEnc) values" $folder/tmp/golbat.sql
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/tmp/golbat.sql
     rm $folder/tmp/golbat.sql
   fi
   stop=$(date '+%Y%m%d %H:%M:%S')
