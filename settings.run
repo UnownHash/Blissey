@@ -32,7 +32,11 @@ echo ""
 
 # Create procedures
 echo "Creating required procedures"
-cp $folder/default_files/procedure.sql.default $folder/procedure.sql
+if [[ -z $golbat_host ]] ;then
+  cp $folder/default_files/procedures.sql.default $folder/procedures.sql
+else
+  cp $folder/default_files/proceduresGobatExternal.sql.default $folder/procedures.sql
+fi
 sed -i "s/blissey/$blisseydb/g" $folder/procedure.sql
 sed -i "s/golbat/$scannerdb/g" $folder/procedure.sql
 
@@ -45,7 +49,12 @@ else
 sed -i "s/-- nonKoji //g" $folder/procedure.sql
 fi
 
-MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/procedure.sql
+# Load procedure
+if [[ -z $golbat_host ]] ;then
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/procedures.sql
+else
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$golbat_host -P$dbport $scannerdb < $folder/procedures.sql
+fi
 echo ""
 
 # copy sql to cron_files
@@ -217,6 +226,11 @@ fi
 counter=$((counter+1))
 done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select area,fence,type,st_astext(st_centroid(st)) as coord from geofences where utcoffset is NULL" | sed 's/POINT(//g' | sed 's/)//g' | sed 's/\t/|/g')
 
+fi
+
+#create procedure input file, if needed
+if [[ ! -z $golbat_host ]] && [[ $use_koji == "false" ]] && [[ $questareastats == "true" ]] ;then
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "SET @row_number = 0; select concat((@row_number:=@row_number + 1),'|',area,'|',fence,'|',astext(st_lonlat)) from geofences where type='quest' or type='both';" > $folder/cron_files/questfences.txt
 fi
 
 echo ""
