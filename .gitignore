@@ -4,6 +4,7 @@ crontab.txt
 /logs/*
 /grafana/*
 /cron_files/*.sql
+/cron_files/questfences.txt
 /*.sql
 /scripts/*.sql
 /golbatbackup/*

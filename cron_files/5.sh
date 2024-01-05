@@ -28,7 +28,8 @@ then
     MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/cron_files/5_mon_area.sql
   else
     MYSQL_PWD=$sqlpass mysql -u$sqluser -h$golbat_host $scannerdb < $folder/cron_files/5_mon_area_external.sql | grep "('2" > $folder/tmp/golbat.sql
-    cp $folder/tmp/golbat.sql $folder/tmp/golbat.sql.org
+    repTime=$(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "select concat(date(now() - interval 5 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 5 minute)) DIV 300) * 300))")
+    sed -i "s/(.*',5,'/('$repTime',5,'/g" $folder/tmp/golbat.sql
     sed -i '$s/.$/;/' $folder/tmp/golbat.sql
     sed -i "1 i\insert ignore into $blisseydb.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,unverifiedEnc,verifiedReEnc,encSecLeft,encTthMax5,encTth5to10,encTth10to15,encTth15to20,encTth20to25,encTth25to30,encTth30to35,encTth35to40,encTth40to45,encTth45to50,encTth50to55,encTthMin55,resetMon,re_encSecLeft,numWiEnc,secWiEnc) values" $folder/tmp/golbat.sql
     MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/tmp/golbat.sql
@@ -43,7 +44,20 @@ fi
 if "$questareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; call rpl5questarea();"
+  if [[ -z $golbat_host ]] ;then
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -NB -e "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; call rpl5questarea();"
+  else
+    if [[ $use_koji == "true" ]] ;then
+      MYSQL_PWD=$sqlpass mysql -u$sqluser -h$golbat_host -P$dbport $scannerdb -NB -e "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; call rpl5questarea();" > $folder/tmp/quest.sql
+    else
+      MYSQL_PWD=$sqlpass mysql -u$sqluser -h$golbat_host -P$dbport $scannerdb -NB -e "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; create temporary table areas (id int NOT NULL,area varchar(40) NOT NULL,fence varchar(40) NOT NULL,coords text NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci; LOAD DATA LOCAL INFILE '$folder/cron_files/questfences.txt' INTO table areas FIELDS TERMINATED BY '\|'; call rpl5questarea();" > $folder/tmp/quest.sql
+    fi
+    sed -i "s/(.*',5,'/('$repTime',5,'/g" $folder/tmp/quest.sql
+    sed -i '$s/.$/;/' $folder/tmp/quest.sql
+    sed -i "1 i\insert ignore into $blisseydb.stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum) values" $folder/tmp/quest.sql
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/tmp/quest.sql
+    rm $folder/tmp/quest.sql
+  fi
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl5 quest area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
