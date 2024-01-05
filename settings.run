@@ -37,16 +37,16 @@ if [[ -z $golbat_host ]] ;then
 else
   cp $folder/default_files/proceduresGobatExternal.sql.default $folder/procedures.sql
 fi
-sed -i "s/blissey/$blisseydb/g" $folder/procedure.sql
-sed -i "s/golbat/$scannerdb/g" $folder/procedure.sql
+sed -i "s/blissey/$blisseydb/g" $folder/procedures.sql
+sed -i "s/golbat/$scannerdb/g" $folder/procedures.sql
 
 if [[ $use_koji == "true" ]] ;then
-sed -i "s/project_controller/$project_controller/g" $folder/procedure.sql
-sed -i "s/project_golbat/$project_golbat/g" $folder/procedure.sql
-sed -i "s/koji/$kojidb/g" $folder/procedure.sql
-sed -i "s/-- useKoji //g" $folder/procedure.sql
+sed -i "s/project_controller/$project_controller/g" $folder/procedures.sql
+sed -i "s/project_golbat/$project_golbat/g" $folder/procedures.sql
+sed -i "s/koji/$kojidb/g" $folder/procedures.sql
+sed -i "s/-- useKoji //g" $folder/procedures.sql
 else
-sed -i "s/-- nonKoji //g" $folder/procedure.sql
+sed -i "s/-- nonKoji //g" $folder/procedures.sql
 fi
 
 # Load procedure
