@@ -75,8 +75,13 @@ if "$golbat_backup"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   mkdir -p $folder/golbatbackup
-  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport --no-data --routines $scannerdb > $folder/golbatbackup/golbatbackup_$(date +%Y-%m-%d).sql
-  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $scannerdb gym pokestop spawnpoint schema_migrations >> $folder/golbatbackup/golbatbackup_$(date +%Y-%m-%d).sql
+  if [[ -z $golbat_host ]] ;then
+    MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport --no-data --routines $scannerdb > $folder/golbatbackup/golbatbackup_$(date +%Y-%m-%d).sql
+    MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $scannerdb gym pokestop spawnpoint schema_migrations >> $folder/golbatbackup/golbatbackup_$(date +%Y-%m-%d).sql
+  else
+    MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$golbat_host -P$dbport --no-data --routines $scannerdb > $folder/golbatbackup/golbatbackup_$(date +%Y-%m-%d).sql
+    MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$golbat_host -P$dbport $scannerdb gym pokestop spawnpoint schema_migrations >> $folder/golbatbackup/golbatbackup_$(date +%Y-%m-%d).sql
+  fi
   cd $folder/golbatbackup && tar --remove-files -czvf golbatbackup_$(date +%Y-%m-%d).sql.tar.gz golbatbackup_$(date +%Y-%m-%d).sql
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
