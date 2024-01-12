@@ -35,7 +35,7 @@ while read -r line ;do
 
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into stats_account (datetime,worker,account,DISK_ENCOUNTER,GET_HOLOHOLO_INVENTORY,GET_PLAYER,GET_MAP_OBJECTS,ENCOUNTER,FORT_DETAILS,GYM_GET_INFO,RECYCLE_INVENTORY_ITEM,REMOVE_QUEST,FORT_SEARCH,GET_RAID_LOBBY_COUNTER,duration) values ('$datetime','$worker','$account','$DISK_ENCOUNTER','$GET_HOLOHOLO_INVENTORY','$GET_PLAYER','$GET_MAP_OBJECTS','$ENCOUNTER','$FORT_DETAILS','$GYM_GET_INFO','$RECYCLE_INVENTORY_ITEM','$REMOVE_QUEST','$FORT_SEARCH','$GET_RAID_LOBBY_COUNTER','$duration');"
 
-done < <(grep 'Request counts' $plog)
+done < <(grep 'Final request' $plog)
 
 else
   echo "No interval log found to process ($plog)" >> $folder/logs/log_$(date '+%Y%m').log
