@@ -70,6 +70,16 @@ then
   echo "[$start] [$stop] [$diff] rpl1440 fort log processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
+# Daily aggregation invasions
+if [[ $dragonitelog == "true" ]]
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/1440_invasion.sql.default
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl1440 invasion processing" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
 ## backup golbat db
 if "$golbat_backup"
 then
@@ -160,4 +170,42 @@ if [[ ! -z $account_stats ]] ;then
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] cleanup table stats_account" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
+# cleanup d2 log
+if [[ ! -z $d2log_rpl5 ]] ;then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog where rpl = 5 and datetime < now() - interval $d2log_rpl5 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog where rpl = 15 and datetime < now() - interval $d2log_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog where rpl = 60 and datetime < now() - interval $d2log_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog where rpl = 1440 and datetime < now() - interval $d2log_rpl1440 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog where rpl = 10080 and datetime < now() - interval $d2log_rpl10080 day;"
+
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_invasion where rpl = 5 and datetime < now() - interval $d2log_rpl5 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_invasion where rpl = 15 and datetime < now() - interval $d2log_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_invasion where rpl = 60 and datetime < now() - interval $d2log_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_invasion where rpl = 1440 and datetime < now() - interval $d2log_rpl1440 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_invasion where rpl = 10080 and datetime < now() - interval $d2log_rpl10080 day;"
+
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_fort where rpl = 5 and datetime < now() - interval $d2log_rpl5 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_fort where rpl = 15 and datetime < now() - interval $d2log_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_fort where rpl = 60 and datetime < now() - interval $d2log_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_fort where rpl = 1440 and datetime < now() - interval $d2log_rpl1440 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from dragoLog_fort where rpl = 10080 and datetime < now() - interval $d2log_rpl10080 day;"
+
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_invasion where rpl = 5 and datetime < now() - interval $d2log_rpl5 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_invasion where rpl = 15 and datetime < now() - interval $d2log_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_invasion where rpl = 60 and datetime < now() - interval $d2log_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_invasion where rpl = 1440 and datetime < now() - interval $d2log_rpl1440 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_invasion where rpl = 10080 and datetime < now() - interval $d2log_rpl10080 day;"
+
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker_fort where rpl = 5 and datetime < now() - interval $d2log_rpl5 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker_fort where rpl = 15 and datetime < now() - interval $d2log_rpl15 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker_fort where rpl = 60 and datetime < now() - interval $d2log_rpl60 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker_fort where rpl = 1440 and datetime < now() - interval $d2log_rpl1440 day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "delete from stats_worker_fort where rpl = 10080 and datetime < now() - interval $d2log_rpl10080 day;"
+
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] cleanup tables dragoLog and stats_invasion" >> $folder/logs/log_$(date '+%Y%m').log
 fi

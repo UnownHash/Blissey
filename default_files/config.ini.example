@@ -34,6 +34,7 @@ dragoaccount=true                                       # process dragonite acco
 ## Log processing
 dragonitelog=true                                       # process d2 logs on: errors/warning/performance/accounts
 fort_area_name=						# fort area name to seperate rpc4/11/12 stats, can be an array i.e. fort_area_name="fortsRoute1 fortsRoute2"
+invasion_worker_name=                                   # invasion worker name to seperate rpc4/11/12 stats
 
 ## Table cleanup, remove anything older then x days
 # stats db
