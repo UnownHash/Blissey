@@ -20,7 +20,6 @@ dragonite_api_port=7272
 ## Koji projects (make use of koji fences instead of table geofences)
 use_koji=false
 project_controller=					# project name containing quest fences only
-project_golbat=						# project name containing mon fences only
 
 ## leave empty unless golbat is running on another server
 golbat_host=
