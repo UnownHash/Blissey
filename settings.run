@@ -35,7 +35,7 @@ echo "Creating required procedures"
 if [[ -z $golbat_host ]] ;then
   cp $folder/default_files/procedures.sql.default $folder/procedures.sql
 else
-  cp $folder/default_files/proceduresGobatExternal.sql.default $folder/procedures.sql
+  cp $folder/default_files/proceduresGolbatExternal.sql.default $folder/procedures.sql
 fi
 sed -i "s/blissey/$blisseydb/g" $folder/procedures.sql
 sed -i "s/golbat/$scannerdb/g" $folder/procedures.sql
@@ -45,6 +45,12 @@ sed -i "s/project_controller/$project_controller/g" $folder/procedures.sql
 sed -i "s/project_golbat/$project_golbat/g" $folder/procedures.sql
 sed -i "s/koji/$kojidb/g" $folder/procedures.sql
 sed -i "s/-- useKoji //g" $folder/procedures.sql
+  if [[ -z $fort_area_name ]] ;then
+    sed -i 's/and a.name not in (fortarray)//g' $folder/procedures.sql
+  else
+    fortarray=$(echo "'$fort_area_name'" | sed "s/ /','/g")
+    sed -i "s/fortarray/$fortarray/g" $folder/procedures.sql
+  fi
 else
 sed -i "s/-- nonKoji //g" $folder/procedures.sql
 fi

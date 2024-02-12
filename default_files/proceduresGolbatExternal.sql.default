@@ -12,12 +12,11 @@ BEGIN
 -- useKoji SET @row_number = 0;
 -- useKoji DROP TEMPORARY TABLE IF EXISTS golbat.areas;
 -- useKoji CREATE TEMPORARY TABLE golbat.areas AS (
--- useKoji   SELECT (@row_number:=@row_number + 1) as 'id',ifnull(b.name,a.name) as 'area',a.name as 'fence',st_geomfromgeojson(a.geometry) as 'st_lonlat'
+-- useKoji   SELECT (@row_number:=@row_number + 1) as 'id',a.name as 'area',a.name as 'fence',st_geomfromgeojson(a.geometry) as 'st_lonlat'
 -- useKoji   FROM koji.geofence a
--- useKoji     left join koji.geofence b on a.parent=b.id
 -- useKoji     inner join koji.geofence_project c on a.id=c.geofence_id
 -- useKoji     inner join koji.project d on c.project_id=d.id
--- useKoji   WHERE d.name='project_controller');
+-- useKoji   WHERE d.name='project_controller' and a.name not in (fortarray));
 
 -- process fences
 BEGIN
