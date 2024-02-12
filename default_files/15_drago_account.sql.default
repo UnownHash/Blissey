@@ -7,7 +7,7 @@ insert ignore into blissey.accounts (datetime,rpl,dbaccounts,warn,suspended,bann
 select 
 @period,@rpl,
 count(username) as dbaccounts,
-ifnull(sum(case when warn=1 then 1 end),0) as warn,
+ifnull(sum(case when warn_expiration > unix_timestamp() then 1 end),0) as warn,
 ifnull(sum(case when suspended=1 then 1 end),0) as suspended,
 ifnull(sum(case when banned=1 then 1 end),0) as banned,
 ifnull(sum(case when last_selected<unix_timestamp() and (last_released<last_selected or last_released is NULL)  then 1 end),0) as inUse,

@@ -79,6 +79,8 @@ then
   cd $folder/cron_files && ./5_accountstats.sh
 #  sleep 1s
   cd $folder/cron_files && ./5_forts.sh
+# sleep 1s
+  cd $folder/cron_files && ./5_invasion.sh
 fi
 
 # table cleanup golbat pokemon_area_stats

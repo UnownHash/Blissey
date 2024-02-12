@@ -1,0 +1,36 @@
+-- settings
+select @period := concat(date(now() - interval 10140 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 10140 minute)) DIV 3600) * 3600));
+select @stop :=  concat(date(now() - interval 60 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 60 minute)) DIV 3600) * 3600));
+select @rpl  := 10080;
+
+-- aggregation
+INSERT IGNORE INTO stats_invasion (datetime,rpl,workers,avgTime,detect,failed,done,expired,qmin,qmax,qavg,grLine,leLine,giConf,giLine,gmin,gmax,gavg,lmin,lmax,lavg)
+SELECT
+@period,
+@rpl,
+max(workers),
+ifnull(sum(avgTime*done)/sum(done),0),
+sum(detect),
+sum(failed),
+sum(done),
+sum(expired),
+min(qmin),
+max(qmax),
+avg(qavg),
+sum(grLine),
+sum(leLine),
+sum(giConf),
+sum(giLine),
+min(gmin),
+max(gmax),
+sum(gavg*grLine)/sum(grLine),
+min(lmin),
+max(lmax),
+sum(lavg*leLine)/sum(leLine)
+
+FROM stats_invasion
+WHERE 
+datetime >= @period and
+datetime < @stop and
+rpl = 1440
+;
