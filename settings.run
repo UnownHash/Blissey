@@ -8,6 +8,18 @@ if [[ ! -f $folder/config.ini ]] ;then
   exit
 fi
 
+if ! command -v mysql &> /dev/null
+then
+    echo "mysql could not be found"
+    exit 1
+fi
+
+if ! command -v jq &> /dev/null
+then
+    echo "jq could not be found"
+    exit 1
+fi
+
 # Logging
 mkdir -p $folder/logs
 touch $folder/logs/log_$(date '+%Y%m').log
