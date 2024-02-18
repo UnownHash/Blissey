@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.2.2"
+      "version": "10.0.1"
     },
     {
       "type": "datasource",
@@ -355,7 +355,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.2.2",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
           "datasource": {
@@ -367,7 +367,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  count(distinct(a.name)) as 'areas',\r\n  sum(a.pokemon_mode_workers) as 'mon worker',\r\n  sum(ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\"))))  as 'mon length',\r\n  sum(ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / sum(a.pokemon_mode_workers) as '#mon loc/worker',\r\n  sum(b.stops) as '#stops',\r\n  sum(b.stops) / sum(a.pokemon_mode_workers) as '#quest/worker'\r\n\r\nFROM dragonite.area a\r\nLEFT JOIN blissey.stats_quest_area b ON a.name COLLATE utf8mb4_general_ci = area and b.datetime = concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900)) and b.rpl =15\r\nWHERE a.pokemon_mode_workers>0",
+          "rawSql": "SELECT\r\n  count(distinct(a.name)) as 'areas',\r\n  sum(a.pokemon_mode_workers) as 'mon worker',\r\n  sum(ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\"))))  as 'mon length',\r\n  sum(ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / sum(a.pokemon_mode_workers) as '#mon loc/worker',\r\n  sum(b.stops) as '#stops',\r\n  sum(b.stops) / sum(a.pokemon_mode_workers) as '#quest/worker'\r\n\r\nFROM ${Dragonite}.area a\r\nLEFT JOIN ${Blissey}.stats_quest_area b ON a.name COLLATE utf8mb4_general_ci = area and b.datetime = concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900)) and b.rpl =15\r\nWHERE a.pokemon_mode_workers>0",
           "refId": "A",
           "select": [
             [
@@ -575,7 +575,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.2.2",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
           "datasource": {
@@ -585,7 +585,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  count(distinct(a.name)) as 'areas',\r\n  sum(round(2*b.stops/$numQuest,2)) as '#quest_req',\r\n  ceiling(2*sum(b.stops)/$numQuest)-cast(sum(a.quest_mode_workers) as SIGNED) as 'quest_diff',\r\n  sum( round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) ) as '#mon_req',\r\n  round(sum( round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) )- sum( CAST(a.pokemon_mode_workers AS SIGNED) ) ,0) as 'mon_diff',\r\n  sum(pokemon_mode_workers) as 'current',\r\n  ceiling(greatest(sum(round(2*b.stops/$numQuest,2)),sum( round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) )) ) as 'final_req',\r\n  ceiling(greatest(sum(round(2*b.stops/$numQuest,2)),sum( round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) )) ) - sum(a.pokemon_mode_workers) as 'final_diff'\r\nFROM dragonite.area a\r\nLEFT JOIN blissey.stats_quest_area b ON a.name COLLATE utf8mb4_general_ci = area and b.datetime = concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900)) and b.rpl = 15\r\nWHERE a.pokemon_mode_workers>0\r\n",
+          "rawSql": "SELECT\r\n  count(distinct(a.name)) as 'areas',\r\n  sum(round(2*b.stops/$numQuest,2)) as '#quest_req',\r\n  ceiling(2*sum(b.stops)/$numQuest)-cast(sum(a.quest_mode_workers) as SIGNED) as 'quest_diff',\r\n  sum( round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) ) as '#mon_req',\r\n  round(sum( round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) )- sum( CAST(a.pokemon_mode_workers AS SIGNED) ) ,0) as 'mon_diff',\r\n  sum(pokemon_mode_workers) as 'current',\r\n  ceiling(greatest(sum(round(2*b.stops/$numQuest,2)),sum( round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) )) ) as 'final_req',\r\n  ceiling(greatest(sum(round(2*b.stops/$numQuest,2)),sum( round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) )) ) - sum(a.pokemon_mode_workers) as 'final_diff'\r\nFROM ${Dragonite}.area a\r\nLEFT JOIN ${Blissey}.stats_quest_area b ON a.name COLLATE utf8mb4_general_ci = area and b.datetime = concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900)) and b.rpl = 15\r\nWHERE a.pokemon_mode_workers>0\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -919,7 +919,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.2.2",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
           "datasource": {
@@ -931,7 +931,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  a.name,\r\n  a.pokemon_mode_workers as 'mon worker',\r\n  ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))  as 'mon length',\r\n  ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\"))) / a.pokemon_mode_workers as '#mon loc/worker',\r\n  sum(b.stops) as '#stops',\r\n  2*sum(stops)/(sum(a.pokemon_mode_workers)/count(a.pokemon_mode_workers)) as '#quest/worker'\r\n  \r\nFROM dragonite.area a\r\nLEFT JOIN blissey.stats_quest_area b ON a.name COLLATE utf8mb4_general_ci = area and b.datetime = concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900)) and b.rpl =15\r\n\r\nGROUP BY a.name\r\nORDER BY a.name",
+          "rawSql": "SELECT\r\n  a.name,\r\n  a.pokemon_mode_workers as 'mon worker',\r\n  ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))  as 'mon length',\r\n  ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\"))) / a.pokemon_mode_workers as '#mon loc/worker',\r\n  sum(b.stops) as '#stops',\r\n  2*sum(stops)/(sum(a.pokemon_mode_workers)/count(a.pokemon_mode_workers)) as '#quest/worker'\r\n  \r\nFROM ${Dragonite}.area a\r\nLEFT JOIN ${Blissey}.stats_quest_area b ON a.name COLLATE utf8mb4_general_ci = area and b.datetime = concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900)) and b.rpl =15\r\n\r\nGROUP BY a.name\r\nORDER BY a.name",
           "refId": "A",
           "select": [
             [
@@ -1162,7 +1162,7 @@
           }
         ]
       },
-      "pluginVersion": "10.2.2",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
           "datasource": {
@@ -1172,7 +1172,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  a.name,\r\n  round(2*sum(b.stops)/$numQuest,2) as '#quest_req',\r\n  (ceiling(2 * sum(b.stops) / $numQuest)) - IF(a.quest_mode_workers = 0, a.pokemon_mode_workers, a.quest_mode_workers) AS 'quest_diff',\r\n  round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) as '#mon_req',\r\n  CAST(ceiling( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ) AS SIGNED) - CAST(a.pokemon_mode_workers AS SIGNED) as 'mon_diff',\r\n  sum(pokemon_mode_workers) as 'current',\r\n  case when a.pokemon_mode_workers>0 then ceiling(greatest(round(2*sum(ifnull(b.stops,0))/$numQuest,2),round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2)) ) end as 'final_req',\r\n  case when a.pokemon_mode_workers>0 then ceiling((ceiling(greatest(round(2*sum(ifnull(b.stops,0))/$numQuest,2),round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2)) ))-a.pokemon_mode_workers) end as 'final_diff'\r\nFROM dragonite.area a\r\nLEFT JOIN blissey.stats_quest_area b ON a.name COLLATE utf8mb4_general_ci = area and b.datetime = concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900)) and b.rpl =15\r\n\r\nGROUP BY a.name\r\nORDER BY a.name",
+          "rawSql": "SELECT\r\n  a.name,\r\n  round(2*sum(b.stops)/$numQuest,2) as '#quest_req',\r\n  (ceiling(2 * sum(b.stops) / $numQuest)) - IF(a.quest_mode_workers = 0, a.pokemon_mode_workers, a.quest_mode_workers) AS 'quest_diff',\r\n  round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2) as '#mon_req',\r\n  CAST(ceiling( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ) AS SIGNED) - CAST(a.pokemon_mode_workers AS SIGNED) as 'mon_diff',\r\n  sum(pokemon_mode_workers) as 'current',\r\n  case when a.pokemon_mode_workers>0 then ceiling(greatest(round(2*sum(ifnull(b.stops,0))/$numQuest,2),round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2)) ) end as 'final_req',\r\n  case when a.pokemon_mode_workers>0 then ceiling((ceiling(greatest(round(2*sum(ifnull(b.stops,0))/$numQuest,2),round( (($locTime) * ROUND((LENGTH(a.pokemon_mode_route)-LENGTH(REPLACE(a.pokemon_mode_route, \",\", \"\"))+1) / (1 * LENGTH(\",\")))) / ($rtt*60) ,2)) ))-a.pokemon_mode_workers) end as 'final_diff'\r\nFROM ${Dragonite}.area a\r\nLEFT JOIN ${Blissey}.stats_quest_area b ON a.name COLLATE utf8mb4_general_ci = area and b.datetime = concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900)) and b.rpl =15\r\n\r\nGROUP BY a.name\r\nORDER BY a.name",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1200,9 +1200,46 @@
   "refresh": "",
   "revision": 1,
   "schemaVersion": 38,
+  "style": "dark",
   "tags": [],
   "templating": {
     "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "blissey",
+          "value": "blissey"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "Blissey",
+        "options": [],
+        "query": "mysql",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "dragonite",
+          "value": "dragonite"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "Dragonite",
+        "options": [],
+        "query": "mysql",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
       {
         "current": {
           "selected": false,
@@ -1272,7 +1309,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "30. draGOnite dimensioning overview",
-  "uid": "RVd7OmV4b",
-  "version": 5,
+  "uid": "RVd7OmV4bb",
+  "version": 2,
   "weekStart": ""
 }
