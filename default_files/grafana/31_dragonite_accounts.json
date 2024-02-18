@@ -23,7 +23,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.2.2"
+      "version": "10.0.1"
     },
     {
       "type": "datasource",
@@ -84,7 +84,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -98,7 +97,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -242,7 +240,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -256,7 +253,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -580,23 +576,21 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
+            "drawStyle": "line",
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 3,
+            "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -700,6 +694,174 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
+          "rawSql": "with data as (\r\nselect reusetime as time,count(reusetime) as accounts\r\nfrom\r\n(select\r\n(CASE WHEN last_selected is NULL\r\n  THEN now()\r\n  ELSE\r\n    CASE WHEN from_unixtime(last_selected)<now()-interval '$minimum_account_reuse_hours' hour\r\n      THEN\r\n        CASE WHEN consecutive_disable_count<=1\r\n          THEN\r\n            CASE WHEN from_unixtime(ifnull(last_disabled,0))+interval 4 day < now()\r\n              THEN now()\r\n              ELSE from_unixtime(ifnull(last_disabled,0))+interval 4 day\r\n            END\r\n          ELSE\r\n            CASE WHEN from_unixtime(ifnull(last_disabled,0))+interval 30 day < now()\r\n              THEN now()\r\n              ELSE from_unixtime(ifnull(last_disabled,0))+interval 30 day\r\n            END\r\n        END\r\n      ELSE\r\n        CASE WHEN consecutive_disable_count<=1\r\n          THEN greatest(from_unixtime(ifnull(last_disabled,0))+interval 4 day,from_unixtime(last_selected)+interval '$minimum_account_reuse_hours' hour)\r\n          ELSE greatest(from_unixtime(ifnull(last_disabled,0))+interval 30 day,from_unixtime(last_selected)+interval '$minimum_account_reuse_hours' hour)\r\n        END\r\n    END\r\nEND\r\n) as reusetime\r\n\t\t\r\nfrom account\r\nwhere\r\nsuspended=0 and\r\nbanned=0 and\r\ninvalid=0 and\r\nwarn_expiration < unix_timestamp()\r\n) a\r\ngroup by reusetime\r\norder by reusetime\r\n)\r\n\r\nselect\r\n  time,\r\n--  accounts,\r\n  sum(accounts) over (order by time) as cumulative_sum\r\nfrom data;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeShift": "0d+14d",
+      "title": "d2 usable accounts",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "time",
+                "targetField": "_time"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_DRAGONITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 3,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "disabled"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#accounts"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#accounts released per hour"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_DRAGONITE}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
           "rawSql": "SELECT\r\n  ifnull(left(from_unixtime(last_released),13),left(now(),13)) as '_time',\r\n  count(username) as '#accounts released per hour'  \r\nFROM account\r\nGROUP BY left(from_unixtime(last_released),13)\r\nORDER BY left(from_unixtime(last_released),13)",
           "refId": "A",
           "sql": {
@@ -749,7 +911,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -763,7 +924,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -823,7 +983,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 24
       },
       "id": 12,
       "options": {
@@ -908,7 +1068,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1080,7 +1241,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 32
       },
       "id": 11,
       "options": {
@@ -1096,7 +1257,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.2.2",
+      "pluginVersion": "10.0.1",
       "targets": [
         {
           "datasource": {
@@ -1134,6 +1295,7 @@
   "refresh": "",
   "revision": 1,
   "schemaVersion": 38,
+  "style": "dark",
   "tags": [],
   "templating": {
     "list": []
@@ -1145,7 +1307,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "31. draGOnite accounts",
-  "uid": "Pi-mGhwGf",
+  "uid": "Pi-mGhwGbc",
   "version": 3,
   "weekStart": ""
 }
