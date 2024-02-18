@@ -36,6 +36,7 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
   fi
 
 # set empty vars
+  if [[ -z $invasion_worker_name ]] ;then invasion_worker_name="dkmurisanidiot" ;fi
   if [[ -z $fort_area_name ]] ;then fort_area_name="dkmurisanidiot" ;fi
 
 # allow for fort area workers array
@@ -49,20 +50,20 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
   fi
 
 # get area/default data
-  rpc4=$(zgrep 'RPC Status 4 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc5=$(zgrep 'RPC Status 5 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc6=$(zgrep 'RPC Status 6 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc7=$(zgrep 'RPC Status 7 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc8=$(zgrep 'RPC Status 8 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc9=$(zgrep 'RPC Status 9 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc11=$(zgrep 'RPC Status 11 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc12=$(zgrep 'RPC Status 12 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc13=$(zgrep 'RPC Status 13 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc14=$(zgrep 'RPC Status 14 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc15=$(zgrep 'RPC Status 15 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc16=$(zgrep 'RPC Status 16 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc17=$(zgrep 'RPC Status 17 received' $plog | grep -v "${fort_area_name}" |wc -l)
-  rpc18=$(zgrep 'RPC Status 18 received' $plog | grep -v "${fort_area_name}" |wc -l)
+  rpc4=$(zgrep 'RPC Status 4 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc5=$(zgrep 'RPC Status 5 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc6=$(zgrep 'RPC Status 6 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc7=$(zgrep 'RPC Status 7 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc8=$(zgrep 'RPC Status 8 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc9=$(zgrep 'RPC Status 9 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc11=$(zgrep 'RPC Status 11 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc12=$(zgrep 'RPC Status 12 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc13=$(zgrep 'RPC Status 13 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc14=$(zgrep 'RPC Status 14 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc15=$(zgrep 'RPC Status 15 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc16=$(zgrep 'RPC Status 16 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc17=$(zgrep 'RPC Status 17 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  rpc18=$(zgrep 'RPC Status 18 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
   mitmUnknown=$(zgrep -c 'ERROR_UNKNOWN' $plog)
   mitmNoGame=$(zgrep -c 'ERROR_GAME_NOT_READY' $plog)
   mitmLogginIn=$(zgrep -c 'ERROR_LOGIN_IN_PROGRESS' $plog)
@@ -76,13 +77,17 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
   authReq=$(zgrep -c 'Requested auth' $plog)
   authed=$(zgrep -c 'Authenticated user' $plog)
   login=$(zgrep -c 'Login for user.*to device.*successful' $plog)
-  swWarnSusp=$(zgrep 'Account .* marked as suspended' $plog | grep -v "${fort_area_name}" |wc -l)
-  swBanned=$(zgrep 'Account .* marked as banned' $plog | grep -v "${fort_area_name}" |wc -l)
-  swDisabled=$(zgrep 'Account .* marked as disabled' $plog | grep -v "${fort_area_name}" |wc -l)
-  swDayLimit=$(zgrep 'Exceeded daily limit. New account needed' $plog | grep -v "${fort_area_name}" |wc -l)
-  swRange=$(zgrep 'Got out of range 10 times. Possibly exceeded daily limit. New account needed' $plog | grep -v "${fort_area_name}" |wc -l)
-  swTime=$(zgrep 'Maximum connection time exceeded' $plog | grep -v "${fort_area_name}" |wc -l)
-  backoff=$(zgrep 'BACKOFF: Error logging into Pogo\|BACKOFF: New account attempt' $plog | grep -v "${fort_area_name}" |wc -l)
+  swTotal=$(zgrep 'Final request counts' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swWarnSusp=$(zgrep 'Account .* marked as suspended' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swBanned=$(zgrep 'Account .* marked as banned' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swDisabled=$(zgrep 'Account .* marked as disabled' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swDayLimit=$(zgrep 'Exceeded daily limit. New account needed' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swRange=$(zgrep 'Got out of range 10 times. Possibly exceeded daily limit. New account needed' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swTime=$(zgrep 'Maximum connection time exceeded' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swStop=$(zgrep 'Pokestop is in cooldown, new account needed' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swLLapi=$(zgrep 'Low level api reports recycle required' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  swQdist=$(zgrep 'Long distance jump in questing' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
+  backoff=$(zgrep 'BACKOFF: Error logging into Pogo\|BACKOFF: New account attempt' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
   noAccount=$(zgrep -c 'No accounts available to authenticate' $plog)
   released24h=$(zgrep -c 'which is less than 24 hours ago. This is probably not what you want' $plog)
   released7d=$(zgrep -c 'which is less than 1 week ago. This is probably not what you want' $plog)
@@ -91,7 +96,7 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
   avgAuthT=$(zgrep 'Authenticated user' $plog | awk '{print $10}' | sed 's/)//g' | sed 's/\(m[0-9]\)/m\1/g' | awk -F"mm" '{ if (substr($NF,length($NF)-1) == "ms") {print substr($NF,1,length($NF)-2)} else if (substr($NF,length($NF)-1) == "µs") {print substr($NF,1,length($NF)-2) /1000} else if ($1 != $NF) {print $1*60000 + $NF*1000} else {print substr($NF,1,length($NF)-1) *1000} }' | jq -s 'if length == 0 then 0 else add/length end')
 
 # insert area/default data
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitmUnknown,mitmNoGame,mitmLogginIn,mitmTokenRej,mitmNotLogged,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,backoff,noAccount,released24h,released7d,minAuthT,maxAuthT,avgAuthT) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$mitmUnknown','$mitmNoGame','$mitmLogginIn','$mitmTokenRej','$mitmNotLogged','$mitmLoginErr','$proxyBan','$wsError','$wsClose','$wsMitmRecon','$authReq','$authed','$login','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$backoff','$noAccount','$released24h','$released7d','$minAuthT','$maxAuthT','$avgAuthT');"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $chanseydb -e "insert ignore into dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitmUnknown,mitmNoGame,mitmLogginIn,mitmTokenRej,mitmNotLogged,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff,noAccount,released24h,released7d,minAuthT,maxAuthT,avgAuthT) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$mitmUnknown','$mitmNoGame','$mitmLogginIn','$mitmTokenRej','$mitmNotLogged','$mitmLoginErr','$proxyBan','$wsError','$wsClose','$wsMitmRecon','$authReq','$authed','$login','$swTotal','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$swStop','$swLLapi','$swQdist','$backoff','$noAccount','$released24h','$released7d','$minAuthT','$maxAuthT','$avgAuthT');"
 
 # get fort data
   if [[ $fort_area_name != "dkmurisanidiot" ]] ;then
@@ -109,16 +114,50 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
     rpc16=$(zgrep 'RPC Status 16 received' $plog | grep "${fort_area_name}" | wc -l)
     rpc17=$(zgrep 'RPC Status 17 received' $plog | grep "${fort_area_name}" | wc -l)
     rpc18=$(zgrep 'RPC Status 18 received' $plog | grep "${fort_area_name}" | wc -l)
+    swTotal=$(zgrep 'Final request counts' $plog | grep "${fort_area_name}" |wc -l)
     swWarnSusp=$(zgrep 'Account .* marked as suspended' $plog | grep "${fort_area_name}" | wc -l)
     swBanned=$(zgrep 'Account .* marked as banned' $plog | grep "${fort_area_name}" | wc -l)
     swDisabled=$(zgrep 'Account .* marked as disabled' $plog | grep "${fort_area_name}" | wc -l)
     swDayLimit=$(zgrep 'Exceeded daily limit. New account needed' $plog | grep "${fort_area_name}" | wc -l)
     swRange=$(zgrep 'Got out of range 10 times. Possibly exceeded daily limit. New account needed' $plog | grep "${fort_area_name}" | wc -l)
     swTime=$(zgrep 'Maximum connection time exceeded' $plog | grep "${fort_area_name}" | wc -l)
+    swStop=$(zgrep 'Pokestop is in cooldown, new account needed' $plog | grep "${fort_area_name}" |wc -l)
+    swLLapi=$(zgrep 'Low level api reports recycle required' $plog | grep "${fort_area_name}"  |wc -l)
     backoff=$(zgrep 'BACKOFF: Error logging into Pogo\|BACKOFF: New account attempt' $plog | grep "${fort_area_name}" | wc -l)
 
 # insert fort data
-    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into dragoLog_fort (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,backoff) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$backoff');"
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $chanseydb -e "insert ignore into dragoLog_fort (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,backoff) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$swTotal','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','swStop','$swLLapi','$backoff');"
+  fi
+# get invasion data
+  if [[ $invasion_worker_name != "dkmurisanidiot" ]] ;then
+    rpc4=$(zgrep 'RPC Status 4 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc5=$(zgrep 'RPC Status 5 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc6=$(zgrep 'RPC Status 6 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc7=$(zgrep 'RPC Status 7 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc8=$(zgrep 'RPC Status 8 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc9=$(zgrep 'RPC Status 9 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc11=$(zgrep 'RPC Status 11 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc12=$(zgrep 'RPC Status 12 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc13=$(zgrep 'RPC Status 13 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc14=$(zgrep 'RPC Status 14 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc15=$(zgrep 'RPC Status 15 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc16=$(zgrep 'RPC Status 16 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc17=$(zgrep 'RPC Status 17 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    rpc18=$(zgrep 'RPC Status 18 received' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    swTotal=$(zgrep 'Final request counts' $plog | grep "\[${invasion_worker_name}_" |wc -l)
+    swWarnSusp=$(zgrep 'Account .* marked as suspended' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    swBanned=$(zgrep 'Account .* marked as banned' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    swDisabled=$(zgrep 'Account .* marked as disabled' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    swDayLimit=$(zgrep 'Exceeded daily limit. New account needed' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    swRange=$(zgrep 'Got out of range 10 times. Possibly exceeded daily limit. New account needed' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    swTime=$(zgrep 'Maximum connection time exceeded' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+    swStop=$(zgrep 'Pokestop is in cooldown, new account needed' $plog | grep "\[${invasion_worker_name}_" |wc -l)
+    swLLapi=$(zgrep 'Low level api reports recycle required' $plog | grep "\[${invasion_worker_name}_" |wc -l)
+    swQdist=$(zgrep 'Long distance jump in questing' $plog | grep "\[${invasion_worker_name}_" |wc -l)
+    backoff=$(zgrep 'BACKOFF: Error logging into Pogo\|BACKOFF: New account attempt' $plog | grep "\[${invasion_worker_name}_" | wc -l)
+
+# insert invasion data
+    MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $chanseydb -e "insert ignore into dragoLog_invasion (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$swTotal','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$swStop','$swLLapi','$swQdist','$backoff');"
   fi
 
 else
