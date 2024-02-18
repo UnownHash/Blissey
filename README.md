@@ -9,7 +9,8 @@ Processing is done on interval 15/60/1440/10080 minutes and can be displayed by 
 - tested on: mariadb 10.6
 - add Golbat/geojson/geofence.json or setup Koji api, containing your mon scan fences. Golbat will use these fences to write raw area mon stats to db.
 - enable stats in controller config so it writes raw worker stats
-- enable save logs in controller config is you want them processed 
+- enable save logs in controller config is you want them processed
+- mysql and jq installed
 
 ## 2 Setup
 - clone Blissey, `git clone https://github.com/UnownHash/Blissey.git && cd Blissey`
