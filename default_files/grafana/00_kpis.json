@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.2.2"
+      "version": "10.0.1"
     },
     {
       "type": "datasource",
@@ -77,7 +77,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -91,7 +90,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -241,7 +239,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -255,7 +252,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -362,7 +358,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -376,7 +371,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -558,7 +552,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -572,7 +565,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -722,6 +714,35 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_BLISSEY}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  avgTime as 'Invasion workers'\r\n\r\nFROM stats_invasion\r\nWHERE\r\n  $__timeFilter(datetime) and\r\n  RPL = '$rpl' \r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Proto handling time",
@@ -739,7 +760,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -753,7 +773,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -962,7 +981,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -976,7 +994,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1107,7 +1124,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1121,7 +1137,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1359,7 +1374,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1373,7 +1387,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1456,7 +1469,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(a.datetime, $__interval) AS \"time\",\r\n  ifnull(a.rpc4,0) + ifnull(d.rpc4,0) as 'rpc4',\r\n  ifnull(a.rpc5,0) + ifnull(d.rpc5,0) as 'rpc5',\r\n  ifnull(a.rpc6,0) + ifnull(d.rpc6,0) as 'rpc6',\r\n  ifnull(a.rpc7,0) + ifnull(d.rpc7,0) as 'rpc7',\r\n  ifnull(a.rpc8,0) + ifnull(d.rpc8,0) as 'rpc8',\r\n  ifnull(a.rpc9,0) + ifnull(d.rpc9,0) as 'rpc9',\r\n  ifnull(a.rpc11,0) + ifnull(d.rpc11,0) as 'rpc11',\r\n  ifnull(a.rpc12,0) + ifnull(d.rpc12,0) as 'rpc12',\r\n  ifnull(a.rpc13,0) + ifnull(d.rpc13,0) as 'rpc13',\r\n  ifnull(a.rpc14,0) + ifnull(d.rpc14,0) as 'rpc14',\r\n  ifnull(a.rpc15,0) + ifnull(d.rpc15,0) as 'rpc15',\r\n  ifnull(a.rpc16,0) + ifnull(d.rpc16,0) as 'rpc16',\r\n  ifnull(a.rpc17,0) + ifnull(d.rpc17,0) as 'rpc17',\r\n  ifnull(a.rpc18,0) + ifnull(d.rpc18,0) as 'rpc18',\r\n  ifnull(a.swWarnSusp,0)+ifnull(d.swWarnSusp,0) as 'Account warned',\r\n  ifnull(a.swBanned,0)+ifnull(d.swBanned,0) as 'Account banned',\r\n  ifnull(a.swDisabled,0)+ifnull(d.swDisabled,0) as 'Account disabled',\r\n  ifnull(a.swDayLimit,0)+ifnull(d.swDayLimit,0) as 'Exceeded daily limit',\r\n  ifnull(a.swRange,0)+ifnull(d.swRange,0) as 'Got out of range 10 times',\r\n  ifnull(a.swTime,0)+ifnull(d.swTime,0) as 'Maximum connection time exceeded',\r\n  ifnull(a.backoff,0)+ifnull(d.backoff,0) as 'backoff'\r\nFROM\r\n  dragoLog a\r\n  LEFT JOIN dragoLog_fort d ON a.datetime = d.datetime\r\n  and a.rpl = d.rpl\r\nWHERE\r\n  $__timeFilter(a.Datetime) and\r\n  a.RPL = '$rpl'\r\nGROUP BY 1\r\nORDER BY $__timeGroup(a.datetime, $__interval)",
+          "rawSql": "SELECT\r\n  $__timeGroup(a.datetime, $__interval) AS \"time\",\r\n  ifnull(a.rpc4,0) + ifnull(d.rpc4,0) as 'rpc4',\r\n  ifnull(a.rpc5,0) + ifnull(d.rpc5,0) as 'rpc5',\r\n  ifnull(a.rpc6,0) + ifnull(d.rpc6,0) as 'rpc6',\r\n  ifnull(a.rpc7,0) + ifnull(d.rpc7,0) as 'rpc7',\r\n  ifnull(a.rpc8,0) + ifnull(d.rpc8,0) as 'rpc8',\r\n  ifnull(a.rpc9,0) + ifnull(d.rpc9,0) as 'rpc9',\r\n  ifnull(a.rpc11,0) + ifnull(d.rpc11,0) as 'rpc11',\r\n  ifnull(a.rpc12,0) + ifnull(d.rpc12,0) as 'rpc12',\r\n  ifnull(a.rpc13,0) + ifnull(d.rpc13,0) as 'rpc13',\r\n  ifnull(a.rpc14,0) + ifnull(d.rpc14,0) as 'rpc14',\r\n  ifnull(a.rpc15,0) + ifnull(d.rpc15,0) as 'rpc15',\r\n  ifnull(a.rpc16,0) + ifnull(d.rpc16,0) as 'rpc16',\r\n  ifnull(a.rpc17,0) + ifnull(d.rpc17,0) as 'rpc17',\r\n  ifnull(a.rpc18,0) + ifnull(d.rpc18,0) as 'rpc18',\r\n  ifnull(a.swTotal,0)+ifnull(c.swTotal,0)+ifnull(d.swTotal,0) as 'Accounts rotated',\r\n  ifnull(a.swWarnSusp,0)+ifnull(c.swWarnSusp,0)+ifnull(d.swWarnSusp,0) as 'Warned',\r\n  ifnull(a.swBanned,0)+ifnull(c.swBanned,0)+ifnull(d.swBanned,0) as 'Banned',\r\n  ifnull(a.swDisabled,0)+ifnull(c.swDisabled,0)+ifnull(d.swDisabled,0) as 'Disabled',\r\n  ifnull(a.swDayLimit,0)+ifnull(c.swDayLimit,0)+ifnull(d.swDayLimit,0) as 'Daily limit',\r\n  ifnull(a.swRange,0)+ifnull(c.swRange,0)+ifnull(d.swRange,0) as 'Out of range 10 times',\r\n  ifnull(a.swTime,0)+ifnull(c.swTime,0)+ifnull(d.swTime,0) as 'Max connection time',\r\n  ifnull(a.swStop,0)+ifnull(c.swStop,0)+ifnull(d.swStop,0) as 'Stop cooldown',\r\n  ifnull(a.swLLapi,0)+ifnull(c.swLLapi,0)+ifnull(d.swLLapi,0) as 'LLapi',\r\n  ifnull(a.swQdist,0)+ifnull(c.swQdist,0)+ifnull(d.swQdist,0) as 'Quest distance',\r\n  ifnull(a.backoff,0)+ifnull(d.backoff,0) as 'backoff'\r\nFROM\r\n  dragoLog a\r\n  LEFT JOIN dragoLog_invasion c ON a.datetime=c.datetime and a.rpl=c.rpl\r\n  LEFT JOIN dragoLog_fort d ON a.datetime = d.datetime and a.rpl = d.rpl\r\nWHERE\r\n  $__timeFilter(a.Datetime) and\r\n  a.RPL = '$rpl'\r\nGROUP BY 1\r\nORDER BY $__timeGroup(a.datetime, $__interval)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1517,13 +1530,12 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "bars",
+            "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
@@ -1531,8 +1543,7 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepBefore",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -1652,13 +1663,17 @@
             "include": {
               "names": [
                 "time",
-                "Account warned",
-                "Account banned",
-                "Account disabled",
-                "Exceeded daily limit",
-                "Got out of range 10 times",
-                "Maximum connection time exceeded",
-                "backoff"
+                "backoff",
+                "Accounts rotated",
+                "Warned",
+                "Banned",
+                "Disabled",
+                "Daily limit",
+                "Out of range 10 times",
+                "Max connection time",
+                "Stop cooldown",
+                "LLapi",
+                "Quest distance"
               ]
             }
           }
@@ -1677,7 +1692,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1691,7 +1705,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1817,6 +1830,7 @@
   ],
   "refresh": "",
   "schemaVersion": 38,
+  "style": "dark",
   "tags": [],
   "templating": {
     "list": [
@@ -1871,7 +1885,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "00. KPIs",
-  "uid": "dfec5e24-1446-423d-a452-a24cad49fd41",
-  "version": 4,
+  "uid": "dfec5e24-1446-423d-a452-a24cad49fd41x",
+  "version": 2,
   "weekStart": ""
 }
