@@ -7,4 +7,4 @@ ALTER TABLE  `dragoLog`
   add column `monchange` int default NULL;
 
 -- update db version
-UPDATE version set version = 10 where version.key = 'blissey';
+UPDATE version set version = 11 where version.key = 'blissey';
