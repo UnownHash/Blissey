@@ -4,7 +4,7 @@ select @stop :=  concat(date(now() - interval 60 minute),' ', SEC_TO_TIME((TIME_
 select @rpl  := 10080;
 
 -- aggregation area/generic
-INSERT IGNORE INTO dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitmUnknown,mitmNoGame,mitmLogginIn,mitmTokenRej,mitmNotLogged,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff,noAccount,released24h,released7d,minAuthT,maxAuthT,avgAuthT)
+INSERT IGNORE INTO dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitm500,mitm501,mitm502,mitm503,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff,noAccount,released24h,released7d,minAuthT,maxAuthT,avgAuthT,monchange)
 SELECT
 @period,
 @rpl,
@@ -22,11 +22,10 @@ sum(rpc15),
 sum(rpc16),
 sum(rpc17),
 sum(rpc18),
-sum(mitmUnknown),
-sum(mitmNoGame),
-sum(mitmLogginIn),
-sum(mitmTokenRej),
-sum(mitmNotLogged),
+sum(mitm500),
+sum(mitm501),
+sum(mitm502),
+sum(mitm503),
 sum(mitmLoginErr),
 sum(proxyBan),
 sum(wsError),
@@ -49,7 +48,8 @@ sum(released24h),
 sum(released7d),
 min(minAuthT),
 max(maxAuthT),
-sum(avgAuthT*authed)/sum(authed)
+sum(avgAuthT*authed)/sum(authed),
+sum(monchange)
 
 FROM dragoLog
 WHERE

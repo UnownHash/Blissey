@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.0.1"
+      "version": "10.3.3"
     },
     {
       "type": "datasource",
@@ -83,6 +83,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -96,6 +97,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -121,7 +123,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -278,6 +281,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -291,6 +295,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "stepBefore",
             "lineWidth": 1,
             "pointSize": 5,
@@ -316,7 +321,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -437,6 +443,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -450,6 +457,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -479,7 +487,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -558,6 +567,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -571,6 +581,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -596,7 +607,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -676,7 +688,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n$__timeGroup(a.datetime,$__interval) AS \"time\",\r\nifnull(a.rpc4,0)+ifnull(c.rpc4,0)+ifnull(d.rpc4,0) as 'rpc4',\r\nifnull(a.rpc5,0)+ifnull(c.rpc5,0)+ifnull(d.rpc5,0) as 'rpc5',\r\nifnull(a.rpc6,0)+ifnull(c.rpc6,0)+ifnull(d.rpc6,0) as 'rpc6',\r\nifnull(a.rpc7,0)+ifnull(c.rpc7,0)+ifnull(d.rpc7,0) as 'rpc7',\r\nifnull(a.rpc8,0)+ifnull(c.rpc8,0)+ifnull(d.rpc8,0) as 'rpc8',\r\nifnull(a.rpc9,0)+ifnull(c.rpc9,0)+ifnull(d.rpc9,0) as 'rpc9',\r\nifnull(a.rpc11,0)+ifnull(c.rpc11,0)+ifnull(d.rpc11,0) as 'rpc11',\r\nifnull(a.rpc12,0)+ifnull(c.rpc12,0)+ifnull(d.rpc12,0) as 'rpc12',\r\nifnull(a.rpc13,0)+ifnull(c.rpc13,0)+ifnull(d.rpc13,0) as 'rpc13',\r\nifnull(a.rpc14,0)+ifnull(c.rpc14,0)+ifnull(d.rpc14,0) as 'rpc14',\r\nifnull(a.rpc15,0)+ifnull(c.rpc15,0)+ifnull(d.rpc15,0) as 'rpc15',\r\nifnull(a.rpc16,0)+ifnull(c.rpc16,0)+ifnull(d.rpc16,0) as 'rpc16',\r\nifnull(a.rpc17,0)+ifnull(c.rpc17,0)+ifnull(d.rpc17,0) as 'rpc17',\r\nifnull(a.rpc18,0)+ifnull(c.rpc18,0)+ifnull(d.rpc18,0) as 'rpc18',\r\nifnull(a.wsError,0) as 'ws error',\r\nifnull(a.wsClose,0) as 'ws closed',\r\nifnull(a.wsMitmRecon,0) as 'mitm initiated reconnect',\r\nifnull(a.mitmUnknown,0) as 'unknown error',\r\nifnull(a.mitmNoGame,0) as 'game not ready',\r\nifnull(a.mitmLogginIn,0) as 'login in progress',\r\nifnull(a.mitmTokenRej,0) as 'token rejected',\r\nifnull(a.mitmNotLogged,0) as 'not logged in',\r\nifnull(a.mitmLoginErr,0) as 'login error',\r\nifnull(a.proxyBan,0) as 'proxy 3h ptc login ban',\r\nifnull(a.authReq,0) as 'Requesting auth',\r\nifnull(a.login,0) as 'Login successful',\r\nifnull(a.swTotal,0)+ifnull(c.swTotal,0)+ifnull(d.swTotal,0) as 'Accounts rotated',\r\nifnull(a.swWarnSusp,0)+ifnull(c.swWarnSusp,0)+ifnull(d.swWarnSusp,0) as 'Warned',\r\nifnull(a.swBanned,0)+ifnull(c.swBanned,0)+ifnull(d.swBanned,0) as 'Banned',\r\nifnull(a.swDisabled,0)+ifnull(c.swDisabled,0)+ifnull(d.swDisabled,0) as 'Disabled',\r\nifnull(a.swDayLimit,0)+ifnull(c.swDayLimit,0)+ifnull(d.swDayLimit,0) as 'Daily limit',\r\nifnull(a.swRange,0)+ifnull(c.swRange,0)+ifnull(d.swRange,0) as 'Out of range 10 times',\r\nifnull(a.swTime,0)+ifnull(c.swTime,0)+ifnull(d.swTime,0) as 'Max connection time',\r\nifnull(a.swStop,0)+ifnull(c.swStop,0)+ifnull(d.swStop,0) as 'Stop cooldown',\r\nifnull(a.swLLapi,0)+ifnull(c.swLLapi,0)+ifnull(d.swLLapi,0) as 'LLapi',\r\nifnull(a.swQdist,0)+ifnull(c.swQdist,0)+ifnull(d.swQdist,0) as 'Quest distance',\r\nifnull(a.backoff,0)+ifnull(c.backoff,0)+ifnull(d.backoff,0) as 'backoff',\r\nifnull(a.noAccount,0) as 'No accounts available',\r\nifnull(a.released24h,0) as 'released less then 24 hours ago',\r\nifnull(a.released7d,0) as 'released less then 7 days ago',\r\nifnull(a.minAuthT,0) as 'minimum auth time',\r\nifnull(a.maxAuthT,0) as 'maximum auth time',\r\nifnull(a.avgAuthT,0) as 'average auth time'\r\n\r\nFROM dragoLog a\r\nLEFT JOIN dragoLog_invasion c ON a.datetime=c.datetime and a.rpl=c.rpl\r\nLEFT JOIN dragoLog_fort d ON a.datetime=d.datetime and a.rpl=d.rpl \r\nWHERE\r\na.RPL='$RPL'\r\nGROUP BY 1  \r\nORDER BY $__timeGroup(a.datetime,$__interval)",
+          "rawSql": "SELECT\r\n$__timeGroup(a.datetime,$__interval) AS \"time\",\r\nifnull(a.rpc4,0)+ifnull(c.rpc4,0)+ifnull(d.rpc4,0) as 'rpc4',\r\nifnull(a.rpc5,0)+ifnull(c.rpc5,0)+ifnull(d.rpc5,0) as 'rpc5',\r\nifnull(a.rpc6,0)+ifnull(c.rpc6,0)+ifnull(d.rpc6,0) as 'rpc6',\r\nifnull(a.rpc7,0)+ifnull(c.rpc7,0)+ifnull(d.rpc7,0) as 'rpc7',\r\nifnull(a.rpc8,0)+ifnull(c.rpc8,0)+ifnull(d.rpc8,0) as 'rpc8',\r\nifnull(a.rpc9,0)+ifnull(c.rpc9,0)+ifnull(d.rpc9,0) as 'rpc9',\r\nifnull(a.rpc11,0)+ifnull(c.rpc11,0)+ifnull(d.rpc11,0) as 'rpc11',\r\nifnull(a.rpc12,0)+ifnull(c.rpc12,0)+ifnull(d.rpc12,0) as 'rpc12',\r\nifnull(a.rpc13,0)+ifnull(c.rpc13,0)+ifnull(d.rpc13,0) as 'rpc13',\r\nifnull(a.rpc14,0)+ifnull(c.rpc14,0)+ifnull(d.rpc14,0) as 'rpc14',\r\nifnull(a.rpc15,0)+ifnull(c.rpc15,0)+ifnull(d.rpc15,0) as 'rpc15',\r\nifnull(a.rpc16,0)+ifnull(c.rpc16,0)+ifnull(d.rpc16,0) as 'rpc16',\r\nifnull(a.rpc17,0)+ifnull(c.rpc17,0)+ifnull(d.rpc17,0) as 'rpc17',\r\nifnull(a.rpc18,0)+ifnull(c.rpc18,0)+ifnull(d.rpc18,0) as 'rpc18',\r\nifnull(a.wsError,0) as 'ws error',\r\nifnull(a.wsClose,0) as 'ws closed',\r\nifnull(a.wsMitmRecon,0) as 'mitm initiated reconnect',\r\nifnull(a.mitm500,0) as 'unknown error',\r\nifnull(a.mitm501,0) as 'retry later',\r\nifnull(a.mitm502,0) as 'worker stopped',\r\nifnull(a.mitm503,0) as 'reconnect',\r\nifnull(a.mitmLoginErr,0) as 'total login error',\r\nifnull(a.proxyBan,0) as 'proxy 3h ptc login ban',\r\nifnull(a.authReq,0) as 'Requesting auth',\r\nifnull(a.login,0) as 'Login successful',\r\nifnull(a.swTotal,0)+ifnull(c.swTotal,0)+ifnull(d.swTotal,0) as 'Accounts rotated',\r\nifnull(a.swWarnSusp,0)+ifnull(c.swWarnSusp,0)+ifnull(d.swWarnSusp,0) as 'Warned',\r\nifnull(a.swBanned,0)+ifnull(c.swBanned,0)+ifnull(d.swBanned,0) as 'Banned',\r\nifnull(a.swDisabled,0)+ifnull(c.swDisabled,0)+ifnull(d.swDisabled,0) as 'Disabled',\r\nifnull(a.swDayLimit,0)+ifnull(c.swDayLimit,0)+ifnull(d.swDayLimit,0) as 'Daily limit',\r\nifnull(a.swRange,0)+ifnull(c.swRange,0)+ifnull(d.swRange,0) as 'Out of range 10 times',\r\nifnull(a.swTime,0)+ifnull(c.swTime,0)+ifnull(d.swTime,0) as 'Max connection time',\r\nifnull(a.swStop,0)+ifnull(c.swStop,0)+ifnull(d.swStop,0) as 'Stop cooldown',\r\nifnull(a.swLLapi,0)+ifnull(c.swLLapi,0)+ifnull(d.swLLapi,0) as 'LLapi',\r\nifnull(a.swQdist,0)+ifnull(c.swQdist,0)+ifnull(d.swQdist,0) as 'Quest distance',\r\nifnull(a.backoff,0)+ifnull(c.backoff,0)+ifnull(d.backoff,0) as 'backoff',\r\nifnull(a.noAccount,0) as 'No accounts available',\r\nifnull(a.released24h,0) as 'released less then 24 hours ago',\r\nifnull(a.released7d,0) as 'released less then 7 days ago',\r\nifnull(a.minAuthT,0) as 'minimum auth time',\r\nifnull(a.maxAuthT,0) as 'maximum auth time',\r\nifnull(a.avgAuthT,0) as 'average auth time',\r\nifnull(a.monchange,0) as 'Pokemon change'\r\n\r\nFROM dragoLog a\r\nLEFT JOIN dragoLog_invasion c ON a.datetime=c.datetime and a.rpl=c.rpl\r\nLEFT JOIN dragoLog_fort d ON a.datetime=d.datetime and a.rpl=d.rpl \r\nWHERE\r\na.RPL='$RPL'\r\nGROUP BY 1  \r\nORDER BY $__timeGroup(a.datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -748,6 +760,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -761,6 +774,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -790,7 +804,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -866,6 +881,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -879,6 +895,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -904,7 +921,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -958,12 +976,10 @@
             "include": {
               "names": [
                 "Time",
-                "unknown error",
-                "game not ready",
-                "login in progress",
-                "token rejected",
-                "not logged in",
-                "login error"
+                "retry later",
+                "worker stopped",
+                "reconnect",
+                "total login error"
               ]
             }
           }
@@ -982,6 +998,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -995,6 +1012,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1020,7 +1038,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1081,6 +1100,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1094,6 +1114,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1119,7 +1140,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1194,6 +1216,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1207,6 +1230,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1232,7 +1256,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1294,6 +1319,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1307,6 +1333,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1332,7 +1359,137 @@
                 "value": null
               }
             ]
+          },
+          "unitScale": true
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rpc8"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pokemon change"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 33
+      },
+      "id": 59,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 2,
+          "refId": "A"
+        }
+      ],
+      "title": "pokemon changed",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "Pokemon change"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1352,8 +1509,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 33
+        "x": 0,
+        "y": 41
       },
       "id": 6,
       "options": {
@@ -1400,7 +1557,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 49
       },
       "id": 22,
       "panels": [
@@ -1450,8 +1607,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1571,8 +1727,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1773,8 +1928,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1891,8 +2045,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -2014,7 +2167,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 50
       },
       "id": 20,
       "panels": [
@@ -2064,8 +2217,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2185,8 +2337,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -2387,8 +2538,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2505,8 +2655,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -2628,7 +2777,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 51
       },
       "id": 19,
       "panels": [
@@ -2678,8 +2827,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2799,8 +2947,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -3001,8 +3148,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3119,8 +3265,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -3238,8 +3383,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
@@ -3272,6 +3416,6 @@
   "timezone": "",
   "title": "10. Dragonite log",
   "uid": "p-Gev9r7p",
-  "version": 4,
+  "version": 2,
   "weekStart": ""
 }
