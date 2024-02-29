@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_DRAGONITE",
-      "label": "dragonite",
+      "name": "DS_MYSQL",
+      "label": "mysql",
       "description": "",
       "type": "datasource",
       "pluginId": "mysql",
@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.3.3"
+      "version": "10.3.1"
     },
     {
       "type": "datasource",
@@ -62,7 +62,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_DRAGONITE}"
+        "uid": "${DS_MYSQL}"
       },
       "description": "WHERE a.pokemon_mode_workers>0",
       "fieldConfig": {
@@ -356,12 +356,12 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.3.3",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -415,7 +415,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_DRAGONITE}"
+        "uid": "${DS_MYSQL}"
       },
       "description": "WHERE a.pokemon_mode_workers>0",
       "fieldConfig": {
@@ -577,12 +577,12 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.3.3",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -615,7 +615,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_DRAGONITE}"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -922,12 +922,12 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.3.3",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -981,7 +981,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_DRAGONITE}"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1166,12 +1166,12 @@
           }
         ]
       },
-      "pluginVersion": "10.3.3",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1208,40 +1208,42 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "blissey",
-          "value": "HGdzO9rnk"
+        "current": {},
+        "datasource": {
+          "type": "mysql",
+          "uid": "${DS_MYSQL}"
         },
+        "definition": "SHOW DATABASES",
         "hide": 0,
         "includeAll": false,
         "multi": false,
         "name": "Blissey",
         "options": [],
-        "query": "mysql",
-        "queryValue": "",
+        "query": "SHOW DATABASES",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "type": "datasource"
+        "sort": 0,
+        "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "dragonite",
-          "value": "4pUddm4Vk"
+        "current": {},
+        "datasource": {
+          "type": "mysql",
+          "uid": "${DS_MYSQL}"
         },
+        "definition": "SHOW DATABASES",
         "hide": 0,
         "includeAll": false,
         "multi": false,
         "name": "Dragonite",
         "options": [],
-        "query": "mysql",
-        "queryValue": "",
+        "query": "SHOW DATABASES",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "type": "datasource"
+        "sort": 0,
+        "type": "query"
       },
       {
         "current": {
@@ -1313,6 +1315,6 @@
   "timezone": "",
   "title": "30. draGOnite dimensioning overview",
   "uid": "RVd7OmV4bb",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
