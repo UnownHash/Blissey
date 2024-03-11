@@ -64,12 +64,11 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
   rpc16=$(zgrep 'RPC Status 16 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
   rpc17=$(zgrep 'RPC Status 17 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
   rpc18=$(zgrep 'RPC Status 18 received' $plog | grep -v "\[${invasion_worker_name}_" | grep -v "${fort_area_name}" |wc -l)
-  mitmUnknown=$(zgrep -c 'ERROR_UNKNOWN' $plog)
-  mitmNoGame=$(zgrep -c 'ERROR_GAME_NOT_READY' $plog)
-  mitmLogginIn=$(zgrep -c 'ERROR_LOGIN_IN_PROGRESS' $plog)
-  mitmTokenRej=$(zgrep -c 'ERROR_TOKEN_REJECTED' $plog)
-  mitmNotLogged=$(zgrep -c 'ERROR_NOT_LOGGED_IN' $plog)
-  mitmLoginErr=$(zgrep -c 'Login for user error' $plog)
+  mitm500=$(zgrep -c 'ERROR_UNKNOWN' $plog)
+  mitm501=$(zgrep -c 'ERROR_RETRY_LATER' $plog)
+  mitm502=$(zgrep -c 'ERROR_WORKER_STOPPED' $plog)
+  mitm503=$(zgrep -c 'ERROR_RECONNECT' $plog)
+  mitmLoginErr=$(zgrep -c 'Login for user.*error' $plog)
   proxyBan=$(zgrep -c 'PTC Ban Detected on proxy' $plog)
   wsError=$(zgrep -c 'WS Error' $plog)
   wsClose=$(zgrep -c 'WS Has been closed' $plog)
@@ -94,9 +93,10 @@ if [[ $(ls -l $dlog | wc -l) != 0  ]] ;then
   minAuthT=$(zgrep 'Authenticated user' $plog | awk '{print $10}' | sed 's/)//g' | sed 's/\(m[0-9]\)/m\1/g' | awk -F"mm" '{ if (substr($NF,length($NF)-1) == "ms") {print substr($NF,1,length($NF)-2)} else if (substr($NF,length($NF)-1) == "µs") {print substr($NF,1,length($NF)-2) /1000} else if ($1 != $NF) {print $1*60000 + $NF*1000} else {print substr($NF,1,length($NF)-1) *1000} }' | jq -s min)
   maxAuthT=$(zgrep 'Authenticated user' $plog | awk '{print $10}' | sed 's/)//g' | sed 's/\(m[0-9]\)/m\1/g' | awk -F"mm" '{ if (substr($NF,length($NF)-1) == "ms") {print substr($NF,1,length($NF)-2)} else if (substr($NF,length($NF)-1) == "µs") {print substr($NF,1,length($NF)-2) /1000} else if ($1 != $NF) {print $1*60000 + $NF*1000} else {print substr($NF,1,length($NF)-1) *1000} }' | jq -s max)
   avgAuthT=$(zgrep 'Authenticated user' $plog | awk '{print $10}' | sed 's/)//g' | sed 's/\(m[0-9]\)/m\1/g' | awk -F"mm" '{ if (substr($NF,length($NF)-1) == "ms") {print substr($NF,1,length($NF)-2)} else if (substr($NF,length($NF)-1) == "µs") {print substr($NF,1,length($NF)-2) /1000} else if ($1 != $NF) {print $1*60000 + $NF*1000} else {print substr($NF,1,length($NF)-1) *1000} }' | jq -s 'if length == 0 then 0 else add/length end')
+  monchange=$(zgrep -c 'Encounter.*pokemon changed' $plog)
 
 # insert area/default data
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitmUnknown,mitmNoGame,mitmLogginIn,mitmTokenRej,mitmNotLogged,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff,noAccount,released24h,released7d,minAuthT,maxAuthT,avgAuthT) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$mitmUnknown','$mitmNoGame','$mitmLogginIn','$mitmTokenRej','$mitmNotLogged','$mitmLoginErr','$proxyBan','$wsError','$wsClose','$wsMitmRecon','$authReq','$authed','$login','$swTotal','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$swStop','$swLLapi','$swQdist','$backoff','$noAccount','$released24h','$released7d','$minAuthT','$maxAuthT','$avgAuthT');"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb -e "insert ignore into dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitm500,mitm501,mitm502,mitm503,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff,noAccount,released24h,released7d,minAuthT,maxAuthT,avgAuthT,monchange) values ('$process_time',5,'$rpc4','$rpc5','$rpc6','$rpc7','$rpc8','$rpc9','$rpc11','$rpc12','$rpc13','$rpc14','$rpc15','$rpc16','$rpc17','$rpc18','$mitm500','$mitm501','$mitm502','$mitm503','$mitmLoginErr','$proxyBan','$wsError','$wsClose','$wsMitmRecon','$authReq','$authed','$login','$swTotal','$swWarnSusp','$swBanned','$swDisabled','$swDayLimit','$swRange','$swTime','$swStop','$swLLapi','$swQdist','$backoff','$noAccount','$released24h','$released7d','$minAuthT','$maxAuthT','$avgAuthT','$monchange');"
 
 # get fort data
   if [[ $fort_area_name != "dkmurisanidiot" ]] ;then
