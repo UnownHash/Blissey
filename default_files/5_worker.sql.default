@@ -40,8 +40,8 @@ sum(gmoDelay)/1000
 from dragonite.stats_workers
 
 where
-CONVERT_TZ(datetime, '+00:00', @@global.time_zone) >= @period and
-CONVERT_TZ(datetime, '+00:00', @@global.time_zone) < @stop
+datetime >= @period and
+datetime < @stop
 
 group by drago_worker,mode
 ;
