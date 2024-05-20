@@ -112,7 +112,7 @@ if [[ $drago_backup == "true" ]]
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   mkdir -p $folder/dragobackup
-  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $dragonitedb > $folder/dragobackup/dragobackup_$(date +%Y-%m-%d).sql
+  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $controllerdb  > $folder/dragobackup/dragobackup_$(date +%Y-%m-%d).sql
   cd $folder/dragobackup && tar --remove-files -czvf dragobackup_$(date +%Y-%m-%d).sql.tar.gz dragobackup_$(date +%Y-%m-%d).sql
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
