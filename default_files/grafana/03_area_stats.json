@@ -61,7 +61,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${blisseyDS}"
+        "uid": "${DS_BLISSEY}"
       },
       "fieldConfig": {
         "defaults": {
@@ -981,8 +981,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1186,8 +1185,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1349,19 +1347,9 @@
     "list": [
       {
         "current": {},
-        "includeAll": false,
-        "name": "blisseyDS",
-        "options": [],
-        "query": "mysql",
-        "refresh": 1,
-        "regex": "/.*blissey.*/",
-        "type": "datasource"
-      },
-      {
-        "current": {},
         "datasource": {
           "type": "mysql",
-          "uid": "${blisseyDS}"
+          "uid": "${DS_BLISSEY}"
         },
         "definition": "select distinct(rpl) from stats_mon_area;",
         "includeAll": false,
@@ -1394,7 +1382,7 @@
         "current": {},
         "datasource": {
           "type": "mysql",
-          "uid": "${blisseyDS}"
+          "uid": "${DS_BLISSEY}"
         },
         "definition": "select distinct(fence) from stats_mon_area;",
         "includeAll": true,
@@ -1416,6 +1404,6 @@
   "timezone": "",
   "title": "03. Area stats",
   "uid": "KY-d_hOMh",
-  "version": 2,
+  "version": 4,
   "weekStart": ""
 }

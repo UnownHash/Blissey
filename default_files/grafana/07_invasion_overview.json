@@ -218,7 +218,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${blisseyDS}"
+        "uid": "${DS_BLISSEY}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1121,8 +1121,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1280,8 +1279,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1439,8 +1437,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1598,8 +1595,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1715,19 +1711,9 @@
     "list": [
       {
         "current": {},
-        "includeAll": false,
-        "name": "blisseyDS",
-        "options": [],
-        "query": "mysql",
-        "refresh": 1,
-        "regex": "/.*blissey.*/",
-        "type": "datasource"
-      },
-      {
-        "current": {},
         "datasource": {
           "type": "mysql",
-          "uid": "${blisseyDS}"
+          "uid": "${DS_BLISSEY}"
         },
         "definition": "select distinct(RPL) from stats_invasion;",
         "includeAll": false,
@@ -1749,6 +1735,6 @@
   "timezone": "",
   "title": "07. Invasion stats",
   "uid": "Pi-mGhwGi",
-  "version": 2,
+  "version": 4,
   "weekStart": ""
 }

@@ -887,8 +887,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1031,8 +1030,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1296,8 +1294,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1435,8 +1432,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1528,7 +1524,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${blisseyDS}"
+        "uid": "${DS_BLISSEY}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1573,8 +1569,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1789,8 +1784,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1913,8 +1907,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1998,19 +1991,9 @@
     "list": [
       {
         "current": {},
-        "includeAll": false,
-        "name": "blisseyDS",
-        "options": [],
-        "query": "mysql",
-        "refresh": 1,
-        "regex": "/.*blissey.*/",
-        "type": "datasource"
-      },
-      {
-        "current": {},
         "datasource": {
           "type": "mysql",
-          "uid": "${blisseyDS}"
+          "uid": "${DS_BLISSEY}"
         },
         "definition": "select distinct(RPL) from stats_worker;",
         "includeAll": false,
@@ -2043,7 +2026,7 @@
         "current": {},
         "datasource": {
           "type": "mysql",
-          "uid": "${blisseyDS}"
+          "uid": "${DS_BLISSEY}"
         },
         "definition": "select LEFT(controller_worker, LENGTH(controller_worker) - LENGTH(SUBSTRING_INDEX(controller_worker, '_', -1)) - 1) from stats_worker where rpl=5 and datetime>now() - interval 7 day group by controller_worker;",
         "includeAll": true,
@@ -2116,6 +2099,6 @@
   "timezone": "",
   "title": "02. Area worker stats",
   "uid": "ZKINe-OMb",
-  "version": 3,
+  "version": 5,
   "weekStart": ""
 }
