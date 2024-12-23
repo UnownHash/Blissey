@@ -14,7 +14,7 @@ exec 2>> $folder/logs/log_$(date '+%Y%m').log
 if "$workerstats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $controllerdb < $folder/cron_files/5_worker.sql
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $dragonitedb < $folder/cron_files/5_worker.sql
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl5 worker stats processing" >> $folder/logs/log_$(date '+%Y%m').log
@@ -76,11 +76,25 @@ if [[ $dragonitelog == "true" ]]
 then
   cd $folder/cron_files && ./5_dragonitelog.sh
 #  sleep 1s
-  cd $folder/cron_files && ./5_accountstats.sh
+#  cd $folder/cron_files && ./5_accountstats.sh
 #  sleep 1s
   cd $folder/cron_files && ./5_forts.sh
 # sleep 1s
   cd $folder/cron_files && ./5_invasion.sh
+fi
+
+# process multi blissey
+if [[ $multiblissey == "true" ]];then
+  sleep 10s
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/cron_files/5_mon_area_multi.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/cron_files/5_quest_area_multi.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/cron_files/5_worker_multi.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/cron_files/5_dragonite_multi.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/cron_files/5_fort_multi.sql
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl5 processing to combined blissey db" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
 # table cleanup golbat pokemon_area_stats
@@ -96,11 +110,11 @@ if [[ ! -z $area_raw ]] ;then
   echo "[$start] [$stop] [$diff] cleanup golbat table pokemon_area_stats" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
-# table cleanup controller stats_workers
+# table cleanup dragonite stats_workers
 if [[ ! -z $worker_raw ]] && [[ $workerstats == "true" ]] ;then
   start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $controllerdb -e "delete from stats_workers where datetime < utc_timestamp() - interval $worker_raw day;"
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $dragonitedb -e "delete from stats_workers where datetime < utc_timestamp() - interval $worker_raw day;"
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
-  echo "[$start] [$stop] [$diff] cleanup controller table stats_workers" >> $folder/logs/log_$(date '+%Y%m').log
+  echo "[$start] [$stop] [$diff] cleanup dragonite table stats_workers" >> $folder/logs/log_$(date '+%Y%m').log
 fi

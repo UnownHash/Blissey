@@ -15,13 +15,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.2.2"
+      "version": "11.4.0"
     },
     {
       "type": "datasource",
       "id": "mysql",
       "name": "MySQL",
-      "version": "1.0.0"
+      "version": "11.3.1"
     },
     {
       "type": "panel",
@@ -57,9 +57,9 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -67,13 +67,14 @@
         "y": 0
       },
       "id": 27,
+      "panels": [],
       "title": "Worker stats (from d2 worker stats)",
       "type": "row"
     },
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -87,6 +88,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -148,6 +150,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -157,7 +160,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) AS \"time\",\r\n  count(controller_worker) as 'fort: workers',\r\n  sum(loc_time)/sum(loc_success) AS \"fort: Location handling time\",\r\n  sum(loc_count) AS \"fort: Locations handled\",\r\n  100*sum(loc_success)/sum(loc_count) AS \"fort: Location success rate\",\r\n  sum(gmos) as \"fort: total GMOs\",\r\n  sum(retries) as \"fort: retries\",\r\n  sum(timeElapsed)/sum(loc_count) as \"fort: proto time\",\r\n  sum(locationDelay)/(sum(locationDelay)+sum(timeElapsed)) as \"fort: rate location delay\",\r\n  (0.25*(sum(retries)-sum(gmoNoCell)))/(sum(locationDelay)+sum(timeElapsed)) as \"fort: rate gmo no pokemon delay\",\r\n  (0.5*sum(gmoNoCell))/(sum(locationDelay)+sum(timeElapsed)) as \"fort: rate gmo no cell delay\",\r\n  (sum(timeElapsed)-(0.5*sum(gmoNoCell))-(0.25*(sum(retries)-sum(gmoNoCell))))/(sum(locationDelay)+sum(timeElapsed)) as \"fort: real proto time\",\r\n  sum(gmoGivingUp) as \"fort: GMO giving up\",\r\n  (sum(gmo0fail)-sum(gmo1fail))/sum(gmo0fail) as 'GMO success after retry #1',\r\n  (sum(gmo1fail)-sum(gmo2fail))/sum(gmo0fail) as '#2',\r\n  (sum(gmo2fail)-sum(gmo3fail))/sum(gmo0fail) as '#3',\r\n  (sum(gmo3fail)-sum(gmo4fail))/sum(gmo0fail) as '#4',\r\n  (sum(gmo4fail)-sum(gmo5fail))/sum(gmo0fail) as '#5',\r\n  (sum(gmo5fail)-sum(gmo6fail))/sum(gmo0fail) as '#6',\r\n  (sum(gmo6fail)-sum(gmo7fail))/sum(gmo0fail) as '#7',\r\n  (sum(gmo7fail)-sum(gmo8fail))/sum(gmo0fail) as '#8',\r\n  100*sum(gmoInitialSuccess)/sum(loc_count) as 'fort: gmo initial success rate',\r\n  100*sum(gmoGivingUp)/sum(loc_count) as 'fort: gmo failure rate'\r\nFROM stats_worker\r\nWHERE\r\n  $__timeFilter(Datetime) and\r\n  RPL='$RPL' and\r\n  controller_worker in ($drago_worker)\r\nGROUP BY 1  \r\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) AS \"time\",\r\n  case when count(controller_worker)=1 then numrep else count(controller_worker) end as 'fort: workers',\r\n--  sum(mons_seen) AS 'fort: Mons scanned',\r\n--  sum(mons_enc) AS 'fort: Mons encountered',\r\n--  100*sum(mons_enc)/sum(mons_seen) AS 'fort: %IV',\r\n  sum(loc_time)/sum(loc_success) AS \"fort: Location handling time\",\r\n  sum(loc_count) AS \"fort: Locations handled\",\r\n  100*sum(loc_success)/sum(loc_count) AS \"fort: Location success rate\",\r\n--  100*sum(numRep)/(sum(rpl)/5) AS \"fort: % raw data received\",\r\n--  sum(rpl)*60 - sum(loc_time) AS \"fort: lost scanning time\",\r\n--  sum(stops) as \"#Stops spun\",\r\n--  sum(quests) as \"#Quests scanned\"\r\n--  sum(distance) as \"fort: distance\",\r\n  sum(gmos) as \"fort: total GMOs\",\r\n  sum(retries) as \"fort: retries\",\r\n  sum(timeElapsed)/sum(loc_count) as \"fort: proto time\",\r\n--  sum(locationDelay)/sum(loc_count) as \"fort: location delay\",\r\n  sum(locationDelay)/(sum(locationDelay)+sum(timeElapsed)) as \"fort: rate location delay\",\r\n  (0.25*(sum(retries)-sum(gmoNoCell)))/(sum(locationDelay)+sum(timeElapsed)) as \"fort: rate gmo no pokemon delay\",\r\n  (0.5*sum(gmoNoCell))/(sum(locationDelay)+sum(timeElapsed)) as \"fort: rate gmo no cell delay\",\r\n  (sum(timeElapsed)-(0.5*sum(gmoNoCell))-(0.25*(sum(retries)-sum(gmoNoCell))))/(sum(locationDelay)+sum(timeElapsed)) as \"fort: real proto time\",\r\n  sum(gmoGivingUp) as \"fort: GMO giving up\",\r\n  (sum(gmo0fail)-sum(gmo1fail))/sum(gmo0fail) as 'GMO success after retry #1',\r\n  (sum(gmo1fail)-sum(gmo2fail))/sum(gmo0fail) as '#2',\r\n  (sum(gmo2fail)-sum(gmo3fail))/sum(gmo0fail) as '#3',\r\n  (sum(gmo3fail)-sum(gmo4fail))/sum(gmo0fail) as '#4',\r\n  (sum(gmo4fail)-sum(gmo5fail))/sum(gmo0fail) as '#5',\r\n  (sum(gmo5fail)-sum(gmo6fail))/sum(gmo0fail) as '#6',\r\n  (sum(gmo6fail)-sum(gmo7fail))/sum(gmo0fail) as '#7',\r\n  (sum(gmo7fail)-sum(gmo8fail))/sum(gmo0fail) as '#8',\r\n  100*sum(gmoInitialSuccess)/sum(loc_count) as 'fort: gmo initial success rate',\r\n  100*sum(gmoGivingUp)/sum(loc_count) as 'fort: gmo failure rate'\r\nFROM stats_worker\r\nWHERE\r\n  $__timeFilter(Datetime) and\r\n  RPL='$RPL' and\r\n  mode='FortMode' and\r\n  controller_worker in ($drago_worker)\r\n--  LEFT(controller_worker, LENGTH(controller_worker) - LENGTH(SUBSTRING_INDEX(controller_worker, '_', -1)) - 1) in ($Area) \r\nGROUP BY 1  \r\nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -212,6 +215,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -274,6 +278,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -320,6 +325,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -381,6 +387,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -424,6 +431,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -486,6 +494,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -529,6 +538,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -610,6 +620,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -654,6 +665,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -856,6 +868,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -906,6 +919,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -936,7 +950,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1001,6 +1016,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1045,6 +1061,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1075,7 +1092,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1155,6 +1173,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1198,6 +1217,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1228,7 +1248,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1293,6 +1314,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1335,7 +1357,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1349,6 +1371,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -1379,7 +1402,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1460,7 +1484,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1472,7 +1496,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(modeLocations) as 'fort mode locations handled',\n  sum(fetchRaid) as 'raid locations handled',\n  sum(fortLookup) as 'fort lookups',\n  sum(totalProtoTimeFort)/sum(modeLocations) as 'fort mode location handling time (ms)',\n  sum(totalProtoTimeRaid)/sum(fetchRaid) as 'raid location handling time (ms)'\n\nFROM stats_worker_fort\nWHERE\n  $__timeFilter(datetime) and\n  RPL = '$RPL' AND\n  worker in ($drago_worker) \nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n -- count(worker) as 'workers',\n  sum(modeLocations) as 'fort mode locations handled',\n  sum(fetchRaid) as 'raid locations handled',\n--  100*sum(gotGMO)/(sum(modeLocations)+sum(fetchRaid)) as 'total location success rate',\n  sum(fortLookup) as 'fort lookups',\n  sum(totalProtoTimeFort)/sum(modeLocations) as 'fort mode location handling time (ms)',\n--  ((rpl*60000*count(worker))-sum(totalProtoTime))/sum(fetchRaid) as 'Estimated raid location handling time (ms)'\n  sum(totalProtoTimeRaid)/sum(fetchRaid) as 'raid location handling time (ms)'\n\nFROM stats_worker_fort\nWHERE\n  $__timeFilter(datetime) and\n  RPL = '$RPL' AND\n  worker in ($drago_worker) \nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -1544,6 +1568,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -1574,7 +1599,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1655,7 +1681,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1699,6 +1725,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -1729,7 +1756,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1855,7 +1883,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1899,6 +1927,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -1929,7 +1958,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2010,7 +2040,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -2053,7 +2083,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2067,6 +2097,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -2097,7 +2128,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2163,7 +2195,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -2249,6 +2281,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -2279,7 +2312,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2345,7 +2379,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -2391,6 +2425,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -2421,7 +2456,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2487,7 +2523,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -2533,6 +2569,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -2563,7 +2600,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2629,7 +2667,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -2660,31 +2698,35 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 38,
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {},
+        "includeAll": false,
+        "name": "blisseyDS",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": "/.*blissey.*/",
+        "type": "datasource"
+      },
+      {
+        "current": {},
         "datasource": {
           "type": "mysql",
-          "uid": "${DS_BLISSEY}"
+          "uid": "${blisseyDS}"
         },
-        "definition": "select distinct(RPL) from stats_worker_fort;",
-        "hide": 0,
+        "definition": "select distinct(RPL) from stats_prioraid;",
         "includeAll": false,
-        "multi": false,
         "name": "RPL",
         "options": [],
-        "query": "select distinct(RPL) from stats_worker_fort;",
+        "query": "select distinct(RPL) from stats_prioraid;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 3,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
         "current": {},
@@ -2693,7 +2735,6 @@
           "uid": "${DS_BLISSEY}"
         },
         "definition": "select controller_worker from stats_worker where rpl=5 and  datetime>now() - interval 30 day and mode = 'FortMode';",
-        "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "drago_worker",
@@ -2701,7 +2742,6 @@
         "query": "select controller_worker from stats_worker where rpl=5 and  datetime>now() - interval 30 day and mode = 'FortMode';",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       }
@@ -2715,6 +2755,6 @@
   "timezone": "",
   "title": "09. Fort mode stats",
   "uid": "Pi-mGhwGl",
-  "version": 4,
+  "version": 2,
   "weekStart": ""
 }

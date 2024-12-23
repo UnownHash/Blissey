@@ -20,16 +20,34 @@
   "__elements": {},
   "__requires": [
     {
+      "type": "panel",
+      "id": "barchart",
+      "name": "Bar chart",
+      "version": ""
+    },
+    {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.0.1"
+      "version": "11.4.0"
     },
     {
       "type": "datasource",
       "id": "mysql",
       "name": "MySQL",
-      "version": "1.0.0"
+      "version": "11.3.1"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
     },
     {
       "type": "panel",
@@ -71,12 +89,11 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -84,11 +101,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -97,6 +116,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -162,7 +182,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -174,7 +194,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(datetime,$__interval) as 'time',\n  dbaccounts,\n  warn as 'warned',\n  suspended,\n  banned\n  -- disabled,\n  -- inUse as 'in use',\n  -- usedIdle as 'idle_used',\n  -- unusedIdle as 'idle_unused',\n  -- 100*inUse/(inUse+usedIdle+unusedIdle) as '%inuse'\nFROM accounts\nWHERE\n  $__timeFilter(datetime) \n--  rpl = '$RPL' \nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
+          "rawSql": "SELECT\n  $__timeGroup(datetime,$__interval) as 'time',\n  dbaccounts,\n  dbaccounts-warn-banned-suspended-authbanned-invalid as 'usable accounts',\n  warn as 'warned',\n  suspended,\n  banned,\n  authbanned,\n  invalid\n  -- disabled,\n  -- inUse as 'in use',\n  -- usedIdle as 'idle_used',\n  -- unusedIdle as 'idle_unused',\n  -- 100*inUse/(inUse+usedIdle+unusedIdle) as '%inuse'\nFROM accounts\nWHERE\n  $__timeFilter(datetime) \n--  rpl = '$RPL' \nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -221,7 +241,8 @@
             "include": {
               "names": [
                 "Time",
-                "dbaccounts"
+                "dbaccounts",
+                "usable accounts"
               ]
             }
           }
@@ -240,11 +261,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -253,6 +276,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -445,54 +469,13 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "light-red",
+                  "fixedColor": "dark-red",
                   "mode": "fixed"
                 }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "idle_unused"
-            },
-            "properties": [
+              },
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "idle_used"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "in use"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-blue",
-                  "mode": "fixed"
-                }
+                "id": "custom.axisPlacement",
+                "value": "right"
               }
             ]
           },
@@ -505,7 +488,37 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "dark-orange",
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "invalid"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "authbanned"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
                   "mode": "fixed"
                 }
               }
@@ -532,7 +545,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -551,13 +564,11 @@
             "include": {
               "names": [
                 "Time",
+                "warned",
                 "suspended",
                 "banned",
-                "disabled",
-                "warned",
-                "in use",
-                "idle_used",
-                "idle_unused"
+                "invalid",
+                "authbanned"
               ]
             }
           }
@@ -568,7 +579,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_DRAGONITE}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -576,11 +587,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -589,14 +602,15 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
-            "spanNulls": true,
+            "showPoints": "auto",
+            "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -612,12 +626,121 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
           "unit": "short"
         },
         "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#AR quest scanned"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#Pokestops"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#nonAR quest scanned"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "unusedIdle"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "usedIdle"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "inUse"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
           {
             "matcher": {
               "id": "byName",
@@ -636,13 +759,13 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "#accounts"
+              "options": "warn"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "dark-blue",
+                  "fixedColor": "dark-orange",
                   "mode": "fixed"
                 }
               }
@@ -651,13 +774,73 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "#accounts released per hour"
+              "options": "suspended"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "dark-blue",
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "banned"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "warned"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "invalid"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "authbanned"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
                   "mode": "fixed"
                 }
               }
@@ -667,11 +850,11 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 24,
-        "x": 0,
+        "w": 12,
+        "x": 12,
         "y": 8
       },
-      "id": 9,
+      "id": 20,
       "options": {
         "legend": {
           "calcs": [],
@@ -680,21 +863,22 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "multi",
+          "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
+          "dataset": "allchansey",
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${DS_BLISSEY}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "with data as (\r\nselect reusetime as time,count(reusetime) as accounts\r\nfrom\r\n(select\r\n(CASE WHEN last_selected is NULL\r\n  THEN now()\r\n  ELSE\r\n    CASE WHEN from_unixtime(last_selected)<now()-interval '$minimum_account_reuse_hours' hour\r\n      THEN\r\n        CASE WHEN consecutive_disable_count<=1\r\n          THEN\r\n            CASE WHEN from_unixtime(ifnull(last_disabled,0))+interval 4 day < now()\r\n              THEN now()\r\n              ELSE from_unixtime(ifnull(last_disabled,0))+interval 4 day\r\n            END\r\n          ELSE\r\n            CASE WHEN from_unixtime(ifnull(last_disabled,0))+interval 30 day < now()\r\n              THEN now()\r\n              ELSE from_unixtime(ifnull(last_disabled,0))+interval 30 day\r\n            END\r\n        END\r\n      ELSE\r\n        CASE WHEN consecutive_disable_count<=1\r\n          THEN greatest(from_unixtime(ifnull(last_disabled,0))+interval 4 day,from_unixtime(last_selected)+interval '$minimum_account_reuse_hours' hour)\r\n          ELSE greatest(from_unixtime(ifnull(last_disabled,0))+interval 30 day,from_unixtime(last_selected)+interval '$minimum_account_reuse_hours' hour)\r\n        END\r\n    END\r\nEND\r\n) as reusetime\r\n\t\t\r\nfrom account\r\nwhere\r\nsuspended=0 and\r\nbanned=0 and\r\ninvalid=0 and\r\nwarn_expiration < unix_timestamp()\r\n) a\r\ngroup by reusetime\r\norder by reusetime\r\n)\r\n\r\nselect\r\n  time,\r\n--  accounts,\r\n  sum(accounts) over (order by time) as cumulative_sum\r\nfrom data;",
+          "rawSql": "select\r\n  datetime,\r\n  banned - COALESCE( LAG(banned) OVER (ORDER BY datetime ASC), banned) AS banned,\r\n  authbanned - COALESCE( LAG(authbanned) OVER (ORDER BY datetime ASC), authbanned) AS authbanned\r\n\r\n\r\nfrom accounts\r\nwhere $__timeFilter(datetime) \r\norder by datetime asc;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -715,28 +899,14 @@
           }
         }
       ],
-      "timeShift": "0d+14d",
-      "title": "d2 usable accounts",
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "time",
-                "targetField": "_time"
-              }
-            ],
-            "fields": {}
-          }
-        }
-      ],
+      "title": "Bans",
       "type": "timeseries"
     },
     {
       "datasource": {
+        "name": "${dragoniteDS}",
         "type": "mysql",
-        "uid": "${DS_DRAGONITE}"
+        "uid": "${dragoniteDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -744,21 +914,24 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 3,
+            "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -839,6 +1012,208 @@
         "x": 0,
         "y": 16
       },
+      "hideTimeOverride": false,
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_DRAGONITE}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "with data as (\r\nselect reusetime as time,count(reusetime) as accounts\r\nfrom\r\n(select\r\n(CASE WHEN last_selected is NULL\r\n  THEN now()\r\n  ELSE\r\n    CASE WHEN from_unixtime(last_selected)<now()-interval '$minimum_account_reuse_hours' hour\r\n      THEN\r\n        CASE WHEN consecutive_disable_count<=1\r\n          THEN\r\n            CASE WHEN from_unixtime(ifnull(last_disabled,0))+interval 3 day < now()\r\n              THEN now()\r\n              ELSE from_unixtime(ifnull(last_disabled,0))+interval 3 day\r\n            END\r\n          ELSE\r\n            CASE WHEN from_unixtime(ifnull(last_disabled,0))+interval 30 day < now()\r\n              THEN now()\r\n              ELSE from_unixtime(ifnull(last_disabled,0))+interval 30 day\r\n            END\r\n        END\r\n      ELSE\r\n        CASE WHEN consecutive_disable_count<=1\r\n          THEN greatest(from_unixtime(ifnull(last_disabled,0))+interval 3 day,from_unixtime(last_selected)+interval '$minimum_account_reuse_hours' hour)\r\n          ELSE greatest(from_unixtime(ifnull(last_disabled,0))+interval 30 day,from_unixtime(last_selected)+interval '$minimum_account_reuse_hours' hour)\r\n        END\r\n    END\r\nEND\r\n) as reusetime\r\n\t\t\r\nfrom account\r\nwhere\r\nsuspended=0 and\r\nbanned=0 and\r\nauth_banned=0 and\r\ninvalid=0 and\r\nwarn_expiration < unix_timestamp()\r\n) a\r\ngroup by reusetime\r\norder by reusetime\r\n)\r\n\r\nselect\r\n  time,\r\n--  accounts,\r\n  sum(accounts) over (order by time) as accounts\r\nfrom data;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "backend",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${dragoniteDS}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "with data as (\r\nselect reusetime as time,count(reusetime) as accounts\r\nfrom\r\n(select\r\n(CASE WHEN last_selected is NULL\r\n  THEN now()\r\n  ELSE\r\n    CASE WHEN from_unixtime(last_selected)<now()-interval '$minimum_account_reuse_hours' hour\r\n      THEN\r\n        CASE WHEN consecutive_disable_count<=1\r\n          THEN\r\n            CASE WHEN from_unixtime(ifnull(last_disabled,0))+interval 3 day < now()\r\n              THEN now()\r\n              ELSE from_unixtime(ifnull(last_disabled,0))+interval 3 day\r\n            END\r\n          ELSE\r\n            CASE WHEN from_unixtime(ifnull(last_disabled,0))+interval 30 day < now()\r\n              THEN now()\r\n              ELSE from_unixtime(ifnull(last_disabled,0))+interval 30 day\r\n            END\r\n        END\r\n      ELSE\r\n        CASE WHEN consecutive_disable_count<=1\r\n          THEN greatest(from_unixtime(ifnull(last_disabled,0))+interval 3 day,from_unixtime(last_selected)+interval '$minimum_account_reuse_hours' hour)\r\n          ELSE greatest(from_unixtime(ifnull(last_disabled,0))+interval 30 day,from_unixtime(last_selected)+interval '$minimum_account_reuse_hours' hour)\r\n        END\r\n    END\r\nEND\r\n) as reusetime\r\n\t\t\r\nfrom account\r\nwhere\r\nsuspended=0 and\r\nbanned=0 and\r\nauth_banned=0 and\r\ninvalid=0 and\r\nwarn_expiration < unix_timestamp() and\r\nrefresh_token<>'' and\r\nfrom_unixtime(last_refreshed)>now()-interval 28 day\r\n) a\r\ngroup by reusetime\r\norder by reusetime\r\n)\r\n\r\nselect\r\n  time,\r\n--  accounts,\r\n  sum(accounts) over (order by time) as accounts_with_valid_token\r\nfrom data;",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeShift": "0d+14d",
+      "title": "d2 usable accounts",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "time",
+                "targetField": "_time"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_DRAGONITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 3,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "disabled"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#accounts"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#accounts released per hour"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
       "id": 13,
       "options": {
         "legend": {
@@ -852,12 +1227,12 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -911,11 +1286,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -924,6 +1301,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -983,7 +1361,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 32
       },
       "id": 12,
       "options": {
@@ -998,12 +1376,12 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_BLISSEY}"
+            "uid": "${blisseyDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1056,6 +1434,416 @@
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 75
+              },
+              {
+                "color": "green",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ARban"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 0,
+        "y": 40
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${dragoniteDS}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select\nnow() as time,\n100*sum(case when ar_ban_state>=0 then 1 else 0 end) / count(username) as '%tested'\n-- sum(case when ar_ban_state=1 then 1 else 0 end) as 'ARban'\nfrom account\nwhere last_selected<unix_timestamp(now()) and banned=0 and auth_banned=0",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "% arban tested",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "%tested"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_DRAGONITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ARban"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 4,
+        "y": 40
+      },
+      "id": 19,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${dragoniteDS}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select\nnow() as time,\n100*sum(case when ar_ban_state<0 then 1 else 0 end) / count(username) as '%inProgress'\n-- sum(case when ar_ban_state=1 then 1 else 0 end) as 'ARban'\nfrom account\nwhere last_selected<unix_timestamp(now()) and banned=0 and auth_banned=0",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "% arban check in progress",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "%inProgress"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_DRAGONITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ARban"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 8,
+        "y": 40
+      },
+      "id": 16,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${dragoniteDS}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select\nnow() as time,\n-- sum(case when ar_ban_state is NULL then 1 else 0 end) as 'untested',\nsum(case when ar_ban_state=0 then 1 else 0 end) as 'noARban',\nsum(case when ar_ban_state=1 then 1 else 0 end) as 'ARban'\nfrom account\nwhere last_selected<unix_timestamp(now()) and banned=0 and auth_banned=0\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "ARban",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "noARban",
+                "ARban"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_DRAGONITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "align": "auto",
             "cellOptions": {
@@ -1082,36 +1870,36 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "level"
+              "options": "created"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 58
+                "value": 100
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "warn"
+              "options": "domain"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 57
+                "value": 253
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "suspended"
+              "options": "authbanned"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 93
+                "value": 100
               }
             ]
           },
@@ -1123,127 +1911,67 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 69
+                "value": 100
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "disabled"
+              "options": "noToken"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 77
+                "value": 100
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "last_released"
+              "options": "accounts"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 163
+                "value": 109
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "last_selected"
+              "options": "%NoToken"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 163
+                "value": 100
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "last_disabled"
+              "options": "one"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 165
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "last_banned"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 161
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "username"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 145
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "warn_expiration"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 163
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "last suspended"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 163
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "invalid"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 61
+                "value": 52
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 32
+        "h": 52,
+        "w": 12,
+        "x": 12,
+        "y": 40
       },
-      "id": 11,
+      "id": 15,
       "options": {
         "cellHeight": "sm",
         "footer": {
@@ -1252,22 +1980,28 @@
           "reducer": [
             "sum"
           ],
-          "show": false
+          "show": true
         },
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "banned"
+          }
+        ]
       },
-      "pluginVersion": "10.0.1",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
+          "dataset": "backend",
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\nusername,level,warn,suspended,banned,invalid,\r\nleft(from_unixtime(warn_expiration),19) as 'warn_expiration',\r\nfrom_unixtime(last_selected) as 'last_selected',\r\nfrom_unixtime(last_released) as 'last_released',\r\nfrom_unixtime(last_disabled) as 'last_disabled',\r\nfrom_unixtime(last_banned) as 'last_banned',\r\nfrom_unixtime(last_suspended) as 'last suspended'\r\nFROM account\r\nWHERE from_unixtime(last_released) < now() - interval 14 day\r\n",
+          "rawSql": "select\r\n-- SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1) as domain,\r\ncase when length(ifnull(email,\"unknown\"))-length(replace(ifnull(email,\"unknown\"),\".\",\"\"))>1 then SUBSTRING_INDEX(SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1), '.',-(length(ifnull(email,\"unknown\"))-length(replace(ifnull(email,\"unknown\"),\".\",\"\"))-0)) else SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1) end as domain,\r\n1 as one,\r\ncount(a.username) as accounts,\r\nsum(case when banned=1 then 1 else 0 end) as 'banned',\r\nsum(case when auth_banned>0 then 1 else 0 end) as 'authbanned',\r\nsum(case when refresh_token='' then 1 else 0 end) as noToken,\r\n100*sum(case when refresh_token='' then 1 else 0 end)/count(a.username) as '%NoToken'\r\nfrom account a\r\ngroup by domain",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1288,17 +2022,214 @@
           }
         }
       ],
-      "title": "Accounts not used for 14 days",
+      "title": "Accounts per domain",
       "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_DRAGONITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#accounts"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 48
+      },
+      "id": 17,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "spins",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${dragoniteDS}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select\nnow() as time,\nar_ban_state*-1 as 'spins',\ncount(username) as '#accounts'\nfrom account\nwhere ar_ban_state < 0  and banned=0 and auth_banned=0\ngroup by ar_ban_state\norder by spins",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "#accounts per ARattempt",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "#accounts",
+                "spins"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "barchart"
     }
   ],
   "refresh": "",
-  "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "dragoniteDS",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": "/.*drago.*/",
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "blisseyDS",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": "/.*blissey.*/",
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "72",
+          "value": "72"
+        },
+        "name": "minimum_account_reuse_hours",
+        "options": [
+          {
+            "selected": true,
+            "text": "72",
+            "value": "72"
+          }
+        ],
+        "query": "72",
+        "type": "textbox"
+      }
+    ]
   },
   "time": {
     "from": "now-14d",
@@ -1307,7 +2238,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "31. draGOnite accounts",
-  "uid": "Pi-mGhwGbc",
-  "version": 3,
+  "uid": "Pi-mGhwGf",
+  "version": 2,
   "weekStart": ""
 }

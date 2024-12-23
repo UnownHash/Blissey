@@ -38,7 +38,7 @@ echo ""
 echo 'Please select a origin'
 echo ""
 n=0
-for origin in $(curl -s $host:$port/api/status | grep -oP '(?<=deviceId":").*?(?=")' | sort -u) All
+for origin in $(curl -s $host:$port/api/status | jq -r '.devices[].deviceId') All
 do
     n=$((n+1))
     printf "[%s] %s\n" "$n" "$origin"
@@ -70,7 +70,7 @@ then
   echo "Seconds between jobs"
   read -r jobwait
   echo ""
-  for origin in $(curl -s $host:$port/api/status | grep -oP '(?<=deviceId":").*?(?=")' | sort -u)
+  for origin in $(curl -s $host:$port/api/status | jq -r '.devices[].deviceId')
   do
 #    echo "executing: curl -X POST http://$host:$port/api/job/execute/$JOB/$origin"
     curl -s -X POST $host:$port/api/job/execute/$JOB/$origin
