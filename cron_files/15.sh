@@ -79,3 +79,20 @@ then
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl15 invasion processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
+
+# process multi blissey
+if [[ $multiblissey == "true" ]]; then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/cron_files/15_drago_account_multi.sql
+  if [[ $multiblisseyrole == "master" ]]; then
+    sleep 10s
+    MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/15_mon_area.sql
+    MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/15_quest_area.sql
+    MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/15_worker_multi.sql
+    MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/15_dragonite.sql
+    MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/15_fort.sql
+  fi
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl15 processing to combined blissey db" >> $folder/logs/log_$(date '+%Y%m').log
+fi

@@ -1,0 +1,28 @@
+-- settings
+select @period := concat(date(now() - interval 5 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 5 minute)) DIV 300) * 300));
+select @rpl  := 5;
+
+-- process data
+insert ignore into multiblissey.stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum)
+  select
+  @period,
+  @rpl,
+  'all',
+  'all',
+  sum(stops) as stops,
+  sum(AR) as AR,
+  sum(nonAR) as nonAR,
+  sum(ARcum) as ARcum,
+  sum(nonARcum) as nonARcum
+
+from singleblissey.stats_quest_area
+where datetime=@period and rpl=@rpl 
+group by datetime
+
+on duplicate key update
+  stops=stops+values(stops),
+  AR=AR+values(AR),
+  nonAR=nonAR+values(nonAR),
+  ARcum=ARcum+values(ARcum),
+  nonARcum=nonARcum+values(nonARcum)
+;

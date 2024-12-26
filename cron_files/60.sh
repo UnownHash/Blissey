@@ -79,3 +79,17 @@ then
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl60 invasion processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
+
+# process multi blissey
+if [[ $multiblissey == "true" ]] && [[ $multiblisseyrole == "master" ]]; then
+  sleep 10s
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/60_mon_area.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/60_quest_area.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/60_worker_multi.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/60_dragonite.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/60_fort.sql
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl60 processing to combined blissey db" >> $folder/logs/log_$(date '+%Y%m').log
+fi

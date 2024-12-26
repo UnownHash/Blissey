@@ -3,7 +3,7 @@ sqluser=
 sqlpass=
 dbip=127.0.0.1
 dbport=3306
-controllerdb=dragonite
+dragonitedb=dragonite
 scannerdb=golbat
 blisseydb=stats
 kojidb=koji						# optional, needed when making use of koji stored fences
@@ -31,7 +31,7 @@ workerstats=true                                        # requires drago config 
 dragoaccount=true                                       # process dragonite account details
 
 ## Log processing
-dragonitelog=true                                       # process d2 logs on: errors/warning/performance/accounts
+dragonitelog=true                                       # process d2 logs on: errors/warning/performance
 fort_area_name=						# fort area name to seperate rpc4/11/12 stats, can be an array i.e. fort_area_name="fortsRoute1 fortsRoute2"
 invasion_worker_name=                                   # invasion worker name to seperate rpc4/11/12 stats
 
@@ -50,7 +50,7 @@ d2log_rpl10080=99999
 accounts_rpl15=90					# cleanup blissey table accounts
 account_stats=90					# cleanup blissey table stats_account
 # raw tables
-worker_raw=1						# cleanup controller raw worker data
+worker_raw=1						# cleanup dragonite raw worker data
 area_raw=1						# cleanup scanner raw area data
 
 ## Device outage reporting
@@ -63,3 +63,10 @@ golbat_backup_days=7                                    # days to store golbat d
 drago_backup=true					# daily backup drago db
 drago_backup_days=7					# days to store drago db backup
 fortwatcher=false					# process fortwatcher stats to rpl 60/1440/10080
+
+## aggregate data from multiple blissey to single db
+multiblissey=false
+multiblisseyrole=master			# slave (just adds the rpl 5 data) or master (tables updates, adds rpl5 and aggregates the lot)
+multiblisseydb=allblissey		# combined db
+multisqluser=
+multisqlpass=

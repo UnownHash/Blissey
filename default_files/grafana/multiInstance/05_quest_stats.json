@@ -67,7 +67,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -291,7 +291,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -899,9 +899,19 @@
     "list": [
       {
         "current": {},
+        "includeAll": false,
+        "name": "blisseyDS",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": "/.*blissey.*/",
+        "type": "datasource"
+      },
+      {
+        "current": {},
         "datasource": {
           "type": "mysql",
-          "uid": "${DS_BLISSEY}"
+          "uid": "${blisseyDS}"
         },
         "definition": "select distinct(RPL) from stats_quest_area;",
         "includeAll": false,
@@ -934,7 +944,7 @@
         "current": {},
         "datasource": {
           "type": "mysql",
-          "uid": "${DS_BLISSEY}"
+          "uid": "${blisseyDS}"
         },
         "definition": "select distinct(Fence) from stats_quest_area;",
         "includeAll": true,
@@ -957,6 +967,6 @@
   "timezone": "",
   "title": "05. Quest stats",
   "uid": "Pi-mGhwGd",
-  "version": 4,
+  "version": 2,
   "weekStart": ""
 }

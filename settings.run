@@ -27,7 +27,7 @@ echo "[`date '+%Y%m%d %H:%M:%S'`] Setting.run executed" >> $folder/logs/log_$(da
 
 # Create tables
 echo "Creating required tables"
-MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/table.sql
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $blisseydb < $folder/default_files/tables.sql.default
 echo ""
 
 # Check for table updates
@@ -41,6 +41,26 @@ for file in `ls -1v $folder/default_files/sql_updates/*` ;do
   fi
 done
 echo ""
+
+# do tables when multiblissey master
+if [[ $multiblissey == "true" ]] && [[ $multiblisseyrole == "master" ]]; then
+  # Create tables
+  echo "Creating required tables on central blissey db"
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/tables.sql.default
+  echo ""
+
+  # Check for table updates
+  echo "Checking for table updates for central blissey db"
+  version=$(MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb -NB -e "select version from version where version.key='blissey'")
+  for file in `ls -1v $folder/default_files/sql_updates/*` ;do
+    number=$(echo $file | grep -o -P '(?<=sql_updates/).*(?=.sql)')
+    if (( $number > $version )) ;then
+      echo "Apply updates from $file to central blissey db"
+      MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $file
+    fi
+  done
+  echo ""
+fi
 
 # Create procedures
 echo "Creating required procedures"
@@ -88,7 +108,18 @@ else
 fi
 sed -i "s/blissey\./$blisseydb\./g" $folder/cron_files/*.sql
 sed -i "s/golbat\./$scannerdb\./g" $folder/cron_files/*.sql
-sed -i "s/dragonite\./$controllerdb\./g" $folder/cron_files/*.sql
+sed -i "s/dragonite\./$dragonitedb\./g" $folder/cron_files/*.sql
+#copy multi blissey
+if [[ $multiblissey == "true" ]]; then
+  cp $folder/default_files/5_mon_area_multi.sql.default $folder/cron_files/5_mon_area_multi.sql
+  cp $folder/default_files/5_quest_area_multi.sql.default $folder/cron_files/5_quest_area_multi.sql
+  cp $folder/default_files/5_worker_multi.sql.default $folder/cron_files/5_worker_multi.sql
+  cp $folder/default_files/5_dragonite_multi.sql.default $folder/cron_files/5_dragonite_multi.sql
+  cp $folder/default_files/5_fort_multi.sql.default $folder/cron_files/5_fort_multi.sql
+  cp $folder/default_files/15_drago_account_multi.sql.default $folder/cron_files/15_drago_account_multi.sql
+  sed -i "s/multiblissey/$multiblisseydb/g" $folder/cron_files/*5_*_multi.sql
+  sed -i "s/singleblissey/$blisseydb/g" $folder/cron_files/*5_*_multi.sql
+fi
 
 # Create crontab file
 echo "Creating crontab.txt in $folder"
@@ -96,9 +127,7 @@ cp $folder/default_files/crontab.txt.default $folder/crontab.txt
 sed -i "s,blisseypath,$folder,g" $folder/crontab.txt
 echo ""
 
-# Remove old grafana folder
-rm -rf $folder/grafana
-
+# Adjust table geofences when its used
 if [[ -z $use_koji || $use_koji == "false" ]] ;then
 # Add/update st data to table geofences
 echo "Update geometry data for mon fences"

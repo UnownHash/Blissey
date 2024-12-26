@@ -1,0 +1,40 @@
+-- settings
+select @period := concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900));
+select @rpl := 15;
+
+-- process data
+insert into multiblissey.accounts (datetime,rpl,dbaccounts,warn,suspended,banned,authbanned,invalid,inUse,usedIdle,unusedIdle,consecDis1,consecDis2,consecDis3,consecDis4p)
+select
+  @period,
+  @rpl,
+  dbaccounts,
+  warn,
+  suspended,
+  banned,
+  authbanned,
+  invalid,
+  inUse,
+  usedIdle,
+  unusedIdle,
+  consecDis1,
+  consecDis2,
+  consecDis3,
+  consecDis4p
+from singleblissey.accounts
+where datetime=@period and rpl=@rpl
+
+on duplicate key update
+  multiblissey.accounts.dbaccounts=multiblissey.accounts.dbaccounts+values(dbaccounts),
+  multiblissey.accounts.warn=multiblissey.accounts.warn+values(warn),
+  multiblissey.accounts.suspended=multiblissey.accounts.suspended+values(suspended),
+  multiblissey.accounts.banned=multiblissey.accounts.banned+values(banned),
+  multiblissey.accounts.authbanned=multiblissey.accounts.authbanned+values(authbanned),
+  multiblissey.accounts.invalid=multiblissey.accounts.invalid+values(invalid),
+  multiblissey.accounts.inUse=multiblissey.accounts.inUse+values(inUse),
+  multiblissey.accounts.usedIdle=multiblissey.accounts.usedIdle+values(usedIdle),
+  multiblissey.accounts.unusedIdle=multiblissey.accounts.unusedIdle+values(unusedIdle),
+  multiblissey.accounts.consecDis1=multiblissey.accounts.consecDis1+values(consecDis1),
+  multiblissey.accounts.consecDis2=multiblissey.accounts.consecDis2+values(consecDis2),
+  multiblissey.accounts.consecDis3=multiblissey.accounts.consecDis3+values(consecDis3),
+  multiblissey.accounts.consecDis4p=multiblissey.accounts.consecDis4p+values(consecDis4p)
+;

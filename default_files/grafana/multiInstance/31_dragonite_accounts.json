@@ -93,7 +93,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -579,7 +579,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -904,8 +904,9 @@
     },
     {
       "datasource": {
+        "name": "${dragoniteDS}",
         "type": "mysql",
-        "uid": "${DS_DRAGONITE}"
+        "uid": "${dragoniteDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1059,7 +1060,7 @@
           "dataset": "backend",
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1152,7 +1153,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -1230,7 +1232,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1321,7 +1323,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -1378,7 +1381,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_BLISSEY}"
+            "uid": "${blisseyDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1437,7 +1440,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red"
+                "color": "red",
+                "value": null
               },
               {
                 "color": "orange",
@@ -1498,7 +1502,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -1575,7 +1579,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1632,7 +1637,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -1767,7 +1772,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -1851,7 +1856,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1990,7 +1996,7 @@
           "dataset": "backend",
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -2055,7 +2061,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2118,7 +2125,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_DRAGONITE}"
+            "uid": "${dragoniteDS}"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -2187,6 +2194,26 @@
   "templating": {
     "list": [
       {
+        "current": {},
+        "includeAll": false,
+        "name": "dragoniteDS",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": "/.*drago.*/",
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "blisseyDS",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": "/.*blissey.*/",
+        "type": "datasource"
+      },
+      {
         "current": {
           "text": "72",
           "value": "72"
@@ -2212,6 +2239,6 @@
   "timezone": "",
   "title": "31. draGOnite accounts",
   "uid": "Pi-mGhwGf",
-  "version": 5,
+  "version": 2,
   "weekStart": ""
 }
