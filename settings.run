@@ -52,7 +52,7 @@ if [[ $multiblissey == "true" ]] && [[ $multiblisseyrole == "master" ]]; then
   # Check for table updates
   echo "Checking for table updates for central blissey db"
   version=$(MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb -NB -e "select version from version where version.key='blissey'")
-  for file in $folder/default_files/sql_updates/* ;do
+  for file in `ls -1v $folder/default_files/sql_updates/*` ;do
     number=$(echo $file | grep -o -P '(?<=sql_updates/).*(?=.sql)')
     if (( $number > $version )) ;then
       echo "Apply updates from $file to central blissey db"
