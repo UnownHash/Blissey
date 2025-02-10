@@ -1995,8 +1995,8 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select\r\n-- SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1) as domain,\r\ncase when length(ifnull(email,\"unknown\"))-length(replace(ifnull(email,\"unknown\"),\".\",\"\"))>1 then SUBSTRING_INDEX(SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1), '.',-(length(ifnull(email,\"unknown\"))-length(replace(ifnull(email,\"unknown\"),\".\",\"\"))-0)) else SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1) end as domain,\r\n1 as one,\r\ncount(a.username) as accounts,\r\nsum(case when banned=1 then 1 else 0 end) as 'banned',\r\nsum(case when auth_banned>0 then 1 else 0 end) as 'authbanned',\r\nsum(case when refresh_token='' then 1 else 0 end) as noToken,\r\n100*sum(case when refresh_token='' then 1 else 0 end)/count(a.username) as '%NoToken'\r\nfrom account a\r\ngroup by domain",
-          "refId": "A",
+          "rawSql": "select\r\n-- SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1) as domain,\r\ncase when length(ifnull(email,\"unknown\"))-length(replace(ifnull(email,\"unknown\"),\".\",\"\"))>1 then SUBSTRING_INDEX(SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1), '.',-(length(ifnull(email,\"unknown\"))-length(replace(ifnull(email,\"unknown\"),\".\",\"\"))-0)) else SUBSTRING_INDEX(ifnull(a.email,'unknown'), '@', -1) end as domain,\r\nprovider,\r\ncount(a.username) as accounts,\r\nsum(case when banned=1 then 1 else 0 end) as 'banned',\r\nsum(case when auth_banned>0 then 1 else 0 end) as 'authbanned',\r\nsum(case when refresh_token='' then 1 else 0 end) as noToken,\r\n100*sum(case when refresh_token='' then 1 else 0 end)/count(a.username) as '%NoToken'\r\nfrom account a\r\ngroup by domain,provider",
+		  "refId": "A",
           "sql": {
             "columns": [
               {
