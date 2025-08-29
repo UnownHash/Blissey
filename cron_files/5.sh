@@ -67,7 +67,7 @@ fi
 if [[ $outage_report == "true" ]] && [[ ! -z $outage_webhook ]]
 then
   rm -f $folder/tmp/outage.txt
-  curl -s $rotom_api_host:$rotom_api_port/api/status | jq -r '.devices[] | .origin+" "+(.dateLastMessageReceived|tostring)' | awk '{ if($2 <= systime()*1000-180000) print $1" "strftime("%Y%m%d_%H:%M:%S", $2/1000)}' > $folder/tmp/outage.txt
+  curl -s $rotom_api_host:$rotom_api_port/api/status | jq -r '.devices[] | [.origin, (.dateLastMessageReceived|tostring)] | @tsv' | awk -F '\t' '{ if($2 <= systime()*1000-180000) print $1, strftime("%Y%m%d_%H:%M:%S", $2/1000) }' > $folder/tmp/outage.txt
   cd $folder/default_files && ./discord.sh --username "Containers, no update in 3m" --color "16711680" --avatar "https://www.iconsdb.com/icons/preview/red/exclamation-xxl.png" --webhook-url "$outage_webhook" --description "$(jq -Rs . < "$folder/tmp/outage.txt" | cut -c 2- | rev | cut -c 2- | rev)"
 fi
 
