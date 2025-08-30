@@ -1,0 +1,16 @@
+services:
+  blissey:
+    build: .
+    container_name: blissey
+    restart: unless-stopped
+    networks:
+      - scanner
+    volumes:
+      - ./path/to/dragonite:/home/dkmur/Dragonite # Change according to your directory structure
+      - ./:/blissey
+      # Optional
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+networks:
+  scanner:
