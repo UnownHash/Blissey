@@ -6,6 +6,7 @@ services:
     networks:
       - scanner
     volumes:
+      #                       ↓ Must match dragonite_path in your config.ini
       - ./path/to/dragonite:/home/dkmur/Dragonite # Change according to your directory structure
       - ./:/blissey
       # Optional
