@@ -2668,6 +2668,7 @@
         },
         "pieType": "pie",
         "reduceOptions": {
+          "values": true,
           "calcs": [
             "sum"
           ],
@@ -2690,7 +2691,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select\r\n$__timeGroup(session_end,$interval) as 'time',\r\ncase\r\n  when reason_for_session_end like 'ErrGo failed to detect lineup for invasion%' then 'ErrGo failed to detect lineup for invasion' \r\n  when reason_for_session_end='ErrDisabled' and (json_extract(counts, '$.METHOD_ENCOUNTER') is not NULL or json_extract(counts, '$.METHOD_GET_MAP_OBJECTS') is not NULL) then 'ErrDisabled'\r\n  when reason_for_session_end='ErrDisabled' and (json_extract(counts, '$.METHOD_ENCOUNTER') is NULL and json_extract(counts, '$.METHOD_GET_MAP_OBJECTS') is NULL) then 'instantRotation (rpc18?)'\r\n  else reason_for_session_end\r\nend as 'reason_end',\r\ncount(reason_for_session_end) as '.'\r\nfrom stats_accounts\r\nwhere\r\n$__timeFilter(session_end) and mode in ($mode)\r\nGROUP BY 1,reason_end\r\nORDER BY 1",
+          "rawSql": "select\r\n$__timeGroup(session_end,$interval) as 'time',\r\ncase\r\n  when reason_for_session_end like 'ErrGo failed to detect lineup for invasion%' then 'ErrGo failed to detect lineup for invasion' \r\n  when reason_for_session_end='ErrDisabled' and (json_extract(counts, '$.METHOD_ENCOUNTER') is not NULL or json_extract(counts, '$.METHOD_GET_MAP_OBJECTS') is not NULL) then 'ErrDisabled'\r\n  when reason_for_session_end='ErrDisabled' and (json_extract(counts, '$.METHOD_ENCOUNTER') is NULL and json_extract(counts, '$.METHOD_GET_MAP_OBJECTS') is NULL) then 'instantRotation (rpc18?)'\r\n  else reason_for_session_end\r\nend as 'reason_end',\r\ncount(reason_for_session_end) as '.'\r\nfrom stats_accounts\r\nwhere\r\n$__timeFilter(session_end) and mode in ($mode)\r\nGROUP BY reason_end\r\nORDER BY 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2779,7 +2780,7 @@
         "multi": true,
         "name": "mode",
         "options": [],
-        "query": "select mode from stats_accounts",
+        "query": "select mode from stats_accounts group by mode",
         "refresh": 1,
         "regex": "",
         "sort": 1,
