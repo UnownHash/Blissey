@@ -12,14 +12,23 @@ Processing is done on interval 15/60/1440/10080 minutes and can be displayed by 
 - enable save logs in controller config is you want them processed
 - mysql and jq installed
 
-## 2 Setup
+## 2 Instructions
 - clone Blissey, `git clone https://github.com/UnownHash/Blissey.git && cd Blissey`
 - create stats db and user (user needs to have access to stats/controller/golbat db)
 - copy and fill out config, `cp default_files/config.ini.example config.ini`
+
+### 2.1 Standard Setup
 - execute setting.run
 - add content of crontab.txt to your cron
 
-### 2.1 Geofences
+### 2.2 Docker Setup
+- Authenticate to [GitHub Packages's docker container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+- copy `docker-compose.yml.example` to `docker-compose.yml`
+- modify it to your needs
+- ``docker compose up -d``
+- ``settings.run`` & ``crontab.txt`` will get executed automatically
+
+### 2.3 Geofences
 Blissey needs quest and mon fences in order to aggregate data. 2 ways of doing this:<BR>
 1 Use Koji<BR>
 - set config.ini accordingly
