@@ -1,28 +1,11 @@
 ##### Blissey #####
-## First hour of the day
-0 0 * * * cd blisseypath/cron_files && ./logger.sh && ./logrotate.sh && ./5.sh && ./15.sh && ./60.sh && ./1440.sh
-5 0 * * * cd blisseypath/cron_files && ./5.sh
-10 0 * * * cd blisseypath/cron_files && ./5.sh
-10 0 * * 1 cd blisseypath/cron_files && ./10080.sh
-15 0 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
-20 0 * * * cd blisseypath/cron_files && ./5.sh
-25 0 * * * cd blisseypath/cron_files && ./5.sh
-30 0 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
-35 0 * * * cd blisseypath/cron_files && ./5.sh
-40 0 * * * cd blisseypath/cron_files && ./5.sh
-45 0 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
-50 0 * * * cd blisseypath/cron_files && ./5.sh
-55 0 * * * cd blisseypath/cron_files && ./5.sh
-## Remaining hours
+## Every 5 minutes (except full and quarter hours)
+5,10,20,25,35,40,50,55 * * * * cd blisseypath/cron_files && ./5.sh
+## Every quarter hour
+15,30,45 * * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
+## Every hour, except midnight
 0 1-23 * * * cd blisseypath/cron_files && ./logrotate.sh && ./5.sh && ./15.sh && ./60.sh
-5 1-23 * * * cd blisseypath/cron_files && ./5.sh
-10 1-23 * * * cd blisseypath/cron_files && ./5.sh
-15 1-23 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
-20 1-23 * * * cd blisseypath/cron_files && ./5.sh
-25 1-23 * * * cd blisseypath/cron_files && ./5.sh
-30 1-23 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
-35 1-23 * * * cd blisseypath/cron_files && ./5.sh
-40 1-23 * * * cd blisseypath/cron_files && ./5.sh
-45 1-23 * * * cd blisseypath/cron_files && ./5.sh && ./15.sh
-50 1-23 * * * cd blisseypath/cron_files && ./5.sh
-55 1-23 * * * cd blisseypath/cron_files && ./5.sh
+## Midnight
+0 0 * * * cd blisseypath/cron_files && ./logger.sh && ./logrotate.sh && ./5.sh && ./15.sh && ./60.sh && ./1440.sh
+## Weekly (monday)
+10 0 * * 1 cd blisseypath/cron_files && ./10080.sh
