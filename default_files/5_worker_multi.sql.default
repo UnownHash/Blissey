@@ -1,0 +1,68 @@
+-- settings
+select @period := concat(date(now() - interval 5 minute),' ', (SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 5 minute)) DIV 300) * 300)));
+select @rpl  := 5;
+
+-- process data
+insert ignore into multiblissey.stats_worker (datetime,rpl,controller_worker,mode,device_worker,numRep,loc_time,loc_count,loc_success,mons_seen,mons_enc,distance,
+	retries,timeElapsed,locationDelay,gmos,gmoInitialSuccess,gmo0fail,gmo1fail,gmo2fail,gmo3fail,gmo4fail,gmo5fail,gmo6fail,gmo7fail,gmo8fail,gmoNoCell,gmoGivingUp,gmoDelay)
+select
+  @period,
+  @rpl,
+  'all',
+  mode,
+  'many',
+  count(distinct(controller_worker)),
+  sum(loc_time),
+  sum(loc_count),
+  sum(loc_success),
+  sum(mons_seen),
+  sum(mons_enc),
+  sum(distance),
+  sum(retries),
+  sum(timeElapsed),
+  sum(locationDelay),
+  sum(gmos),
+  sum(gmoInitialSuccess),
+  sum(gmo0fail),
+  sum(gmo1fail),
+  sum(gmo2fail),
+  sum(gmo3fail),
+  sum(gmo4fail),
+  sum(gmo5fail),
+  sum(gmo6fail),
+  sum(gmo7fail),
+  sum(gmo8fail),
+  sum(gmoNoCell),
+  sum(gmoGivingUp),
+  sum(gmoDelay)
+
+from singleblissey.stats_worker
+where datetime=@period and rpl=@rpl
+group by datetime,mode
+
+on duplicate key update
+  numRep=numRep+values(numRep),
+  loc_time=loc_time+values(loc_time),
+  loc_count=loc_count+values(loc_count),
+  loc_success=loc_success+values(loc_success),
+  mons_seen=mons_seen+values(mons_seen),
+  mons_enc=mons_enc+values(mons_enc),
+  distance=distance+values(distance),
+  retries=retries+values(retries),
+  timeElapsed=timeElapsed+values(timeElapsed),
+  locationDelay=locationDelay+values(locationDelay),
+  gmos=gmos+values(gmos),
+  gmoInitialSuccess=gmoInitialSuccess+values(gmoInitialSuccess),
+  gmo0fail=gmo0fail+values(gmo0fail),
+  gmo1fail=gmo1fail+values(gmo1fail),
+  gmo2fail=gmo2fail+values(gmo2fail),
+  gmo3fail=gmo3fail+values(gmo3fail),
+  gmo4fail=gmo4fail+values(gmo4fail),
+  gmo5fail=gmo5fail+values(gmo5fail),
+  gmo6fail=gmo6fail+values(gmo6fail),
+  gmo7fail=gmo7fail+values(gmo7fail),
+  gmo8fail=gmo8fail+values(gmo8fail),
+  gmoNoCell=gmoNoCell+values(gmoNoCell),
+  gmoGivingUp=gmoGivingUp+values(gmoGivingUp),
+  gmoDelay=gmoDelay+values(gmoDelay)
+;

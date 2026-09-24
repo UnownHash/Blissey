@@ -36,6 +36,7 @@ sum(secWiEnc)
 from golbat.pokemon_area_stats
 
 where
+area<>'world' and
 datetime >= @period and
 datetime < @stop
 

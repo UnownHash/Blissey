@@ -188,7 +188,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_BLISSEY}"
+            "uid": "${blisseyDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -357,7 +357,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -554,7 +554,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -703,7 +703,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_BLISSEY}"
+            "uid": "${blisseyDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1119,7 +1119,7 @@
         {
           "datasource": {
             "type": "mysql",
-            "uid": "${DS_BLISSEY}"
+            "uid": "${blisseyDS}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1389,7 +1389,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1804,7 +1804,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1957,6 +1957,16 @@
   "templating": {
     "list": [
       {
+        "current": {},
+        "includeAll": false,
+        "name": "blisseyDS",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": "/.*blissey.*/",
+        "type": "datasource"
+      },
+      {
         "current": {
           "text": "5",
           "value": "5"
@@ -2003,6 +2013,6 @@
   "timezone": "",
   "title": "00. KPIs",
   "uid": "dfec5e24-1446-423d-a452-a24cad49fd41",
-  "version": 11,
+  "version": 5,
   "weekStart": ""
 }

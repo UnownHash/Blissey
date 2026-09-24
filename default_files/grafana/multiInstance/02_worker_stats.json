@@ -35,13 +35,19 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
+          "type": "datasource",
+          "uid": "grafana"
         },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -52,185 +58,6 @@
   "id": null,
   "links": [],
   "panels": [
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 6,
-      "panels": [],
-      "title": "KPIs",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "${DS_BLISSEY}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "% IV"
-            },
-            "properties": [
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "max",
-                "value": 100
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Pokemon scanned"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "id": 1,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mysql",
-            "uid": "${DS_BLISSEY}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  sum(totMon) AS \"Pokemon scanned\",\r\n  100*sum(ivMon)/sum(totMon) AS '% IV',\r\n  (sum(encSecLeft)/sum(verifiedEnc))/60 AS \"Despawn Minutes Left\",\r\n  sum(encTth25to30)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"25_to_30\",\r\n  sum(encTth20to25)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"20_to_25\",\r\n  sum(encTth15to20)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"15_to_20\",\r\n  sum(encTth10to15)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"10_to_15\",\r\n  sum(encTth5to10)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"5_to_10\",\r\n  sum(encTthMax5)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"below_5\"\r\nFROM stats_mon_area\r\nWHERE\r\n  $__timeFilter(datetime) and\r\n  rpl = '$rpl'\r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Pokemon scanned",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "time",
-                "Pokemon scanned",
-                "% IV"
-              ]
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
     {
       "datasource": {
         "type": "datasource",
@@ -251,7 +78,7 @@
             "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
-            "gradientMode": "none",
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -275,130 +102,6 @@
             }
           },
           "mappings": [],
-          "min": 24,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Despawn Minutes Left"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 1
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "-- Dashboard --"
-          },
-          "panelId": 1,
-          "refId": "A"
-        }
-      ],
-      "title": "Despawn time left",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "time",
-                "Despawn Minutes Left"
-              ]
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "${DS_BLISSEY}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "max": 100,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -412,72 +115,20 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "% IV"
-            },
-            "properties": [
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "max",
-                "value": 100
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Pokemon scanned"
+              "options": "Location handling time"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
                   "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "%AR quest scanned"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "%nonAR quest scanned"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
                   "mode": "fixed"
                 }
               }
@@ -489,9 +140,9 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 0
       },
-      "id": 3,
+      "id": 17,
       "options": {
         "legend": {
           "calcs": [],
@@ -500,7 +151,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -508,258 +159,28 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_BLISSEY}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  100*sum(ARcum)/sum(stops) as '%AR quest scanned',\r\n  100*sum(nonARcum)/sum(stops) as '%nonAR quest scanned'\r\nFROM stats_quest_area\r\nWHERE\r\n  $__timeFilter(datetime)\r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "panelId": 2,
+          "refId": "A"
         }
       ],
-      "title": "Quest scanned",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 17
-      },
-      "id": 5,
-      "panels": [],
-      "title": "Bit more detail",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "${DS_BLISSEY}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
+      "title": "Location handling time",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "area: Location handling time",
+                "area: proto time"
+              ]
             }
-          },
-          "mappings": [],
-          "max": 2000,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "% IV"
-            },
-            "properties": [
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "max",
-                "value": 100
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Pokemon scanned"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 18
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mysql",
-            "uid": "${DS_BLISSEY}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  avgTime as 'Invasion workers'\r\n\r\nFROM stats_invasion\r\nWHERE\r\n  $__timeFilter(datetime) and\r\n  RPL = '$rpl' \r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "type": "mysql",
-            "uid": "${DS_BLISSEY}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  sum(totalProtoTimeFort)/sum(modeLocations) as 'Fort workers'\r\n\r\nFROM stats_worker_fort\r\nWHERE\r\n  $__timeFilter(datetime) and\r\n  RPL = '$rpl'\r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "C",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "type": "mysql",
-            "uid": "${DS_BLISSEY}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  1000*sum(timeElapsed)/sum(loc_count) as 'Area workers'\r\n\r\nFROM stats_worker\r\nWHERE\r\n  $__timeFilter(datetime) and\r\n  RPL = '$rpl' \r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "D",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
           }
         }
       ],
-      "title": "Proto handling time",
       "type": "timeseries"
     },
     {
@@ -781,7 +202,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "bars",
-            "fillOpacity": 0,
+            "fillOpacity": 99,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -825,7 +246,678 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "GMO failure rate 8/8"
+              "options": "% raw data received"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 20,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 2,
+          "refId": "A"
+        }
+      ],
+      "title": "Time spend",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "area: rate location delay",
+                "area: rate gmo no pokemon delay",
+                "area: rate gmo no cell delay",
+                "area: real proto time"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Locations handled"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 2,
+          "refId": "A"
+        }
+      ],
+      "title": "Location handled",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "time",
+                "area: Locations handled",
+                "fort: Locations handled"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Location success rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "area: distance"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 18,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 2,
+          "refId": "A"
+        }
+      ],
+      "title": "Distance covered (km)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "area: distance",
+                "time",
+                "Time"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 95,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Location success rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 2,
+          "refId": "A"
+        }
+      ],
+      "title": "Location handling success rate",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "area: Location success rate",
+                "time",
+                "fort: Location success rate"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "% raw data received"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "area: location delay"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 2,
+          "refId": "A"
+        }
+      ],
+      "title": "Location delay (s)",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "area: location delay"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "area: gmo initial success rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "area: gmo failure rate"
             },
             "properties": [
               {
@@ -838,6 +930,146 @@
               {
                 "id": "custom.axisPlacement",
                 "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 21,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 2,
+          "refId": "A"
+        }
+      ],
+      "title": "GMO",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "area: gmo initial success rate",
+                "area: gmo failure rate"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0.5,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "lost scanning time"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "area: GMO giving up"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
               }
             ]
           },
@@ -866,36 +1098,6 @@
                 "id": "color",
                 "value": {
                   "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "#3"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "#4"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
                   "mode": "fixed"
                 }
               }
@@ -960,6 +1162,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#4"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "#3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -967,9 +1199,9 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 24
       },
-      "id": 10,
+      "id": 12,
       "options": {
         "legend": {
           "calcs": [],
@@ -978,7 +1210,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -989,18 +1221,18 @@
             "type": "datasource",
             "uid": "-- Dashboard --"
           },
-          "panelId": 9,
+          "panelId": 2,
           "refId": "A"
         }
       ],
-      "title": "Area mode: gmo repeated attempts",
+      "title": "GMO repeated attempts",
       "transformations": [
         {
           "id": "filterFieldsByName",
           "options": {
             "include": {
               "names": [
-                "time",
+                "Time",
                 "GMO success after retry #1",
                 "#2",
                 "#3",
@@ -1018,8 +1250,8 @@
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -1036,7 +1268,7 @@
             "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
-            "gradientMode": "none",
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -1064,189 +1296,22 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "GMO failure rate 8/8"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-red",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 26
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mysql",
-            "uid": "${DS_BLISSEY}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n$__timeGroup(datetime,$__interval) AS \"time\",\r\nsum(gmoGivingUp) as 'GMO - giving up',\r\n100*sum(gmoInitialSuccess)/sum(loc_count) as 'initial GMO success rate',\r\n100*sum(gmoGivingUp)/sum(loc_count) as 'GMO failure rate 8/8',\r\n(sum(gmo0fail)-sum(gmo1fail))/sum(gmo0fail) as 'GMO success after retry #1',\r\n(sum(gmo1fail)-sum(gmo2fail))/sum(gmo0fail) as '#2',\r\n(sum(gmo2fail)-sum(gmo3fail))/sum(gmo0fail) as '#3',\r\n(sum(gmo3fail)-sum(gmo4fail))/sum(gmo0fail) as '#4',\r\n(sum(gmo4fail)-sum(gmo5fail))/sum(gmo0fail) as '#5',\r\n(sum(gmo5fail)-sum(gmo6fail))/sum(gmo0fail) as '#6',\r\n(sum(gmo6fail)-sum(gmo7fail))/sum(gmo0fail) as '#7',\r\n(sum(gmo7fail)-sum(gmo8fail))/sum(gmo0fail) as '#8'\r\n\r\nFROM stats_worker\r\n\r\nWHERE\r\n$__timeFilter(Datetime) and\r\n-- Datetime BETWEEN '${__from:date:iso}' AND '${__to:date:iso}' and\r\nRPL='$rpl'\r\nGROUP BY 1  \r\nORDER BY $__timeGroup(datetime,$__interval)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Area mode: gmo",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "time",
-                "initial GMO success rate",
-                "GMO failure rate 8/8"
-              ]
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "datasource",
-        "uid": "-- Dashboard --"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "bars",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "percent"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "% IV"
-            },
-            "properties": [
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "max",
-                "value": 100
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Pokemon scanned"
+              "options": "% raw data received"
             },
             "properties": [
               {
@@ -1261,13 +1326,137 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "25_to_30"
+              "options": "area: retries"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "dark-green",
+                  "fixedColor": "dark-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "id": 19,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 2,
+          "refId": "A"
+        }
+      ],
+      "title": "GMO totals",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "area: retries",
+                "area: total GMOs"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "lost scanning time"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
                   "mode": "fixed"
                 }
               }
@@ -1276,52 +1465,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "20_to_25"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "15_to_20"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "10_to_15"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "below_5"
+              "options": "area: GMO giving up"
             },
             "properties": [
               {
@@ -1339,9 +1483,9 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 32
       },
-      "id": 7,
+      "id": 23,
       "options": {
         "legend": {
           "calcs": [],
@@ -1350,7 +1494,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -1361,24 +1505,19 @@
             "type": "datasource",
             "uid": "-- Dashboard --"
           },
-          "panelId": 1,
+          "panelId": 2,
           "refId": "A"
         }
       ],
-      "title": "Despawn minutes left details",
+      "title": "GMO giving up",
       "transformations": [
         {
           "id": "filterFieldsByName",
           "options": {
             "include": {
               "names": [
-                "time",
-                "25_to_30",
-                "20_to_25",
-                "15_to_20",
-                "10_to_15",
-                "5_to_10",
-                "below_5"
+                "Time",
+                "area: GMO giving up"
               ]
             }
           }
@@ -1389,7 +1528,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "uid": "${blisseyDS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1406,7 +1545,7 @@
             "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
-            "gradientMode": "none",
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -1417,8 +1556,7 @@
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
-              "log": 2,
-              "type": "log"
+              "type": "linear"
             },
             "showPoints": "never",
             "spanNulls": false,
@@ -1435,32 +1573,79 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "GMO failure rate 8/8"
+              "options": "%IV"
+            },
+            "properties": [
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mons scanned"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "dark-red",
+                  "fixedColor": "blue",
                   "mode": "fixed"
                 }
-              },
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IV scanned"
+            },
+            "properties": [
               {
-                "id": "custom.axisPlacement",
-                "value": "right"
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mons encountered"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
               }
             ]
           }
@@ -1470,9 +1655,9 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 34
+        "y": 40
       },
-      "id": 11,
+      "id": 2,
       "options": {
         "legend": {
           "calcs": [],
@@ -1481,7 +1666,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -1493,10 +1678,22 @@
             "uid": "${DS_BLISSEY}"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(a.datetime, $__interval) AS \"time\",\r\n  ifnull(a.rpc4,0) + ifnull(c.rpc4,0) + ifnull(d.rpc4,0) as 'rpc4',\r\n  ifnull(a.rpc5,0) + ifnull(c.rpc5,0) + ifnull(d.rpc5,0) as 'rpc5',\r\n  ifnull(a.rpc6,0) + ifnull(c.rpc6,0) + ifnull(d.rpc6,0) as 'rpc6',\r\n  ifnull(a.rpc7,0) + ifnull(c.rpc7,0) + ifnull(d.rpc7,0) as 'rpc7',\r\n  ifnull(a.rpc8,0) + ifnull(c.rpc8,0) + ifnull(d.rpc8,0) as 'rpc8',\r\n  ifnull(a.rpc9,0) + ifnull(c.rpc9,0) + ifnull(d.rpc9,0) as 'rpc9',\r\n  ifnull(a.rpc11,0) + ifnull(c.rpc11,0) + ifnull(d.rpc11,0) as 'rpc11',\r\n  ifnull(a.rpc12,0) + ifnull(c.rpc12,0) + ifnull(d.rpc12,0) as 'rpc12',\r\n  ifnull(a.rpc13,0) + ifnull(c.rpc13,0) + ifnull(d.rpc13,0) as 'rpc13',\r\n  ifnull(a.rpc14,0) + ifnull(c.rpc14,0) + ifnull(d.rpc14,0) as 'rpc14',\r\n  ifnull(a.rpc15,0) + ifnull(c.rpc15,0) + ifnull(d.rpc15,0) as 'rpc15',\r\n  ifnull(a.rpc16,0) + ifnull(c.rpc16,0) + ifnull(d.rpc16,0) as 'rpc16',\r\n  ifnull(a.rpc17,0) + ifnull(c.rpc17,0) + ifnull(d.rpc17,0) as 'rpc17',\r\n  ifnull(a.rpc18,0) + ifnull(c.rpc18,0) + ifnull(d.rpc18,0) as 'rpc18',\r\n  ifnull(a.swTotal,0)+ifnull(c.swTotal,0)+ifnull(d.swTotal,0) as 'Accounts rotated',\r\n  ifnull(a.swWarnSusp,0)+ifnull(c.swWarnSusp,0)+ifnull(d.swWarnSusp,0) as 'Warned',\r\n  ifnull(a.swBanned,0)+ifnull(c.swBanned,0)+ifnull(d.swBanned,0) as 'Banned',\r\n  ifnull(a.swDisabled,0)+ifnull(c.swDisabled,0)+ifnull(d.swDisabled,0) as 'Disabled',\r\n  ifnull(a.swDayLimit,0)+ifnull(c.swDayLimit,0)+ifnull(d.swDayLimit,0) as 'Daily limit',\r\n  ifnull(a.swRange,0)+ifnull(c.swRange,0)+ifnull(d.swRange,0) as 'Out of range 10 times',\r\n  ifnull(a.swTime,0)+ifnull(c.swTime,0)+ifnull(d.swTime,0) as 'Max connection time',\r\n  ifnull(a.swStop,0)+ifnull(c.swStop,0)+ifnull(d.swStop,0) as 'Stop cooldown',\r\n  ifnull(a.swLLapi,0)+ifnull(c.swLLapi,0)+ifnull(d.swLLapi,0) as 'LLapi',\r\n  ifnull(a.swQdist,0)+ifnull(c.swQdist,0)+ifnull(d.swQdist,0) as 'Quest distance',\r\n  ifnull(a.backoff,0)+ifnull(c.backoff,0)+ifnull(d.backoff,0) as 'backoff'\r\nFROM\r\n  dragoLog a\r\n  LEFT JOIN dragoLog_invasion c ON a.datetime = c.datetime\r\n  and a.rpl = c.rpl\r\n  LEFT JOIN dragoLog_fort d ON a.datetime = d.datetime\r\n  and a.rpl = d.rpl\r\nWHERE\r\n  $__timeFilter(a.Datetime) and\r\n  a.RPL = '$rpl'\r\nGROUP BY 1\r\nORDER BY $__timeGroup(a.datetime, $__interval)",
+          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) AS \"time\",\n  case when count(controller_worker)<3 then sum(numrep) else count(controller_worker) end as 'area: workers',\n  sum(mons_seen) AS 'area: Mons scanned',\n  sum(mons_enc) AS 'area: Mons encountered',\n--  100*sum(mons_enc)/sum(mons_seen) AS 'area: %IV',\n  sum(loc_time)/sum(loc_success) AS \"area: Location handling time\",\n  sum(loc_count) AS \"area: Locations handled\",\n  100*sum(loc_success)/sum(loc_count) AS \"area: Location success rate\",\n--  100*sum(numRep)/(sum(rpl)/5) AS \"area: % raw data received\",\n--  sum(rpl)*60 - sum(loc_time) AS \"area: lost scanning time\",\n--  sum(stops) as \"#Stops spun\",\n--  sum(quests) as \"#Quests scanned\"\n  sum(distance) as \"area: distance\",\n  sum(gmos) as \"area: total GMOs\",\n  sum(retries) as \"area: retries\",\n  sum(timeElapsed)/sum(loc_count) as \"area: proto time\",\n  sum(locationDelay)/sum(loc_count) as \"area: location delay\",\n  sum(locationDelay)/(sum(locationDelay)+sum(timeElapsed)) as \"area: rate location delay\",\n  (0.25*(sum(retries)-sum(gmoNoCell)))/(sum(locationDelay)+sum(timeElapsed)) as \"area: rate gmo no pokemon delay\",\n  (0.5*sum(gmoNoCell))/(sum(locationDelay)+sum(timeElapsed)) as \"area: rate gmo no cell delay\",\n  (sum(timeElapsed)-(0.5*sum(gmoNoCell))-(0.25*(sum(retries)-sum(gmoNoCell))))/(sum(locationDelay)+sum(timeElapsed)) as \"area: real proto time\",\n  sum(gmoGivingUp) as \"area: GMO giving up\",\n  (sum(gmo0fail)-sum(gmo1fail))/sum(gmo0fail) as 'GMO success after retry #1',\n  (sum(gmo1fail)-sum(gmo2fail))/sum(gmo0fail) as '#2',\n  (sum(gmo2fail)-sum(gmo3fail))/sum(gmo0fail) as '#3',\n  (sum(gmo3fail)-sum(gmo4fail))/sum(gmo0fail) as '#4',\n  (sum(gmo4fail)-sum(gmo5fail))/sum(gmo0fail) as '#5',\n  (sum(gmo5fail)-sum(gmo6fail))/sum(gmo0fail) as '#6',\n  (sum(gmo6fail)-sum(gmo7fail))/sum(gmo0fail) as '#7',\n  (sum(gmo7fail)-sum(gmo8fail))/sum(gmo0fail) as '#8',\n  100*sum(gmoInitialSuccess)/sum(loc_count) as 'area: gmo initial success rate',\n  100*sum(gmoGivingUp)/sum(loc_count) as 'area: gmo failure rate'\nFROM stats_worker\nWHERE\n  $__timeFilter(Datetime) and\n  RPL='$RPL' and\n  controller_worker in ($drago_worker) and\n  mode in ($mode) and\n  LEFT(controller_worker, LENGTH(controller_worker) - LENGTH(SUBSTRING_INDEX(controller_worker, '_', -1)) - 1) in ($Area) \nGROUP BY 1  \nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "id"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
           "sql": {
             "columns": [
               {
@@ -1513,31 +1710,30 @@
               }
             ],
             "limit": 50
-          }
+          },
+          "table": "stats_worker",
+          "timeColumn": "Datetime",
+          "timeColumnType": "datetime",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
-      "title": "All modes, rpc errors",
+      "title": "Mons scanned",
       "transformations": [
         {
           "id": "filterFieldsByName",
           "options": {
             "include": {
               "names": [
+                "Time",
+                "area: Mons scanned",
                 "time",
-                "rpc4",
-                "rpc5",
-                "rpc6",
-                "rpc7",
-                "rpc8",
-                "rpc9",
-                "rpc11",
-                "rpc12",
-                "rpc13",
-                "rpc14",
-                "rpc15",
-                "rpc16",
-                "rpc17",
-                "rpc18"
+                "fort: Mons scanned"
               ]
             }
           }
@@ -1565,19 +1761,18 @@
             "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
-            "gradientMode": "none",
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "stepBefore",
+            "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
-              "log": 2,
-              "type": "log"
+              "type": "linear"
             },
             "showPoints": "never",
             "spanNulls": false,
@@ -1594,150 +1789,28 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Account disabled"
+              "options": "Location handling time"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "dark-red",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Got out of range 10 times"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-purple",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Maximum connection time exceeded"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Accounts rotated"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Disabled"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "backoff"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "LLapi"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "super-light-green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Quest distance"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Warned"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "light-yellow",
+                  "fixedColor": "blue",
                   "mode": "fixed"
                 }
               }
@@ -1749,9 +1822,9 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 34
+        "y": 40
       },
-      "id": 14,
+      "id": 22,
       "options": {
         "legend": {
           "calcs": [],
@@ -1760,7 +1833,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -1771,29 +1844,19 @@
             "type": "datasource",
             "uid": "-- Dashboard --"
           },
-          "panelId": 11,
+          "panelId": 2,
           "refId": "A"
         }
       ],
-      "title": "account switch",
+      "title": "Workers",
       "transformations": [
         {
           "id": "filterFieldsByName",
           "options": {
             "include": {
               "names": [
-                "time",
-                "Accounts rotated",
-                "Warned",
-                "Banned",
-                "Disabled",
-                "Daily limit",
-                "Out of range 10 times",
-                "Max connection time",
-                "Stop cooldown",
-                "LLapi",
-                "backoff",
-                "Quest distance"
+                "Time",
+                "area: workers"
               ]
             }
           }
@@ -1803,8 +1866,8 @@
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_BLISSEY}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -1820,8 +1883,8 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -1832,8 +1895,7 @@
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
-              "log": 2,
-              "type": "log"
+              "type": "linear"
             },
             "showPoints": "never",
             "spanNulls": false,
@@ -1846,36 +1908,35 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "GMO failure rate 8/8"
+              "options": "Location handling time"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "dark-red",
+                  "fixedColor": "blue",
                   "mode": "fixed"
                 }
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
               }
             ]
           }
@@ -1885,9 +1946,9 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 48
       },
-      "id": 12,
+      "id": 16,
       "options": {
         "legend": {
           "calcs": [],
@@ -1896,7 +1957,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -1904,45 +1965,24 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_BLISSEY}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  consecDis1 as 'Consecutive disabled <= 1',\r\n  consecDis2 as 'Consecutive disabled = 2',\r\n  consecDis3 as 'Consecutive disabled = 3',\r\n  consecDis4p as 'Consecutive disabled >= 4'\r\nFROM accounts\r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "panelId": 2,
+          "refId": "A"
         }
       ],
-      "title": "Consecutive disabled status",
+      "title": "Encounters",
       "transformations": [
         {
           "id": "filterFieldsByName",
           "options": {
             "include": {
               "names": [
+                "Time",
+                "area: Mons encountered",
                 "time",
-                "Consecutive disabled <= 1",
-                "Consecutive disabled = 2",
-                "Consecutive disabled = 3",
-                "Consecutive disabled >= 4"
+                "fort: Mons encountered"
               ]
             }
           }
@@ -1957,40 +1997,113 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "5",
-          "value": "5"
-        },
+        "current": {},
         "includeAll": false,
-        "name": "rpl",
+        "name": "blisseyDS",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": "/.*blissey.*/",
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mysql",
+          "uid": "${blisseyDS}"
+        },
+        "definition": "select distinct(RPL) from stats_worker;",
+        "includeAll": false,
+        "name": "RPL",
+        "options": [],
+        "query": "select distinct(RPL) from stats_worker;",
+        "refresh": 1,
+        "regex": "",
+        "sort": 3,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mysql",
+          "uid": "${DS_BLISSEY}"
+        },
+        "definition": "select controller_worker from stats_worker where rpl=5 and  datetime>now() - interval 7 day and mode <> 'FortMode' group by controller_worker;",
+        "includeAll": true,
+        "multi": true,
+        "name": "drago_worker",
+        "options": [],
+        "query": "select controller_worker from stats_worker where rpl=5 and  datetime>now() - interval 7 day and mode <> 'FortMode' group by controller_worker;",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mysql",
+          "uid": "${blisseyDS}"
+        },
+        "definition": "select LEFT(controller_worker, LENGTH(controller_worker) - LENGTH(SUBSTRING_INDEX(controller_worker, '_', -1)) - 1) from stats_worker where rpl=5 and datetime>now() - interval 7 day group by controller_worker;",
+        "includeAll": true,
+        "label": "Area",
+        "multi": true,
+        "name": "Area",
+        "options": [],
+        "query": "select LEFT(controller_worker, LENGTH(controller_worker) - LENGTH(SUBSTRING_INDEX(controller_worker, '_', -1)) - 1) from stats_worker where rpl=5 and datetime>now() - interval 7 day group by controller_worker;",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": [
+            "PokemonMode",
+            "QuestMode"
+          ],
+          "value": [
+            "PokemonMode",
+            "QuestMode"
+          ]
+        },
+        "includeAll": true,
+        "multi": true,
+        "name": "mode",
         "options": [
           {
+            "selected": false,
+            "text": "FortMode",
+            "value": "FortMode"
+          },
+          {
+            "selected": false,
+            "text": "FortModeFull",
+            "value": "FortModeFull"
+          },
+          {
+            "selected": false,
+            "text": "InvasionMode",
+            "value": "InvasionMode"
+          },
+          {
             "selected": true,
-            "text": "5",
-            "value": "5"
+            "text": "PokemonMode",
+            "value": "PokemonMode"
+          },
+          {
+            "selected": true,
+            "text": "QuestMode",
+            "value": "QuestMode"
           },
           {
             "selected": false,
-            "text": "15",
-            "value": "15"
-          },
-          {
-            "selected": false,
-            "text": "60",
-            "value": "60"
-          },
-          {
-            "selected": false,
-            "text": "1440",
-            "value": "1440"
-          },
-          {
-            "selected": false,
-            "text": "10080",
-            "value": "10080"
+            "text": "ScoutMode",
+            "value": "ScoutMode"
           }
         ],
-        "query": "5,15,60,1440,10080",
+        "query": "FortMode,FortModeFull,InvasionMode,PokemonMode,QuestMode,ScoutMode",
         "type": "custom"
       }
     ]
@@ -2001,8 +2114,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "00. KPIs",
-  "uid": "dfec5e24-1446-423d-a452-a24cad49fd41",
-  "version": 11,
+  "title": "02. Area worker stats",
+  "uid": "ZKINe-OMb",
+  "version": 3,
   "weekStart": ""
 }

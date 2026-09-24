@@ -80,6 +80,20 @@ then
   echo "[$start] [$stop] [$diff] rpl1440 invasion processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
+# process multi blissey
+if [[ $multiblissey == "true" ]] && [[ $multiblisseyrole == "master" ]]; then
+  sleep 10s
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/1440_mon_area.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/1440_quest_area.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/1440_worker_multi.sqlt
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/1440_dragonite.sql
+  MYSQL_PWD=$multisqlpass mysql -u$multisqluser -h$dbip -P$dbport $multiblisseydb < $folder/default_files/1440_fort.sql
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl1440 processing to combined blissey db" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
 ## backup golbat db
 if "$golbat_backup"
 then
@@ -112,7 +126,7 @@ if [[ $drago_backup == "true" ]]
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   mkdir -p $folder/dragobackup
-  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $controllerdb  > $folder/dragobackup/dragobackup_$(date +%Y-%m-%d).sql
+  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $dragonitedb  > $folder/dragobackup/dragobackup_$(date +%Y-%m-%d).sql
   cd $folder/dragobackup && tar --remove-files -czvf dragobackup_$(date +%Y-%m-%d).sql.tar.gz dragobackup_$(date +%Y-%m-%d).sql
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))

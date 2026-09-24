@@ -1,0 +1,68 @@
+-- settings
+select @period := concat(date(now() - interval 5 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 5 minute)) DIV 300) * 300));
+select @rpl  := 5;
+
+-- aggregation fort worker
+INSERT IGNORE INTO multiblissey.stats_worker_fort (datetime,rpl,worker,fetchRaid,modeLocations,fortLookup,totalProtoTimeFort,totalProtoTimeRaid)
+SELECT
+@period,
+@rpl,
+'all',
+sum(fetchRaid),
+sum(modeLocations),
+sum(fortLookup),
+sum(totalProtoTimeFort),
+sum(totalProtoTimeRaid)
+
+FROM singleblissey.stats_worker_fort
+WHERE datetime=@period and rpl=@rpl
+GROUP BY @period,@rpl
+
+on duplicate key update
+  fetchRaid=fetchRaid+values(fetchRaid),
+  modeLocations=modeLocations+values(modeLocations),
+  fortLookup=fortLookup+values(fortLookup),
+  totalProtoTimeFort=totalProtoTimeFort+values(totalProtoTimeFort),
+  totalProtoTimeRaid=totalProtoTimeRaid+values(totalProtoTimeRaid)
+;
+
+-- aggregation fort prio raid
+INSERT IGNORE INTO multiblissey.stats_prioraid (datetime,rpl,scanCount,scanMin,scanMax,scanAvg,raidMin,raidMax,raidAvg,raidActiveMin,raidActiveMax,raidActiveAvg,raidQueueMin,raidQueueMax,raidQueueAvg,Qcount)
+SELECT
+@period,
+@rpl,
+sum(scanCount) as scanCount,
+min(scanMin) as scanMin,
+max(scanMax) as scanMax,
+sum(scanAvg*scanCount)/sum(scanCount) as scanAvg,
+min(raidMin) as raidMin,
+max(raidMax) as raidMax,
+sum(raidAvg*scanCount)/sum(scanCount) as raidAvg,
+min(raidActiveMin) as raidActiveMin,
+max(raidActiveMax) as raidActiveMax,
+sum(raidActiveAvg*Qcount)/sum(Qcount) as raidActiveAvg,
+min(raidQueueMin) as raidQueueMin,
+max(raidQueueMax) as raidQueueMax,
+sum(raidQueueAvg*Qcount)/sum(Qcount) as raidQueueAvg,
+sum(Qcount) as Qcount
+
+FROM singleblissey.stats_prioraid
+WHERE datetime=@period and rpl=@rpl
+GROUP BY @period,@rpl
+
+on duplicate key update
+  scanCount=scanCount+values(scanCount),
+  scanMin=least(scanMin,values(scanMin)),
+  scanMax=greatest(scanMax,values(scanMax)),
+  scanAvg=((scanAvg*scanCount)+(values(scanAvg)*values(scanCount))) / (scanCount+values(scanCount)),
+  raidMin=least(raidMin,values(raidMin)),
+  raidMax=greatest(raidMax,values(raidMax)),
+  raidAvg=((raidAvg*scanCount)+(values(raidAvg)*values(scanCount))) / (scanCount+values(scanCount)),
+  raidActiveMin=least(raidActiveMin,values(raidActiveMin)),
+  raidActiveMax=greatest(raidActiveMax,values(raidActiveMax)),
+  raidActiveAvg=((raidActiveAvg*Qcount)+(values(raidActiveAvg)*values(Qcount))) / (Qcount+values(Qcount)),
+  raidQueueMin=least(raidQueueMin,values(raidQueueMin)),
+  raidQueueMax=greatest(raidQueueMax,values(raidQueueMax)),
+  raidQueueAvg=((raidQueueAvg*Qcount)+(values(raidQueueAvg)*values(Qcount))) / (Qcount+values(Qcount)),
+  Qcount=Qcount+values(Qcount)
+;

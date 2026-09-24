@@ -1,0 +1,64 @@
+-- settings
+select @period := (concat(date(now() - interval 5 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 5 minute)) DIV 300) * 300)) );
+select @rpl := 5;
+
+-- process data
+insert ignore into multiblissey.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,unverifiedEnc,verifiedReEnc,encSecLeft,encTthMax5,encTth5to10,encTth10to15,encTth15to20,encTth20to25,encTth25to30,encTth30to35,encTth35to40,encTth40to45,encTth45to50,encTth50to55,encTthMin55,resetMon,re_encSecLeft,numWiEnc,secWiEnc)
+select
+  @period,
+  @rpl,
+  'all',
+  'all',
+  sum(totMon) as totMon,
+  sum(ivMon) as ivMon,
+  sum(verifiedEnc) as verifiedEnc,
+  sum(unverifiedEnc) as unverifiedEnc,
+  sum(verifiedReEnc) as verifiedReEnc,
+  sum(encSecLeft) as encSecLeft,
+  sum(encTthMax5) as encTthMax5,
+  sum(encTth5to10) as encTth5to10,
+  sum(encTth10to15) as encTth10to15,
+  sum(encTth15to20) as encTth15to20,
+  sum(encTth20to25) as encTth20to25,
+  sum(encTth25to30) as encTth25to30,
+  sum(encTth30to35) as encTth30to35,
+  sum(encTth35to40) as encTth35to40,
+  sum(encTth40to45) as encTth40to45,
+  sum(encTth45to50) as encTth45to50,
+  sum(encTth50to55) as encTth50to55,
+  sum(encTthMin55) as encTthMin55,
+  sum(resetMon) as resetMon,
+  sum(re_encSecLeft) as re_encSecLeft,
+  sum(numWiEnc) as numWiEnc,
+  sum(secWiEnc) as secWiEnc
+
+from singleblissey.stats_mon_area
+
+where
+  datetime=@period and rpl=@rpl
+  group by datetime
+
+on duplicate key update
+  totMon=totMon+values(totMon),
+  ivMon=ivMon+values(ivMon),
+  verifiedEnc=verifiedEnc+values(verifiedEnc),
+  unverifiedEnc=unverifiedEnc+values(unverifiedEnc),
+  verifiedReEnc=verifiedReEnc+values(verifiedReEnc),
+  encSecLeft=encSecLeft+values(encSecLeft),
+  encTthMax5=encTthMax5+values(encTthMax5),
+  encTth5to10=encTth5to10+values(encTth5to10),
+  encTth10to15=encTth10to15+values(encTth10to15),
+  encTth15to20=encTth15to20+values(encTth15to20),
+  encTth20to25=encTth20to25+values(encTth20to25),
+  encTth25to30=encTth25to30+values(encTth25to30),
+  encTth30to35=encTth30to35+values(encTth30to35),
+  encTth35to40=encTth35to40+values(encTth35to40),
+  encTth40to45=encTth40to45+values(encTth40to45),
+  encTth45to50=encTth45to50+values(encTth45to50),
+  encTth50to55=encTth50to55+values(encTth50to55),
+  encTthMin55=encTthMin55+values(encTthMin55),
+  resetMon=resetMon+values(resetMon),
+  re_encSecLeft=re_encSecLeft+values(re_encSecLeft),
+  numWiEnc=numWiEnc+values(numWiEnc),
+  secWiEnc=secWiEnc+values(secWiEnc)
+;

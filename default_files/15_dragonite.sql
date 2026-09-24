@@ -4,7 +4,7 @@ select @stop :=  concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_T
 select @rpl  := 15;
 
 -- aggregation area/generic
-INSERT IGNORE INTO dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitm500,mitm501,mitm502,mitm503,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff,noAccount,released24h,released7d,minAuthT,maxAuthT,avgAuthT,monchange)
+INSERT IGNORE INTO dragoLog (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,mitm500,mitm501,mitm502,mitm503,mitmLoginErr,proxyBan,wsError,wsClose,wsMitmRecon,authReq,authed,login,swTotal,swWarnSusp,swBanned,swSbanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,swConsecRPC,backoff,noAccount,released24h,released7d,minAuthT,maxAuthT,avgAuthT,monchange,totRemoteAuth,failRemoteAuth,faultyRemoteAuth,minRemoteAuthT,maxRemoteAuthT,avgRemoteAuthT,lowDuration,bgRefreshSuc,bgRefreshFail,bTokenReq,bTokenSuc,bTokenMin,bTokenMax,bTokenAvg,tokenCleared)
 SELECT
 @period,
 @rpl,
@@ -36,12 +36,14 @@ sum(authed),
 sum(login),
 sum(swTotal),
 sum(swWarnSusp),
-sum(swBanned),
+sum(swBanned),sum(swSbanned),
 sum(swDisabled),
 sum(swDayLimit),
 sum(swRange),
 sum(swTime),
-sum(swStop), sum(swLLapi), sum(swQdist),
+sum(swStop),
+sum(swLLapi),
+sum(swQdist),sum(swConsecRPC),
 sum(backoff),
 sum(noAccount),
 sum(released24h),
@@ -49,7 +51,22 @@ sum(released7d),
 min(minAuthT),
 max(maxAuthT),
 sum(avgAuthT*authed)/sum(authed),
-sum(monchange)
+sum(monchange),
+sum(totRemoteAuth),
+sum(failRemoteAuth),
+sum(faultyRemoteAuth),
+min(minRemoteAuthT),
+max(maxRemoteAuthT),
+sum(avgRemoteAuthT*totRemoteAuth)/sum(totRemoteAuth),
+sum(lowDuration),
+sum(bgRefreshSuc),
+sum(bgRefreshFail),
+sum(bTokenReq),
+sum(bTokenSuc),
+min(bTokenMin),
+max(bTokenMax),
+sum(bTokenAvg*bTokenSuc)/sum(bTokenSuc),
+sum(tokenCleared)
 
 FROM dragoLog
 WHERE
@@ -59,7 +76,7 @@ rpl = 5
 ;
 
 -- aggregation invasion
-INSERT IGNORE INTO dragoLog_invasion (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,noGMO,gmoPoke,gmo0,gmo1,gmo2,gmo3,gmo4,gmo5,gmo6,gmo7,gmo8,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff)
+INSERT IGNORE INTO dragoLog_invasion (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,swTotal,swWarnSusp,swBanned,swSbanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,swConsecRPC,backoff)
 SELECT
 @period,
 @rpl,
@@ -77,25 +94,14 @@ sum(rpc15),
 sum(rpc16),
 sum(rpc17),
 sum(rpc18),
-sum(noGMO),
-sum(gmoPoke),
-sum(gmo0),
-sum(gmo1),
-sum(gmo2),
-sum(gmo3),
-sum(gmo4),
-sum(gmo5),
-sum(gmo6),
-sum(gmo7),
-sum(gmo8),
 sum(swTotal),
 sum(swWarnSusp),
-sum(swBanned),
+sum(swBanned),sum(swSbanned),
 sum(swDisabled),
 sum(swDayLimit),
 sum(swRange),
 sum(swTime),
-sum(swStop), sum(swLLapi), sum(swQdist),
+sum(swStop), sum(swLLapi), sum(swQdist),sum(swConsecRPC),
 sum(backoff)
 
 FROM dragoLog_invasion
@@ -106,7 +112,7 @@ rpl = 5
 ;
 
 -- aggregation fort
-INSERT IGNORE INTO dragoLog_fort (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,swTotal,swWarnSusp,swBanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,backoff)
+INSERT IGNORE INTO dragoLog_fort (datetime,rpl,rpc4,rpc5,rpc6,rpc7,rpc8,rpc9,rpc11,rpc12,rpc13,rpc14,rpc15,rpc16,rpc17,rpc18,swTotal,swWarnSusp,swBanned,swSbanned,swDisabled,swDayLimit,swRange,swTime,swStop,swLLapi,swQdist,swConsecRPC,backoff)
 SELECT
 @period,
 @rpl,
@@ -126,12 +132,12 @@ sum(rpc17),
 sum(rpc18),
 sum(swTotal),
 sum(swWarnSusp),
-sum(swBanned),
+sum(swBanned),sum(swSbanned),
 sum(swDisabled),
 sum(swDayLimit),
 sum(swRange),
 sum(swTime),
-sum(swStop), sum(swLLapi), sum(swQdist),
+sum(swStop), sum(swLLapi), sum(swQdist),sum(swConsecRPC),
 sum(backoff)
 
 FROM dragoLog_fort

@@ -3,10 +3,7 @@
 folder="$(cd ../ && pwd)"
 source $folder/config.ini
 
-if ! "$dragonitelog"
-then
-  exit
-fi
+if [[ $dragonitelog != "true" ]] || [[ -z $fort_area_name ]]; then exit; fi
 
 process_time=$(date -d '5 minute ago' +%Y"-"%m"-"%d" "%H":"%M":00")
 plog=$folder/tmp/d2_interval.log
